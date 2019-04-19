@@ -44,7 +44,7 @@ def psr_name(x):
 
 ######## Simulations ############
 
-class os_simulation(object):
+class Simulation(object):
 
     def __init__(self, parfiles, timfiles, ephem='DE436',verbose=True):
 
@@ -297,7 +297,7 @@ if __name__=='__main__':
     cuts = np.linspace(57000.,66154.,10)
     #cuts = [57000, 58800, 60676.,  62502.,  64328.,  66154.]
 
-    sim = os_simulation(parfiles, timfiles, ephem=args.ephem,verbose=True)
+    sim = Simulation(parfiles, timfiles, ephem=args.ephem,verbose=True)
 
     cuts = cuts[::-1]
     seed_gwb = args.process #int(os.times()[4]*100) +
