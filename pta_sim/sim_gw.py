@@ -57,7 +57,7 @@ class Simulation(object):
             if verbose:
                 print('\rPSR {0} loaded.'.format(psr_name(p)),
                       flush=True,end='')
-
+            print('')
         self.libs_psrs = libs_psrs
         self.psrs = None
         self.ephem = ephem
