@@ -28,7 +28,15 @@ def chain_length_bool(path, N):
 
 def save_core(core_path,chaindir):
     co = Core(label='',chaindir=chaindir)
-    co.set_rn_freqs(chaindir+'/achrom_rn_freqs.txt')
+    co.set_rn_freqs(freq_path=chaindir+'/achrom_rn_freqs.txt')
+    co.cov = np.load(chaindir+'/cov.npy')
+    jp_files = glob.glob(chaindir+'/*_jump.txt')
+    co.jp = {}
+    for f in jp_files:
+        ky = psr_name(f, rhs='.')
+        co.jp[ky] = np.loadtxt(f, dtype=float)
+
+    co.jp['jumps'] = np.loadtxt(chaindir+'/jumps.txt', dtype=str)
     co.save(core_path)
     del co
 
