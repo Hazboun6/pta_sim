@@ -73,7 +73,7 @@ sampler = ptmcmc(ndim, pta.get_lnlikelihood, pta.get_lnprior,
                  cov, groups=groups, outDir=args.outdir, resume=True)
 
 achrom_freqs = get_freqs(pta)
-np.savetxt(args.outdir + 'pars.txt', pta.param_names, fmt='%s')
+np.save(args.outdir + 'pars.npy', pta.param_names)
 np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
 
 jp = model_utils.JumpProposal(pta)
