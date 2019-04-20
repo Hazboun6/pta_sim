@@ -38,8 +38,8 @@ import argparse
 day_in_sec = 24.*3600
 year_in_sec = 365.25*day_in_sec
 
-def psr_name(x):
-    return x.split('/')[-1].split('.')[0]
+def psr_name(x, rhs='.'):
+    return x.split('/')[-1].split(rhs)[0]
 
 
 ######## Simulations ############
@@ -215,4 +215,4 @@ def get_rn_dict(pta):
 def save(outpath):
     pass
 
-if __name__=='__main__':
+# if __name__=='__main__':

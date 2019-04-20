@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 import argparse
+import numpy as np
 
 parser = argparse.ArgumentParser()
 
@@ -15,7 +16,13 @@ parser.add_argument('--pardir', dest='pardir', action='store', type=str,
 parser.add_argument('--pardir_no_dmx', dest='pardir_no_dmx', action='store',
                     type=str, default=pardir_no_dmx, help='Output Directory')
 parser.add_argument('--outpath', dest='outpath', action='store', type=str,
-                    required=True, help='Path name (dir and filename) for output.')
+                    default='./os.txt', help='Path name (dir and filename) for output.')
+parser.add_argument('--noisepath', dest='noisepath', action='store', type=str,
+                    default='./os.txt', help='Path name (dir and filename) for output.')
+parser.add_argument('--corepath', dest='corepath', action='store', type=str,
+                    default='./chain.core', help='Path name (dir and filename) for output.')
+parser.add_argument('--outdir', dest='outdir', action='store', type=str,
+                    default='./', help='Path directory for output.')
 parser.add_argument('--outtimdir', dest='outtimdir', action='store', type=str,
                     default='./fake_tim_files', help='Output Directory for tim files.')
 parser.add_argument('--ephem', dest='ephem', action='store',
@@ -58,10 +65,18 @@ parser.add_argument('--spac_corr_info', dest='spac_corr_info',
                     help='Whether to write out the spacial correlation information')
 parser.add_argument('--cuts', dest='cuts', action='append',
                     help='List of cuts at which to calculate OS')
+parser.add_argument('--psr_list', dest='psr_list', action='append',
+                    default=None,
+                    help='List pulsar names to use in analysis.')
 
 
 # parse arguments
 args = parser.parse_args()
+
+if args.psr_list is None:
+    pass
+elif len(args.psr_list)==1:
+    args.psr_list = np.loadtxt(args.psr_list[0], dtype='S25').astype('U25')
 
 def arguments():
     return args
