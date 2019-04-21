@@ -182,7 +182,11 @@ def model_simple(psrs, psd='powerlaw', components=30,
     model += white_signals.MeasurementNoise(efac=efac, selection=selection)
 
     # common red noise block
-    log10_A_gw = parameter.Uniform(-18,-12)('log10_A_gw')
+    if upper_limit:
+        log10_A_gw = parameter.LinearExp(-18,-12)('log10_A_gw')
+    else:
+        log10_A_gw = parameter.Uniform(-18,-12)('log10_A_gw')
+
     gamma_gw = parameter.Constant(4.33)('gamma_gw')
     pl = signal_base.Function(utils.powerlaw, log10_A=log10_A_gw,
                               gamma=gamma_gw)
