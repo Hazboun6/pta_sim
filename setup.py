@@ -41,7 +41,6 @@ setup(
     keywords='pta_sim',
     name='pta_sim',
     packages=find_packages(include=['pta_sim','pta_sim/scripts']),
-    include_package_data=True,
     package_data={'psrsigsim': ['scripts/*.py']},
     setup_requires=setup_requirements,
     test_suite='tests',
