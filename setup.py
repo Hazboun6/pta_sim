@@ -40,7 +40,7 @@ setup(
     include_package_data=True,
     keywords='pta_sim',
     name='pta_sim',
-    packages=find_packages(include=['pta_sim','scripts']),
+    packages=find_packages(include=['pta_sim','pta_sim/scripts']),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
