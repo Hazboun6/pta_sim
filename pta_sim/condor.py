@@ -44,8 +44,8 @@ def write_submit(slug, py_script, sub_path, args, err_dir='./error_out/',
     else:
         os.makedirs(err_dir)
 
-    out = '{0}_{1}.out'.format(err_dir,slug)
-    err = '{0}_{1}.err'.format(err_dir,slug)
+    out = '{0}/{1}.out'.format(err_dir,slug)
+    err = '{0}/{1}.err'.format(err_dir,slug)
 
     #$(nyears)_$(psrs)_slice
     #$(nyears)_$(psrs)_slice
