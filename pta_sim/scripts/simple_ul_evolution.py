@@ -60,7 +60,7 @@ sim.init_ePulsars()
 #                       components=30, gamma_common=args.gamma_gw,
 #                       upper_limit=True, bayesephem=False)
 
-pta = model_simple(psrs, psd='powerlaw', components=30,
+pta = model_simple(psrs=sim.psrs, psd='powerlaw', components=30,
                    gamma_common=args.gamma_gw, upper_limit=True,
                    bayesephem=False, select='backend', red_noise=False)
 
