@@ -14,11 +14,11 @@ from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 from enterprise_extensions import models, model_utils
 from enterprise_extensions.frequentist import optimal_statistic as OS
 
-sys.path.insert(0,'/Users/hazboun/software_development/pta_sim/')#os.path.abspath('..'))
-print(sys.path[0])
+sys.path.insert(0,'/Users/hazboun/software_development/pta_sim/')
+
 import pta_sim
 import pta_sim.parse_sim as parse_sim
-from pta_sim.sim_gw import Simulation
+from pta_sim.sim_gw import Simulation, model_simple
 from pta_sim.bayes import chain_length_bool, save_core, get_freqs, filter_psr_path
 args = parse_sim.arguments()
 
@@ -37,8 +37,9 @@ else:
 parfiles = sorted(glob.glob(args.pardir+'*.par'))
 timfiles = sorted(glob.glob(args.timdir+'*.tim'))
 
-parfiles = filter_psr_path(parfiles,args.psr_list,rhs='_')
-timfiles = filter_psr_path(timfiles,args.psr_list,rhs='_')
+if args.psr_list is not None:
+    parfiles = filter_psr_path(parfiles,args.psr_list,rhs='_')
+    timfiles = filter_psr_path(timfiles,args.psr_list,rhs='_')
 
 sim = Simulation(parfiles, timfiles, ephem=args.ephem, verbose=True)
 
@@ -51,13 +52,17 @@ sim.createGWB(A_gwb=args.A_gwb, gamma_gw=args.gamma_gw, seed=seed_gwb)
 
 sim.init_ePulsars()
 
-noise = {}
-with open(args.noisepath, 'r') as fin:
-    noise.update(json.load(fin))
+# noise = {}
+# with open(args.noisepath, 'r') as fin:
+#     noise.update(json.load(fin))
+#
+# pta = models.model_2a(psrs=sim.psrs, psd='powerlaw', noisedict=noise,
+#                       components=30, gamma_common=args.gamma_gw,
+#                       upper_limit=True, bayesephem=False)
 
-pta = models.model_2a(psrs=sim.psrs, psd='powerlaw', noisedict=noise,
-                      components=30, gamma_common=args.gamma_gw,
-                      upper_limit=True, bayesephem=False)
+pta = model_simple(psrs, psd='powerlaw', components=30,
+                   gamma_common=args.gamma_gw, upper_limit=True,
+                   bayesephem=False, select='backend', red_noise=False):
 
 x0 = np.hstack(p.sample() for p in pta.params)
 ndim = x0.size
