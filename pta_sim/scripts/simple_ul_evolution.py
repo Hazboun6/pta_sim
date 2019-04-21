@@ -62,7 +62,7 @@ sim.init_ePulsars()
 
 pta = model_simple(psrs, psd='powerlaw', components=30,
                    gamma_common=args.gamma_gw, upper_limit=True,
-                   bayesephem=False, select='backend', red_noise=False):
+                   bayesephem=False, select='backend', red_noise=False)
 
 x0 = np.hstack(p.sample() for p in pta.params)
 ndim = x0.size
