@@ -26,7 +26,7 @@ def chain_length_bool(path, N):
     else:
         return False
 
-def save_core(core_path,chaindir,aux=False):
+def save_core(core_path, chaindir, remove=False):
     co = Core(label=core_path, chaindir=chaindir)
     try:
         co.set_rn_freqs(freq_path=chaindir+'/achrom_rn_freqs.txt')
@@ -44,6 +44,20 @@ def save_core(core_path,chaindir,aux=False):
 
     co.jp['jumps'] = np.loadtxt(chaindir+'/jumps.txt', dtype=str)
     co.save(core_path)
+
+    if remove:
+        files = os.listdir(chaindir)
+        idxs = []
+        for f in files:
+            if f.endswith('.txt'):
+                os.remove(f)
+                idxs.append(files.index(f))
+            if f.endswith('.npy'):
+                os.remove(f)
+                idxs.append(files.index(f))
+        print('Following files removed:')
+        for idx in idxs:
+            print(files[idx])
     del co
 
 def get_freqs(pta):
