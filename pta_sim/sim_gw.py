@@ -137,9 +137,9 @@ class Simulation(object):
         else:
             self.toa_cuts.append(end_time)
 
-def model_simple(psrs, psd='powerlaw', components=30,
+def model_simple(psrs, psd='powerlaw', components=30, freqs=None,
                  gamma_common=None, upper_limit=False, bayesephem=False,
-                 select='backend', red_noise=False):
+                 select='backend', red_noise=False, Tspan=None):
     """
     Reads in list of enterprise Pulsar instance and returns a PTA
     instantiated with the most simple model allowable for enterprise:
@@ -172,7 +172,8 @@ def model_simple(psrs, psd='powerlaw', components=30,
     amp_prior = 'uniform' if upper_limit else 'log-uniform'
 
     # find the maximum time span to set GW frequency sampling
-    Tspan = model_utils.get_tspan(psrs)
+    if Tspan is None:
+        Tspan = model_utils.get_tspan(psrs)
 
     # timing model
     model = gp_signals.TimingModel()
@@ -191,7 +192,11 @@ def model_simple(psrs, psd='powerlaw', components=30,
     gamma_gw = parameter.Constant(4.33)('gw_gamma')
     pl = signal_base.Function(utils.powerlaw, log10_A=log10_A_gw,
                               gamma=gamma_gw)
-    gw = gp_signals.FourierBasisGP(spectrum=pl, components=30, Tspan=Tspan)
+    if freqs is None:
+        gw = gp_signals.FourierBasisGP(spectrum=pl, components=30, Tspan=Tspan)
+    else:
+        gw = gp_signals.FourierBasisGP(spectrum=pl, modes=freqs)
+
     model += gw
 
     if red_noise:
