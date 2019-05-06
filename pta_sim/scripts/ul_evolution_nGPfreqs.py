@@ -61,7 +61,10 @@ sim.init_ePulsars()
 #                       upper_limit=True, bayesephem=False)
 
 #Get Tspan _before_ going through time filter!!
-Tspan = model_utils.get_tspan(sim.psrs)
+if args.tspan is None:
+    Tspan = model_utils.get_tspan(sim.psrs)
+else:
+    Tspan=args.tspan
 
 freqs = np.logspace(np.log10(1/Tspan),
                     np.log10(args.nfreqs/Tspan),
