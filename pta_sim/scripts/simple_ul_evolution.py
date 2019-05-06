@@ -63,7 +63,8 @@ sim.init_ePulsars()
 sim.filter_by_mjd(args.end_time)
 pta = model_simple(psrs=sim.psrs, psd='powerlaw', components=30,
                    gamma_common=args.gamma_gw, upper_limit=True,
-                   bayesephem=False, select='backend', red_noise=False)
+                   bayesephem=False, select='backend', red_noise=False,
+                   Tspan=args.tspan)
 
 x0 = np.hstack(p.sample() for p in pta.params)
 ndim = x0.size
