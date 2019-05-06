@@ -35,6 +35,9 @@ parser.add_argument('--process', dest='process', action='store',
                     type=int, help='Condor process number')
 parser.add_argument('--gamma_gw', dest='gamma_gw', action='store',
                     type=float, default=13./3, help='GWB spectral index')
+parser.add_argument('--tspan', dest='tspan', action='store',
+                    type=float, default=None,
+                    help='Timespan to use for GP frequencies.')
 parser.add_argument('--obs', dest='obs', action='store',
                     type=str, default='all', help='Observatory')
 parser.add_argument('--niter', dest='niter', action='store',
