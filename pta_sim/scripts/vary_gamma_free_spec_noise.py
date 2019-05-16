@@ -123,6 +123,7 @@ for psr in psrs:
         noise.update(noise_plaw[psr.name])
 
 pta = signal_base.PTA(model_list)
+pta.set_default_params(noise)
 
 x0 = np.hstack(p.sample() for p in pta.params)
 ndim = x0.size
