@@ -86,6 +86,8 @@ def write_submit(slug, py_script, sub_path, args, err_dir='./error_out/',
 
     if mpi and any([ky not in sub_kwargs.keys() for ky in mpi_keys]):
         raise ValueError('Must include all appropriate MPI values.')
+    elif mpi and all([ky in sub_kwargs.keys() for ky in mpi_keys]):
+        pass
     else:
         values.__delitem__('environment')
 

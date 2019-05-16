@@ -94,14 +94,14 @@ else:
 ### White Noise ###
 wn = models.white_noise_block(vary=False, inc_ecorr=inc_ecorr)
 ### Red Noise ###
-rn_plaw = red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan,
+rn_plaw = models.red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan,
                           components=30, gamma_val=None)
 
-rn_fs = red_noise_block(psd='spectrum', prior='log-uniform', Tspan=Tspan,
+rn_fs = models.red_noise_block(psd='spectrum', prior='log-uniform', Tspan=Tspan,
                     components=30, gamma_val=None)
 
 ### GWB ###
-gw = common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan,
+gw = models.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan,
                             gamma_val=None, name='gw')
 
 base_model = wn + gw
@@ -146,7 +146,6 @@ if args.bayes_ephem:
 
 gw_idx = [pta.param_names.index(par) for par in pta.param_names if 'gw' in par]
 groups.append(gw_idx)
-
 
 sampler = ptmcmc(ndim, pta.get_lnlikelihood, pta.get_lnprior,
                  cov, groups=groups, outDir=args.outdir, resume=True)
