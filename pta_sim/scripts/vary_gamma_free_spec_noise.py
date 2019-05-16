@@ -115,7 +115,7 @@ model_fs = base_model + rn_fs
 model_list = []
 noise = {}
 for psr in psrs:
-    if psr.name in free_spec_psrs:
+    if psr.name in args.free_spec_psrs:
         model_list.append(model_fs(psr))
         noise.update(noise_fs[psr.name])
     else:
