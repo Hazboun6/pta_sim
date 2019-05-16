@@ -14,6 +14,7 @@ from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 from enterprise_extensions import models, model_utils
 from enterprise_extensions.frequentist import optimal_statistic as OS
 
+
 sys.path.insert(0,'/Users/hazboun/software_development/pta_sim/')
 
 import pta_sim

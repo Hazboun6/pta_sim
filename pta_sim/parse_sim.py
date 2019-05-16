@@ -59,6 +59,8 @@ parser.add_argument('--vary_gamma', dest='vary_gamma', action='store_true',
                     default=False,
                     help='Option to vary gamma, the spectral index '
                          'on the common red noise process.')
+parser.add_argument('--wideband', dest='wideband', action='store_true',
+                    default=False, help='Option to use wideband data.')
 parser.add_argument('--vary_dm_params', dest='vary_dm_params', action='store_false',
                     default=True, help='Option to vary the DM model parameters.')
 parser.add_argument('--bayes_ephem', dest='bayes_ephem', action='store_true',
@@ -71,6 +73,13 @@ parser.add_argument('--cuts', dest='cuts', action='append',
 parser.add_argument('--psr_list', dest='psr_list', action='append',
                     default=None,
                     help='List pulsar names to use in analysis.')
+parser.add_argument('--emp_distr', dest='emp_distr', action='store',
+                    type=str, default=None,
+                    help='Option to give a pickled enterprise list of pulsars')
+parser.add_argument('--free_spec_psrs',dest='free_spec_psrs', action='append',
+                    type=str,
+                    help='Pulsars for which to use a free spectral '
+                         'model for analysis. Append with a flag for each pulsar.')
 
 
 # parse arguments
