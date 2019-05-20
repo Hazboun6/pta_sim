@@ -121,7 +121,8 @@ def add_rednoise(TOAs, A, gamma, components=30,
     F, freqs = createfourierdesignmatrix_red(toas,Tspan=Tspan,modes=modes)
     prior = A**2 * (freqs/fyr)**(-gamma) / (12 * np.pi**2 * Tspan) * year_in_sec**3
     y = np.sqrt(prior) * np.random.randn(freqs.size)
-    TOAs.adjust_TOAs(TimeDelta(1.0/(1*u.day).to('s'))*np.dot(F,y))
+    dt = np.dot(F,y) * u.s
+    TOAs.adjust_TOAs(TimeDelta(dt.to('day')))
 
 def add_dm_rednoise(TOAs, A, gamma, components=30, rf_ref=1400,
                     seed=None, modes=None, Tspan=None, useDM=False):
@@ -150,5 +151,5 @@ def add_dm_rednoise(TOAs, A, gamma, components=30, rf_ref=1400,
     prior = A**2 * (freqs/fyr)**(-gamma) / (12 * np.pi**2 * Tspan) * year_in_sec**3
 
     y = np.sqrt(prior) * np.random.randn(freqs.size)
-    dt = chrom.quantity.value*np.dot(F,y)
-    TOAs.adjust_TOAs(TimeDelta(1.0/(1*u.day).to('s'))*dt)
+    dt = chrom.quantity.value * np.dot(F,y) * u.s
+    TOAs.adjust_TOAs(TimeDelta(dt.to('day')))
