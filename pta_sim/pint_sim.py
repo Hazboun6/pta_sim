@@ -153,3 +153,57 @@ def add_dm_rednoise(TOAs, A, gamma, components=30, rf_ref=1400,
     y = np.sqrt(prior) * np.random.randn(freqs.size)
     dt = chrom.quantity.value * np.dot(F,y) * u.s
     TOAs.adjust_TOAs(TimeDelta(dt.to('day')))
+
+def add_equad(TOAs, equad, flagid=None, flags=None, seed=None):
+    """Add quadrature noise of rms `equad` [s].
+    Optionally take a pseudorandom-number-generator seed."""
+
+    if seed is not None:
+        np.random.seed(seed)
+
+    # default equadvec
+    equadvec = np.zeros(TOAs.ntoas)
+
+    # check that equad is scalar if flags is None
+    if flags is None:
+        if not np.isscalar(equad):
+            raise ValueError('ERROR: If flags is None, equad must be a scalar')
+        else:
+            equadvec = np.ones(TOAs.ntoas) * equad
+
+    if flags is not None and flagid is not None and not np.isscalar(equad):
+        if len(equad) == len(flags):
+            for ct, flag in enumerate(flags):
+                ind = flag == np.array([f['f'] for f
+                                        in TOAs.table['flags'].data])
+                equadvec[ind] = equad[ct]
+
+    equadvec = equadvec * u.s * np.random.randn(TOAs.ntoas)
+    TOAs.adjust_TOAs(TimeDelta(equadvec.to('day')))
+
+def add_efac(TOAs, efac, flagid=None, flags=None, seed=None):
+    """Add quadrature noise of rms `equad` [s].
+    Optionally take a pseudorandom-number-generator seed."""
+
+    if seed is not None:
+        np.random.seed(seed)
+
+    # default equadvec
+    efacvec = np.zeros(TOAs.ntoas)
+
+    # check that equad is scalar if flags is None
+    if flags is None:
+        if not np.isscalar(efac):
+            raise ValueError('ERROR: If flags is None, equad must be a scalar')
+        else:
+            efacvec = np.ones(TOAs.ntoas) * efac
+
+    if flags is not None and flagid is not None and not np.isscalar(equad):
+        if len(efac) == len(flags):
+            for ct, flag in enumerate(flags):
+                ind = flag == np.array([f['f'] for f
+                                        in TOAs.table['flags'].data])
+                efacvec[ind] = efac[ct]
+
+    efac = efacvec * u.s * np.random.randn(TOAs.ntoas)
+    TOAs.adjust_TOAs(TimeDelta(efacvec.to('day')))
