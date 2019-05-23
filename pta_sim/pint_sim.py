@@ -154,7 +154,7 @@ def add_dm_rednoise(TOAs, A, gamma, components=30, rf_ref=1400,
     dt = chrom.quantity.value * np.dot(F,y) * u.s
     TOAs.adjust_TOAs(TimeDelta(dt.to('day')))
 
-def add_equad(TOAs, equad, flagid=None, flags=None, seed=None, vals=False):
+def add_equad(TOAs, equad, flagid=None, flags=None, seed=None):
     """Add quadrature noise of rms `equad` [s].
     Optionally take a pseudorandom-number-generator seed."""
 
@@ -180,11 +180,9 @@ def add_equad(TOAs, equad, flagid=None, flags=None, seed=None, vals=False):
 
     equadvec = equadvec * u.s * np.random.randn(TOAs.ntoas)
     TOAs.adjust_TOAs(TimeDelta(equadvec.to('day')))
-    ## If vals flag is True, return values for use in add_efac().
-    if vals:
-        return equadvec
 
-def add_efac(TOAs, efac, flagid=None, flags=None, seed=None, equads=None):
+
+def add_efac(TOAs, efac, flagid=None, flags=None, seed=None):
     """Add quadrature noise of rms `equad` [s].
     Optionally take a pseudorandom-number-generator seed."""
 
@@ -208,9 +206,66 @@ def add_efac(TOAs, efac, flagid=None, flags=None, seed=None, equads=None):
                                         in TOAs.table['flags'].data])
                 efacvec[ind] = efac[ct]
 
-    if equads:
-        dt = efacvec * np.sqrt(TOAs.get_errors().to('s')**2 + equads**2) \
-                     * np.random.randn(TOAs.ntoas)
-    else:
-        dt = efacvec * TOAs.get_errors().to('s') * np.random.randn(TOAs.ntoas)
+    dt = efacvec * TOAs.get_errors().to('s') * np.random.randn(TOAs.ntoas)
     TOAs.adjust_TOAs(TimeDelta(dt.to('day')))
+
+def quantize(times, flags=None, dt=1.0):
+    isort = np.argsort(times)
+
+    bucket_ref = [times[isort[0]]]
+    bucket_ind = [[isort[0]]]
+
+    for i in isort[1:]:
+        if times[i] - bucket_ref[-1] < dt:
+            bucket_ind[-1].append(i)
+        else:
+            bucket_ref.append(times[i])
+            bucket_ind.append([i])
+
+    avetoas = np.array([np.mean(times[l]) for l in bucket_ind],'d')
+    if flags is not None:
+        aveflags = np.array([flags[l[0]] for l in bucket_ind])
+
+    U = np.zeros((len(times),len(bucket_ind)),'d')
+    for i,l in enumerate(bucket_ind):
+        U[l,i] = 1
+
+    if flags is not None:
+        return avetoas, aveflags, U
+    else:
+        return avetoas, U
+
+
+def add_ecorr(TOAs, ecorr, flagid=None, flags=None, coarsegrain=0.1, seed=None):
+    """Add correlated quadrature noise of rms `ecorr` [s],
+    with coarse-graining time `coarsegrain` [days].
+    Optionally take a pseudorandom-number-generator seed."""
+
+    if seed is not None:
+        np.random.seed(seed)
+
+    times = np.array(TOAs.table['tdbld'], dtype='float64')
+    if flags is None:
+        t, U = quantize(times, dt=coarsegrain)
+    elif flags is not None and flagid is not None:
+        flagvals = np.array([f[flagid] for f in TOAs.table['flags'].data])
+        t, f, U = quantize(times, flagvals, dt=coarsegrain)
+
+    # default ecorr value
+    ecorrvec = np.zeros(len(t))
+
+    # check that ecorr is scalar if flags is None
+    if flags is None:
+        if not np.isscalar(ecorr):
+            raise ValueError('ERROR: If flags is None, ecorr must be a scalar')
+        else:
+            ecorrvec = np.ones(len(t)) * ecorr
+
+    if flags is not None and flagid is not None and not np.isscalar(ecorr):
+        if len(ecorr) == len(flags):
+            for ct, flag in enumerate(flags):
+                ind = flag == np.array(f)
+                ecorrvec[ind] = ecorr[ct]
+
+    ecorrvec = np.dot(U * ecorrvec, np.random.randn(U.shape[1])) * u.s
+    TOAs.adjust_TOAs(TimeDelta(ecorrvec.to('day')))
