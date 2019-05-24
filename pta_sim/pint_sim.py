@@ -244,7 +244,7 @@ def quantize(times, flags=None, dt=1.0):
         return avetoas, U
 
 
-def add_ecorr(TOAs, ecorr, flagid=None, flags=None, coarsegrain=0.1, seed=None):
+def add_ecorr(TOAs, ecorr, flagid=None, flags=None, coarsegrain=1*u.s, seed=None):
     """Add correlated quadrature noise of rms `ecorr` [s],
     with coarse-graining time `coarsegrain` [days].
     Optionally take a pseudorandom-number-generator seed."""
@@ -254,10 +254,10 @@ def add_ecorr(TOAs, ecorr, flagid=None, flags=None, coarsegrain=0.1, seed=None):
 
     times = np.array(TOAs.table['tdbld'], dtype='float64')
     if flags is None:
-        t, U = quantize(times, dt=coarsegrain)
+        t, U = quantize(times, dt=coarsegrain.to('day').value)
     elif flags is not None and flagid is not None:
         flagvals = np.array([f[flagid] for f in TOAs.table['flags'].data])
-        t, f, U = quantize(times, flagvals, dt=coarsegrain)
+        t, f, U = quantize(times, flagvals, dt=coarsegrain.to('day').value)
 
     # default ecorr value
     ecorrvec = np.zeros(len(t))
