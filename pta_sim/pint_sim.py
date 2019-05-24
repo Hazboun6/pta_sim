@@ -8,6 +8,14 @@ from pint.residuals import resids
 import pint.toa as toa
 from pint import models
 
+__all__ = ['make_ideal',
+           'createfourierdesignmatrix_red',
+           'add_rednoise',
+           'add_dm_rednoise',
+           'add_efac',
+           'add_equad',
+           'add_ecorr']
+
 def make_ideal(toas, model, iterations=2):
     '''
     Takes a pint.toas and pint.model object and effectively zeros out the residuals.
