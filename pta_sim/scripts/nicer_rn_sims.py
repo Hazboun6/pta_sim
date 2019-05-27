@@ -36,8 +36,8 @@ import pta_sim.noise as nutils
 from astropy import log
 # log.setLevel('CRITICAL')
 
-par = '/Users/hazboun/nicer/partim/B1937+21_NG14_NICER18.pint.strip.par'
-tim = '/Users/hazboun/nicer/partim/B1937+21_NG14_NICER18.tim'
+par = args.parpath
+tim = args.timpath
 
 ts = toa.get_TOAs(tim,usepickle=False)
 m = models.get_model(par)
