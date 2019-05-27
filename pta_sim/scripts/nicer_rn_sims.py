@@ -151,7 +151,7 @@ cov = np.diag(np.ones(ndim) * 0.01**2) # helps to tune MCMC proposal distributio
 sampler = ptmcmc(ndim, pta.get_lnlikelihood, pta.get_lnprior, cov,
                  groups=groups, outDir=args.outdir, resume=True)
 
-achrom_freqs = get_freqs(pta)
+achrom_freqs = get_freqs(pta, 'red_noise')
 np.save(args.outdir + 'pars.npy', pta.param_names)
 np.save(args.outdir + 'par_model.npy', np.array(pta.params).astype(str))
 np.save(args.outdir + 'signals.npy', list(pta.signals.keys()))
