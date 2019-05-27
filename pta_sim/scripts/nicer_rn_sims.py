@@ -64,7 +64,7 @@ pint_sim.make_ideal(ts,m)
 pint_sim.add_rednoise(ts, A=args.A_rn, gamma=args.gamma_rn, seed=seed_rn)
 pint_sim.add_dm_rednoise(ts, A=args.A_dm, gamma=args.gamma_dm, seed=seed_dmrn)
 
-noise_dict = load_noise_files(noisepath=args.noisepath)
+noise_dict = nutils.load_noise_files(noisepath=args.noisepath)
 
 eq_flags, equads = nutils.get_noise('equad','B1937+21',noise_dict)
 ef_flags, efacs = nutils.get_noise('efac','B1937+21',noise_dict)
