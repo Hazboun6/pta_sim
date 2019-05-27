@@ -60,10 +60,10 @@ def save_core(core_path, chaindir, remove=False):
             print(files[idx])
     del co
 
-def get_freqs(pta):
+def get_freqs(pta,signal_id):
     """ Hackish way to get frequency vector."""
     for sig in pta._signalcollections[0]._signals:
-        if sig.signal_name == 'red noise':
+        if sig.signal_id == signal_id:
             sig._construct_basis()
             freqs = np.array(sig._labels[''])[::2]
             break
