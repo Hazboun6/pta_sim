@@ -39,7 +39,7 @@ args = parse_sim.arguments()
 
 
 from astropy import log
-# log.setLevel('CRITICAL')
+log.setLevel('CRITICAL')
 
 par = args.parpath
 tim = args.timpath
@@ -108,10 +108,9 @@ ec = white_signals.EcorrKernelNoise(log10_ecorr=ecorr, selection=selection_ch)
 
 # red noise (powerlaw with 5 frequencies)
 pl = utils.powerlaw(log10_A=log10_A, gamma=gamma)
-basis = utils.createfourierdesignmatrix_red(Tspan=Tspan)
-rn = gp_signals.BasisGP(priorFunction=pl, name='red_noise',
-                        basisFunction=basis,
-                        components=args.nfreqs, logf=args.logf)
+basis = utils.createfourierdesignmatrix_red(Tspan=Tspan, nmodes=args.nfreqs,
+                                            logf=args.logf)
+rn = gp_signals.BasisGP(priorFunction=pl, name='red_noise', basisFunction=basis)
 
 # timing model
 tm = gp_signals.TimingModel(use_svd=False)
@@ -119,11 +118,11 @@ tm = gp_signals.TimingModel(use_svd=False)
 model = tm + ef + eq + ec + rn
 
 if args.dm_gp_psrs == args.psr:
-    dm_basis = utils.createfourierdesignmatrix_dm(Tspan=Tspan)
+    dm_basis = utils.createfourierdesignmatrix_dm(Tspan=Tspan,
+                                                  nmodes=args.nfreqs,
+                                                  logf=args.logf)
     dm_gp = gp_signals.BasisGP(priorFunction=pl,
                                basisFunction=dm_basis,
-                               components=args.nfreqs,
-                               logf=args.logf,
                                name='dm_gp')
     model += dm_gp
 
