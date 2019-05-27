@@ -117,7 +117,7 @@ tm = gp_signals.TimingModel(use_svd=False)
 
 model = tm + ef + eq + ec + rn
 
-if args.dm_gp_psrs == args.psr:
+if args.dm_gp_psrs[0] == args.psr:
     dm_basis = utils.createfourierdesignmatrix_dm(Tspan=Tspan,
                                                   nmodes=args.nfreqs,
                                                   logf=args.logf)
@@ -137,7 +137,7 @@ groups = model_utils.get_parameter_groups(pta)
 groups.extend([[pta.param_names.index(p) for p in pta.param_names if fl in p]
                for fl in ef_flags])
 
-if args.dm_gp_psrs == args.psr:
+if args.dm_gp_psrs[0] == args.psr:
     gp_pars = ['{0}_dm_gp_gamma'.format(args.psr),
                '{0}_dm_gp_log10_A'.format(args.psr),
                '{0}_red_noise_gamma'.format(args.psr),
