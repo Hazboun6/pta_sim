@@ -75,7 +75,9 @@ parser.add_argument('--noisepath', dest='noisepath', action='store', type=str,
 parser.add_argument('--outpath', dest='outpath', action='store', type=str,
                     default='./os.txt', help='Path name (dir and filename) for output.')
 parser.add_argument('--pardir', dest='pardir', action='store', type=str,
-                    default=pardir, help='Output Directory')
+                    default=pardir, help='par file Directory')
+parser.add_argument('--parpath', dest='parpath', action='store', type=str,
+                    default=None, help='par file path')
 parser.add_argument('--pardir_no_dmx', dest='pardir_no_dmx', action='store',
                     type=str, default=pardir_no_dmx, help='Output Directory')
 parser.add_argument('--psr', dest='psr', action='store',
@@ -88,7 +90,9 @@ parser.add_argument('--spac_corr_info', dest='spac_corr_info',
                     action='store_true', default=False,
                     help='Whether to write out the spacial correlation information')
 parser.add_argument('--timdir', dest='timdir', action='store', type=str,
-                    default=timdir, help='Output Directory')
+                    default=timdir, help='Tim file Directory')
+parser.add_argument('--timpath', dest='timpath', action='store', type=str,
+                    default=None, help='Tim file path')
 parser.add_argument('--tspan', dest='tspan', action='store',
                     type=float, default=None,
                     help='Timespan to use for GP frequencies.')
