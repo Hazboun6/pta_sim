@@ -65,6 +65,9 @@ parser.add_argument('--free_spec_psrs',dest='free_spec_psrs', action='append',
                     type=str,
                     help='Pulsars for which to use a free spectral '
                          'model for analysis. Append with a flag for each pulsar.')
+parser.add_argument('--logf', dest='logf', action='store_true',
+                    default=False,
+                    help='Option to use log spaced frequencies in GPs.')
 parser.add_argument('--niter', dest='niter', action='store',
                     type=int, default=1001000, help='Number of iterations')
 parser.add_argument('--noisepath', dest='noisepath', action='store', type=str,
