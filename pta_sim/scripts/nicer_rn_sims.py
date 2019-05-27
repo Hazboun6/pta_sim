@@ -160,7 +160,7 @@ np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
 jp = model_utils.JumpProposal(pta)
 sampler.addProposalToCycle(jp.draw_from_dm_gp_prior, 20)
 sampler.addProposalToCycle(jp.draw_from_prior, 20)
-sampler.addProposalToCycle(jp.draw_from_red_prior, 20)
+# sampler.addProposalToCycle(jp.draw_from_red_prior, 20)
 
 sampler.sample(x0, args.niter, SCAMweight=30, AMweight=15,
                DEweight=50, burn=100000)
