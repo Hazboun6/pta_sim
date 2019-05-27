@@ -30,8 +30,13 @@ from pint import models
 from astropy.time import Time, TimeDelta
 import astropy.units as u
 
+import pta_sim
 import pta_sim.pint_sim as pint_sim
 import pta_sim.noise as nutils
+import pta_sim.parse_sim as parse_sim
+from pta_sim.bayes import chain_length_bool, save_core, get_freqs, filter_psr_path
+args = parse_sim.arguments()
+
 
 from astropy import log
 # log.setLevel('CRITICAL')
