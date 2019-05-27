@@ -108,9 +108,10 @@ ec = white_signals.EcorrKernelNoise(log10_ecorr=ecorr, selection=selection_ch)
 
 # red noise (powerlaw with 5 frequencies)
 pl = utils.powerlaw(log10_A=log10_A, gamma=gamma)
-
-rn = gp_signals.FourierBasisGP(spectrum=pl, Tspan=Tspan,
-                               components=args.nfreqs,logf=args.logf)
+basis = utils.createfourierdesignmatrix_red(Tspan=Tspan)
+rn = gp_signals.BasisGP(spectrum=pl, name='red_noise',
+                        basisFunction=basis, Tspan=Tspan,
+                        components=args.nfreqs, logf=args.logf)
 
 # timing model
 tm = gp_signals.TimingModel(use_svd=False)
