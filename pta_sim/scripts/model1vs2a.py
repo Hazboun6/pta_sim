@@ -112,6 +112,7 @@ ptas = {0:pta_noise,
         1:pta_gw}
 
 hm = model_utils.HyperModel(models=ptas)
+sampler = hm.setup_sampler(outdir=args.outdir,resume=True)
 
 achrom_freqs = get_freqs(ptas[0])
 # np.save(args.outdir + 'pars.npy', pta.param_names)
@@ -119,7 +120,7 @@ achrom_freqs = get_freqs(ptas[0])
 # np.save(args.outdir + 'signals.npy', list(pta.signals.keys()))
 np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
 
-sampler = hm.setup_sampler(outdir=args.outdir,resume=True)
+
 x0 = hm.initial_sample()
 sampler.sample(x0, args.niter, SCAMweight=30, AMweight=15, DEweight=50, )
 
