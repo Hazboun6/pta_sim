@@ -96,7 +96,7 @@ rn_plaw = models.red_noise_block(psd='powerlaw', prior='log-uniform',
                                  Tspan=Tspan, components=30, gamma_val=None)
 ### GWB ###
 gw = models.common_red_noise_block(psd='powerlaw', prior='log-uniform',
-                                   Tspan=Tspan, gamma_val=None, name='gw')
+                                   Tspan=Tspan, gamma_val=13/3., name='gw')
 base_model = wn
 
 if args.bayes_ephem:
