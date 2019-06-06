@@ -66,7 +66,7 @@ else:
     if args.psr_list is not None:
         idxs = []
         for idx, psr in enumerate(psrs):
-            if psr.name in args.psr_list:
+            if psr.name not in args.psr_list:
                 idxs.append(idx)
 
         for idx in reversed(idxs):
