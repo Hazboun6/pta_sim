@@ -72,9 +72,12 @@ else:
         for idx in reversed(idxs):
             del psrs[idx]
 
-noise = {}
 with open(args.noisepath, 'r') as fin:
-    noise.update(json.load(fin))
+    noise_json =json.load(fin)
+
+noise = {}
+for p in psrs:
+    noise.update(noise_json[p.name])
 
 if args.tspan is None:
     Tspan = model_utils.get_tspan(psrs)
