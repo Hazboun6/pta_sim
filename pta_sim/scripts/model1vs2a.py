@@ -102,10 +102,10 @@ if args.bayes_ephem:
 model_1 = base_model + rn_plaw
 model_2a = model_1 + gw
 
-pta_noise = signal_base.PTA(model_1)
+pta_noise = signal_base.PTA([model_1(p) for p in psrs])
 pta_noise.set_default_params(noise)
 
-pta_gw = signal_base.PTA(model_2a)
+pta_gw = signal_base.PTA([model_2a(p) for p in psrs])
 pta_gw.set_default_params(noise)
 
 ptas = {0:pta_noise,
