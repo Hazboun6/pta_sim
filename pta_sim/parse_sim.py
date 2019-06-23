@@ -19,10 +19,6 @@ parser.add_argument('--A_rn', dest='A_rn', action='store',
                     help='Achromatic Red Noise Amplitude to Simulate')
 parser.add_argument('--corepath', dest='corepath', action='store', type=str,
                     default='./chain.core', help='Path name (dir and filename) for output.')
-parser.add_argument('--outdir', dest='outdir', action='store', type=str,
-                    default='./', help='Path directory for output.')
-parser.add_argument('--outtimdir', dest='outtimdir', action='store', type=str,
-                    default='./fake_tim_files', help='Output Directory for tim files.')
 parser.add_argument('--ephem', dest='ephem', action='store',
                     type=str, default='DE436', help='SS Ephemeris')
 parser.add_argument('--end_time', dest='end_time', action='store',
@@ -72,6 +68,10 @@ parser.add_argument('--niter', dest='niter', action='store',
                     type=int, default=1001000, help='Number of iterations')
 parser.add_argument('--noisepath', dest='noisepath', action='store', type=str,
                     default='./os.txt', help='Path to noise file or files.')
+parser.add_argument('--outdir', dest='outdir', action='store', type=str,
+                    default='./', help='Path directory for output.')
+parser.add_argument('--outtimdir', dest='outtimdir', action='store', type=str,
+                    default='./fake_tim_files', help='Output Directory for tim files.')
 parser.add_argument('--outpath', dest='outpath', action='store', type=str,
                     default='./os.txt', help='Path name (dir and filename) for output.')
 parser.add_argument('--pardir', dest='pardir', action='store', type=str,
