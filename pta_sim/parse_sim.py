@@ -58,7 +58,7 @@ parser.add_argument('--logf', dest='logf', action='store_true',
 parser.add_argument('--nfreqs', dest='nfreqs', action='store',
                     type=int, default=30, help='Number of Freqs in GW model')
 parser.add_argument('--nyears', dest='nyears', action='store',
-                    type=float, default='all',
+                    type=float, default=None,
                     help='Number of years of data to include')
 parser.add_argument('--niter', dest='niter', action='store',
                     type=int, default=1001000, help='Number of iterations')
