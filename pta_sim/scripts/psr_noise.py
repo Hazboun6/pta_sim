@@ -59,14 +59,14 @@ else:
     psr = psrs[pidx]
 
 if args.end_time is None:
-    Outdir = args.outdir+'all/'
+    Outdir = args.outdir+'all/{0}/'.format(psr.name)
 else:
     start_time = psr.toas.min()/(24*3600)
     if (args.end_time-start_time)/365.25 <= 3.0:
         print('PSR {0} baseline to short for this slice.'.format(p.name))
         sys.end()
     psr.filter_data(start_time=start_time, end_time=args.end_time)
-    Outdir = args.outdir+'{0}/'.format(args.nyears)
+    Outdir = args.outdir+'{0}/{1}/'.format(args.nyears,psr.name)
 
 pta = models.model_singlepsr_noise(psr, red_var=True,
                                    psd=args.psd,
