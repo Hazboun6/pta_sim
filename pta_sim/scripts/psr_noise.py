@@ -19,7 +19,7 @@ from enterprise.signals import gp_signals
 from enterprise.signals import deterministic_signals
 from enterprise import constants as const
 
-import corner, pickle
+import corner, pickle, sys
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 
 from enterprise_extensions import models, model_utils
@@ -58,13 +58,23 @@ else:
     pidx = pnames.index(args.psr)
     psr = psrs[pidx]
 
+if args.end_time is None:
+    Outdir = args.outdir+'all/'
+else:
+    start_time = psr.toas.min()/(24*3600)
+    if (args.end_time-start_time)/365.25 <= 3.0:
+        print('PSR {0} baseline to short for this slice.'.format(p.name))
+        sys.end()
+    psr.filter_data(start_time=start_time, end_time=args.end_time)
+    Outdir = args.outdir+'{0}/'.format(args.nyears)
+
 pta = models.model_singlepsr_noise(psr, red_var=True,
                                    psd=args.psd,
                                    components=args.nfreqs,
                                    wideband=args.wideband)
 
 sampler = model_utils.setup_sampler(pta=pta,
-                                    outdir=args.outdir,
+                                    outdir=Outdir,
                                     resume=True)
 
 x0 = np.hstack(p.sample() for p in pta.params)
