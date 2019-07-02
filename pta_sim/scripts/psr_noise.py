@@ -29,6 +29,7 @@ import glob
 log.setLevel('CRITICAL')
 
 import pta_sim
+import pta_sim.bayes
 import pta_sim.parse_sim as parse_sim
 args = parse_sim.arguments()
 
@@ -76,6 +77,8 @@ pta = models.model_singlepsr_noise(psr, red_var=True,
 sampler = model_utils.setup_sampler(pta=pta,
                                     outdir=Outdir,
                                     resume=True)
+freqs = get_freqs(pta, signal_id='red_noise')
+np.savetxt(Outdir+'achrom_freqs.txt', freqs)
 
 x0 = np.hstack(p.sample() for p in pta.params)
 
