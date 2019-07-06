@@ -52,9 +52,13 @@ parser.add_argument('--gamma_gw', dest='gamma_gw', action='store',
 parser.add_argument('--gamma_rn', dest='gamma_rn', action='store',
                     type=float, default=5,
                     help='Achromatic Red Noise spectral index to Simulate')
+parser.add_argument('--gwb_ul', dest='gwb_ul', action='store',
+                    type=str, default=False, help='Do an upper limit analysis.')
 parser.add_argument('--logf', dest='logf', action='store_true',
                     default=False,
                     help='Option to use log spaced frequencies in GPs.')
+parser.add_argument('--model', dest='model', action='store',
+                    type=str, default='model_2a', help='NG11yr Model Name')
 parser.add_argument('--nfreqs', dest='nfreqs', action='store',
                     type=int, default=30, help='Number of Freqs in GW model')
 parser.add_argument('--nyears', dest='nyears', action='store',
