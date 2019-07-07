@@ -49,14 +49,11 @@ if args.pickle=='no_pickle':
             psr = Pulsar(t, f.model, ephem=args.ephem)
             psrs.append(psr)
     else:
-        if args.psr == 'J1713+0747':
-            parfile = glob.glob(args.pardir + args.psr + '*.gls.t2.par')[0]
-        else:
-            parfile = glob.glob(args.pardir + args.psr + '*.gls.par')[0]
-        parfiles = glob.glob(args.pardir + '*.gls.par')
+        parfiles = glob.glob(args.pardir + '*.par')
         timfiles = glob.glob(args.timdir + '*.tim')
         j1713_tempo_par = [p for p in parfiles
-                           if ('J1713+0747' in p) and ('.gls.t2.par' not in p)]
+                           if ('J1713+0747' in p)
+                           and ('.gls.t2.par' not in p)][0]
         parfiles.remove(j1713_tempo_par)
         if len(timfiles)!=len(parfiles):
             raise ValueError('List of parfiles and timfiles not equal!!!')
@@ -68,7 +65,22 @@ else:
     with open(args.pickle, 'rb') as fin:
         psrs = pickle.load(fin)
 
+psr_names = [p.name for p in psrs]
 
+if args.rm_psrs is not None:
+    rm_idxs = [psr_names.index(p) for p in args.rm_psrs]
+    for idx in reversed(rm_idxs):
+        del psrs[idx]
+
+if args.truncate_psr is not None:
+    if len(args.truncate_psr)!=len(args.truncate_mjd):
+        err_msg = 'List of psrs to truncate and truncation MJDs must be equal!!'
+        raise ValueError(err_msg)
+    for pname, mjd in zip(args.truncate_psr,args.truncate_mjd):
+        pidx = psr_names.index(pname)
+        start_time = psrs[pidx].toas.min()/(24*3600)
+        psrs[pidx].filter_data(start_time=start_time, end_time=mjd)
+        
 if args.end_time is None:
     Outdir = args.outdir+'all/'
 else:
@@ -97,6 +109,27 @@ if args.model=='model_2a':
                    bayesephem=args.bayes_ephem,
                    wideband=args.wideband,
                    select='backend')
+elif args.model=='model_general':
+    pta = model_general(psrs, common_psd='powerlaw',
+                        red_psd=args.psd, orf=None,
+                        common_components=args.nfreqs,
+                        red_components=30,
+                        dm_components=30,
+                        modes=None, wgts=None,
+                        noisedict=noise_dict,
+                        tm_svd=False, tm_norm=True,
+                        gamma_common=gamma_gw,
+                        upper_limit=args.gwb_ul,
+                        bayesephem=args.bayes_ephem,
+                        wideband=args.wideband,
+                        dm_var=True, dm_type='gp',
+                        dm_psd='powerlaw', dm_annual=False,
+                        white_vary=False, gequad=False, dm_chrom=False,
+                        dmchrom_psd='powerlaw', dmchrom_idx=4,
+                        red_select=None,
+                        red_breakflat=False,
+                        red_breakflat_fq=None,
+                        coefficients=False,)
 else:
     raise NotImplementedError('Please add this model to the script.')
 

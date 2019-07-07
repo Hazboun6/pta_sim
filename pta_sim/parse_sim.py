@@ -98,6 +98,9 @@ parser.add_argument('--psr', dest='psr', action='store',
 parser.add_argument('--psr_list', dest='psr_list', action='append',
                     default=None,
                     help='List pulsar names to use in analysis.')
+parser.add_argument('--rm_psrs', dest='rm_psrs', action='append',
+                    type=str,
+                    default=None, help='Append to list of pulsars to remove.')
 parser.add_argument('--spat_corr_info', dest='spat_corr_info',
                     action='store_true', default=False,
                     help='Whether to write out the spatial correlation information')
@@ -105,6 +108,12 @@ parser.add_argument('--timdir', dest='timdir', action='store', type=str,
                     default=timdir, help='Tim file Directory')
 parser.add_argument('--timpath', dest='timpath', action='store', type=str,
                     default=None, help='Tim file path')
+parser.add_argument('--truncate_psr', dest='truncate_psr', action='append',
+                    type=str,
+                    default=None, help='Append to list of pulsars to truncate')
+parser.add_argument('--truncate_mjd', dest='truncate_mjd', action='append',
+                    type=str, default=None,
+                    help='Append to list of mjds to truncate.')
 parser.add_argument('--tspan', dest='tspan', action='store',
                     type=float, default=None,
                     help='Timespan to use for GP frequencies.')
