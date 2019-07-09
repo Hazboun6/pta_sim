@@ -19,7 +19,7 @@ from enterprise.signals import gp_signals
 from enterprise.signals import deterministic_signals
 from enterprise import constants as const
 
-import corner, pickle, sys
+import corner, pickle, sys, json
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 
 from enterprise_extensions import models, model_utils
@@ -80,7 +80,7 @@ if args.truncate_psr is not None:
         pidx = psr_names.index(pname)
         start_time = psrs[pidx].toas.min()/(24*3600)
         psrs[pidx].filter_data(start_time=start_time, end_time=mjd)
-        
+
 if args.end_time is None:
     Outdir = args.outdir+'all/'
 else:
