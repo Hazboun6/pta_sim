@@ -137,7 +137,7 @@ sampler = model_utils.setup_sampler(pta=pta,
                                     outdir=Outdir,
                                     resume=True)
 
-freqs = get_freqs(pta, signal_id='gw')
+freqs = bys.get_freqs(pta, signal_id='gw')
 np.savetxt(Outdir+'achrom_freqs.txt', freqs)
 
 x0 = np.hstack(p.sample() for p in pta.params)
