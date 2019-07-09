@@ -29,7 +29,7 @@ import glob
 log.setLevel('CRITICAL')
 
 import pta_sim
-import pta_sim.bayes
+import pta_sim.bayes as bys
 import pta_sim.parse_sim as parse_sim
 args = parse_sim.arguments()
 
