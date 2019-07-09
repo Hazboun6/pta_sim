@@ -101,35 +101,35 @@ if args.vary_gamma:
 else:
     gamma_gw = args.gamma_gw
 if args.model=='model_2a':
-    pta = model_2a(psrs, psd=args.psd,
-                   noisedict=noise_dict,
-                   components=args.nfreqs,
-                   gamma_common=gamma_gw,
-                   upper_limit=args.gwb_ul,
-                   bayesephem=args.bayes_ephem,
-                   wideband=args.wideband,
-                   select='backend')
+    pta = models.model_2a(psrs, psd=args.psd,
+                           noisedict=noise_dict,
+                           components=args.nfreqs,
+                           gamma_common=gamma_gw,
+                           upper_limit=args.gwb_ul,
+                           bayesephem=args.bayes_ephem,
+                           wideband=args.wideband,
+                           select='backend')
 elif args.model=='model_general':
-    pta = model_general(psrs, common_psd='powerlaw',
-                        red_psd=args.psd, orf=None,
-                        common_components=args.nfreqs,
-                        red_components=30,
-                        dm_components=30,
-                        modes=None, wgts=None,
-                        noisedict=noise_dict,
-                        tm_svd=False, tm_norm=True,
-                        gamma_common=gamma_gw,
-                        upper_limit=args.gwb_ul,
-                        bayesephem=args.bayes_ephem,
-                        wideband=args.wideband,
-                        dm_var=True, dm_type='gp',
-                        dm_psd='powerlaw', dm_annual=False,
-                        white_vary=False, gequad=False, dm_chrom=False,
-                        dmchrom_psd='powerlaw', dmchrom_idx=4,
-                        red_select=None,
-                        red_breakflat=False,
-                        red_breakflat_fq=None,
-                        coefficients=False,)
+    pta = models.model_general(psrs, common_psd='powerlaw',
+                                red_psd=args.psd, orf=None,
+                                common_components=args.nfreqs,
+                                red_components=30,
+                                dm_components=30,
+                                modes=None, wgts=None,
+                                noisedict=noise_dict,
+                                tm_svd=False, tm_norm=True,
+                                gamma_common=gamma_gw,
+                                upper_limit=args.gwb_ul,
+                                bayesephem=args.bayes_ephem,
+                                wideband=args.wideband,
+                                dm_var=True, dm_type='gp',
+                                dm_psd='powerlaw', dm_annual=False,
+                                white_vary=False, gequad=False, dm_chrom=False,
+                                dmchrom_psd='powerlaw', dmchrom_idx=4,
+                                red_select=None,
+                                red_breakflat=False,
+                                red_breakflat_fq=None,
+                                coefficients=False,)
 else:
     raise NotImplementedError('Please add this model to the script.')
 
