@@ -54,7 +54,7 @@ if args.pickle=='no_pickle':
         psr = Pulsar(parfile, timfile, ephem='DE436')
 else:
     with open(args.pickle, 'rb') as fin:
-        psrs = pickle.load(fin)
+        psrs = pickle.load(fin,encoding='latin1')
     pnames = [p.name for p in psrs]
     pidx = pnames.index(args.psr)
     psr = psrs[pidx]
