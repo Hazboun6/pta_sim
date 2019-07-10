@@ -53,7 +53,7 @@ if args.pickle=='no_pickle':
         timfile = glob.glob(args.timdir + args.psr + '*.tim')[0]
         psr = Pulsar(parfile, timfile, ephem='DE436')
 else:
-    with open(args.pickle, 'rb') as fin:
+    with open(args.pickle, 'r') as fin:
         psrs = pickle.load(fin,encoding='latin1')
     pnames = [p.name for p in psrs]
     pidx = pnames.index(args.psr)
