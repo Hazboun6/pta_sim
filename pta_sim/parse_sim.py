@@ -52,8 +52,10 @@ parser.add_argument('--gamma_gw', dest='gamma_gw', action='store',
 parser.add_argument('--gamma_rn', dest='gamma_rn', action='store',
                     type=float, default=5,
                     help='Achromatic Red Noise spectral index to Simulate')
-parser.add_argument('--gwb_ul', dest='gwb_ul', action='store',
-                    type=str, default=False, help='Do an upper limit analysis.')
+parser.add_argument('--gwb_bf', dest='gwb_bf', action='store_true',
+                    default=False, help='Do a GWB detection run.')
+parser.add_argument('--gwb_ul', dest='gwb_ul', action='store_true',
+                    default=False, help='Do a GWB upper limit analysis.')
 parser.add_argument('--logf', dest='logf', action='store_true',
                     default=False,
                     help='Option to use log spaced frequencies in GPs.')

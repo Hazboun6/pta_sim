@@ -69,10 +69,25 @@ else:
     psr.filter_data(start_time=start_time, end_time=args.end_time)
     Outdir = args.outdir+'{0}/{1}/'.format(args.nyears,psr.name)
 
-pta = models.model_singlepsr_noise(psr, red_var=True,
-                                   psd=args.psd,
-                                   components=args.nfreqs,
-                                   wideband=args.wideband)
+if args.gwb_bf or args.gwb_ul:
+    if args.gwb_bf:
+        prior = 'log-uniform'
+    elif args.gwb_ul:
+        prior = 'uniform'
+    m = white_noise_block(vary=True, inc_ecorr=True)
+    m += gp_signals.TimingModel(use_svd=False)
+    m += red_noise_block(psd=args.psd, prior=prior,
+                         components=args.set_rn_freqs, gamma_val=None,
+                         select=red_select)
+    m += models.common_red_noise_block(gamma_val=13/3., prior=prior,
+                                       psd=args.psd)
+    pta = signal_base.PTA(m(psr))
+
+else:
+    pta = models.model_singlepsr_noise(psr, red_var=True,
+                                       psd=args.psd,
+                                       components=args.nfreqs,
+                                       wideband=args.wideband)
 
 sampler = model_utils.setup_sampler(pta=pta,
                                     outdir=Outdir,
