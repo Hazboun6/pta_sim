@@ -77,10 +77,10 @@ if args.gwb_bf or args.gwb_ul:
     m = models.white_noise_block(vary=True, inc_ecorr=True)
     m += gp_signals.TimingModel(use_svd=False)
     m += models.red_noise_block(psd=args.psd, prior=prior,
-                                components=args.set_rn_freqs, gamma_val=None,
+                                components=args.nfreqs, gamma_val=None,
                                 select=red_select)
     m += models.common_red_noise_block(gamma_val=13/3., prior=prior,
-                                       psd=args.psd)
+                                       psd=args.psd, components=args.nfreqs)
     pta = signal_base.PTA(m(psr))
 
 else:
