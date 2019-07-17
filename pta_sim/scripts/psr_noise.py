@@ -74,11 +74,11 @@ if args.gwb_bf or args.gwb_ul:
         prior = 'log-uniform'
     elif args.gwb_ul:
         prior = 'uniform'
-    m = white_noise_block(vary=True, inc_ecorr=True)
+    m = models.white_noise_block(vary=True, inc_ecorr=True)
     m += gp_signals.TimingModel(use_svd=False)
-    m += red_noise_block(psd=args.psd, prior=prior,
-                         components=args.set_rn_freqs, gamma_val=None,
-                         select=red_select)
+    m += models.red_noise_block(psd=args.psd, prior=prior,
+                                components=args.set_rn_freqs, gamma_val=None,
+                                select=red_select)
     m += models.common_red_noise_block(gamma_val=13/3., prior=prior,
                                        psd=args.psd)
     pta = signal_base.PTA(m(psr))
