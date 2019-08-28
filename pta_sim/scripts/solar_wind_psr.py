@@ -86,7 +86,7 @@ n_earth = SW.ACE_SWEPAM_Parameter()('n_earth')
 sw = SW.solar_wind(n_earth=n_earth)
 mean_sw = deterministic_signals.Deterministic(sw, name='mean_sw')
 
-dm_sw_basis = SW.createfourierdesignmatrix_solar_dm(nmodes=15,Tspan=Tspan)
+dm_sw_basis = SW.createfourierdesignmatrix_solar_dm(nmodes=15,Tspan=None)
 dm_sw_prior = utils.powerlaw(log10_A=log10_A_dm_sw, gamma=gamma_dm_sw)
 gp_sw = gp_signals.BasisGP(priorFunction=dm_sw_prior,
                            basisFunction=dm_sw_basis,
