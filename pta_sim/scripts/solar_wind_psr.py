@@ -98,7 +98,8 @@ sw_models.append(m + dm_gp1) #Model 0, Just DMGP
 sw_models.append(m + mean_sw) #Model 1, Just Deterministic SW
 sw_models.append(m + dm_gp2 + mean_sw) #Model 2, DMGP + Deter SW
 sw_models.append(m + mean_sw + gp_sw) #Model 3, Deter SW + SW GP
-sw_models.append(m + SW.solar_wind_block(ACE_prior=True, include_dmgp=True))
+sw_models.append(m + SW.solar_wind_block(ACE_prior=True, include_dmgp=False)
+                   + dm_gp2)
 #Model 4, All the things
 
 ptas = {}
