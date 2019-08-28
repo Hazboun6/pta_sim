@@ -101,10 +101,10 @@ sw_models.append(m + mean_sw + gp_sw) #Model 3, Deter SW + SW GP
 sw_models.append(m + SW.solar_wind_block(ACE_prior=True, include_dmgp=True))
 #Model 4, All the things
 
-ptas = []
+ptas = {}
 model_params = {}
 for ii,mod in enumerate(sw_models):
-    ptas.append(signal_base.PTA(mod(psr)))
+    ptas.update({ii : signal_base.PTA(mod(psr))})
     model_params.update({ii : ptas[ii].param_names})
 
 super_model = model_utils.HyperModel(ptas)
