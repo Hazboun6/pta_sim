@@ -108,7 +108,7 @@ for ii,mod in enumerate(sw_models):
     model_params.update({ii : ptas[ii].param_names})
 
 super_model = model_utils.HyperModel(ptas)
-super_model.setup_sampler(resume=True, outdir=args.outdir)
+sampler = super_model.setup_sampler(resume=True, outdir=args.outdir)
 with open(args.outdir+'/model_params.json' , 'w') as fout:
     json.dump(model_params,fout,sort_keys=True,indent=4,separators=(',', ': '))
 
