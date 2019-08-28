@@ -69,6 +69,7 @@ psr_names = [p.name for p in psrs]
 
 if args.rm_psrs is not None:
     rm_idxs = [psr_names.index(p) for p in args.rm_psrs]
+    print('Removing the following pulsars:\n {0}'.format(args.rm_psrs))
     for idx in reversed(rm_idxs):
         del psrs[idx]
 
