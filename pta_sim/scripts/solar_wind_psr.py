@@ -69,7 +69,7 @@ else:
 
 m = models.white_noise_block(vary=True, inc_ecorr=True)
 m += gp_signals.TimingModel(use_svd=False)
-m += models.red_noise_block(psd=args.psd, prior=prior,
+m += models.red_noise_block(psd=args.psd, prior='log-uniform',
                             components=args.nfreqs, gamma_val=None)
 
 dm_gp1 = models.dm_noise_block(gp_kernel='diag', psd='powerlaw',
