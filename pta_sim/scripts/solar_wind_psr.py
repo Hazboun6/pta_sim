@@ -110,8 +110,8 @@ for ii,mod in enumerate(sw_models):
 
 if args.model.isdigit():
     nn = int(args.model)
-    ptas = {nn:ptas[nn]}
-    model_params = {nn:model_params[nn]}
+    ptas = {0:ptas[nn]}
+    model_params = {0:model_params[nn]}
 
 super_model = model_utils.HyperModel(ptas)
 Outdir = args.outdir+'/{0}/'.format(psr.name)
