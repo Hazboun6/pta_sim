@@ -108,9 +108,10 @@ for ii,mod in enumerate(sw_models):
     ptas.update({ii : signal_base.PTA(mod(psr))})
     model_params.update({ii : ptas[ii].param_names})
 
-if args.model in ptas.keys()
-    ptas = {args.model:ptas[args.model]}
-    model_params = {args.model:model_params[args.model]}
+if args.model.isdigit():
+    nn = int(args.model)
+    ptas = {nn:ptas[nn]}
+    model_params = {nn:model_params[nn]}
 
 super_model = model_utils.HyperModel(ptas)
 Outdir = args.outdir+'/{0}/'.format(psr.name)
