@@ -237,7 +237,8 @@ sampler.addProposalToCycle(jp.draw_from_prior, 15)
 sampler.addProposalToCycle(jp.draw_from_signal_prior, 20)
 sampler.addProposalToCycle(jp.draw_from_dm_gp_prior, 35)
 sampler.addProposalToCycle(jp.draw_from_mean_sw_prior, 15)
-sampler.addProposalToCycle(jp.draw_from_mean_sw_m4p4_prior, 15)
+if args.sw_r4p4:
+    sampler.addProposalToCycle(jp.draw_from_mean_sw_m4p4_prior, 15)
 sampler.addProposalToCycle(jp.draw_from_gwb_log_uniform_distribution, 20)
 sampler.addProposalToCycle(jp.draw_from_empirical_distr, 50)
 
