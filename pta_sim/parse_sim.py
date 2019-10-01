@@ -56,6 +56,9 @@ parser.add_argument('--gwb_bf', dest='gwb_bf', action='store_true',
                     default=False, help='Do a GWB detection run.')
 parser.add_argument('--gwb_ul', dest='gwb_ul', action='store_true',
                     default=False, help='Do a GWB upper limit analysis.')
+parser.add_argument('--hot_chain', dest='hot_chain', action='store_true',
+                    default=False,
+                    help='Use a hot chain with parallel tempering')
 parser.add_argument('--logf', dest='logf', action='store_true',
                     default=False,
                     help='Option to use log spaced frequencies in GPs.')
@@ -133,6 +136,9 @@ parser.add_argument('--vary_gamma', dest='vary_gamma', action='store_true',
                          'on the common red noise process.')
 parser.add_argument('--wideband', dest='wideband', action='store_true',
                     default=False, help='Option to use wideband data.')
+parser.add_argument('--writeHotChains', dest='writeHotChains',
+                    action='store_true', default=False,
+                    help='Option to use write hot chains with parallel tempering.')
 # parse arguments
 args = parser.parse_args()
 

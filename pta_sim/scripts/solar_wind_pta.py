@@ -157,6 +157,11 @@ if args.sw_r4p4:
     dm_block += mean_sw_m
 
 model += dm_block
+
+if args.bayes_ephem:
+    eph = deterministic_signals.PhysicalEphemerisSignal(use_epoch_toas=True)
+    model += eph
+
 pta = signal_base.PTA([model(p) for p in psrs])
 
 pta.set_default_params(noise_dict)
@@ -173,8 +178,8 @@ cov = np.diag(np.ones(ndim) * 0.01**2)
 groups = model_utils.get_parameter_groups(pta)
 
 sampler = ptmcmc(ndim, pta.get_lnlikelihood, pta.get_lnprior,
-                 cov, groups=groups,
-                 outDir=args.outdir, resume=True)
+                 cov, groups=groups, writeHotChains=args.writeHotChains,
+                 outDir=args.outdir, resume=True, hotChain=args.hot_chain)
 
 np.savetxt(args.outdir + 'pars.txt', pta.param_names, fmt='%s')
 np.savetxt(args.outdir + '/priors.txt',
@@ -237,10 +242,12 @@ sampler.addProposalToCycle(jp.draw_from_prior, 15)
 sampler.addProposalToCycle(jp.draw_from_signal_prior, 20)
 sampler.addProposalToCycle(jp.draw_from_dm_gp_prior, 35)
 sampler.addProposalToCycle(jp.draw_from_mean_sw_prior, 15)
+if args.bayes_ephem:
+    sampler.addProposalToCycle(jp.draw_from_ephem_prior, 35)
 if args.sw_r4p4:
     sampler.addProposalToCycle(jp.draw_from_mean_sw_m4p4_prior, 15)
 sampler.addProposalToCycle(jp.draw_from_gwb_log_uniform_distribution, 20)
-sampler.addProposalToCycle(jp.draw_from_empirical_distr, 50)
+sampler.addProposalToCycle(jp.draw_from_empirical_distr, 55)
 
 N = args.niter
 sampler.sample(x0, Niter=N, SCAMweight=30, AMweight=15,
