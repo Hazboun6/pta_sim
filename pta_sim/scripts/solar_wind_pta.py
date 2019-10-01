@@ -99,7 +99,7 @@ n_earth = SW.ACE_SWEPAM_Parameter()('n_earth')
 sw = SW.solar_wind(n_earth=n_earth)
 mean_sw = deterministic_signals.Deterministic(sw, name='mean_sw')
 
-dm_block = dmgp + mean_sw
+dm_block = dm_gp + mean_sw
 
 if args.sw_r4p4:
     def DM_m(z,b,m):
