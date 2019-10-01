@@ -23,7 +23,7 @@ import corner, pickle, sys, json
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 
 from enterprise_extensions import models, model_utils
-
+from enterprise_extensions.electromagnetic import solar_wind as SW
 from astropy import log
 import glob
 log.setLevel('CRITICAL')
