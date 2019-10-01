@@ -176,8 +176,8 @@ sampler = ptmcmc(ndim, pta.get_lnlikelihood, pta.get_lnprior,
                  cov, groups=groups,
                  outDir=args.outdir, resume=True)
 
-np.savetxt(outdir + 'pars.txt', pta.param_names, fmt='%s')
-np.savetxt(outdir + '/priors.txt',
+np.savetxt(args.outdir + 'pars.txt', pta.param_names, fmt='%s')
+np.savetxt(args.outdir + '/priors.txt',
            list(map(lambda x: str(x.__repr__()), pta.params)), fmt='%s')
 
 class my_JP(model_utils.JumpProposal):
