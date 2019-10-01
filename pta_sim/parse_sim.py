@@ -106,6 +106,9 @@ parser.add_argument('--rm_psrs', dest='rm_psrs', action='append',
 parser.add_argument('--spat_corr_info', dest='spat_corr_info',
                     action='store_true', default=False,
                     help='Whether to write out the spatial correlation information')
+parser.add_argument('--sw_r4p4', dest='sw_r4p4',
+                    action='store_true', default=False,
+                    help='Whether to use the 1/r^4.4 in the sw model.')
 parser.add_argument('--timdir', dest='timdir', action='store', type=str,
                     default=timdir, help='Tim file Directory')
 parser.add_argument('--timpath', dest='timpath', action='store', type=str,
