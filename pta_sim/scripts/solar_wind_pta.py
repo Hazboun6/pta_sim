@@ -178,8 +178,8 @@ cov = np.diag(np.ones(ndim) * 0.01**2)
 groups = model_utils.get_parameter_groups(pta)
 
 sampler = ptmcmc(ndim, pta.get_lnlikelihood, pta.get_lnprior,
-                 cov, groups=groups, writeHotChains=args.writeHotChains,
-                 outDir=args.outdir, resume=True, hotChain=args.hot_chain)
+                 cov, groups=groups,
+                 outDir=args.outdir, resume=True)
 
 np.savetxt(args.outdir + 'pars.txt', pta.param_names, fmt='%s')
 np.savetxt(args.outdir + '/priors.txt',
@@ -251,4 +251,6 @@ sampler.addProposalToCycle(jp.draw_from_empirical_distr, 55)
 
 N = args.niter
 sampler.sample(x0, Niter=N, SCAMweight=30, AMweight=15,
+               writeHotChains=args.writeHotChains,
+               hotChain=args.hot_chain,
                DEweight=50, burn=200000)
