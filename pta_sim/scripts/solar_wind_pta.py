@@ -85,10 +85,13 @@ model += gp_signals.TimingModel(use_svd=False)
 model += models.red_noise_block(psd=args.psd, prior=prior,
                                 components=args.nfreqs, gamma_val=None)
 
-gw = models.common_red_noise_block(psd=args.psd, prior=prior,
-                                   Tspan=Tspan, gamma_val=args.gamma_gw,
-                                   name='gw')
-model += gw
+if args.gwb_off:
+    pass
+else:
+    gw = models.common_red_noise_block(psd=args.psd, prior=prior,
+                                       Tspan=Tspan, gamma_val=args.gamma_gw,
+                                       name='gw')
+    model += gw
 
 dm_gp = models.dm_noise_block(gp_kernel='diag', psd='powerlaw',
                                prior='log-uniform', Tspan=None,
@@ -246,7 +249,10 @@ if args.bayes_ephem:
     sampler.addProposalToCycle(jp.draw_from_ephem_prior, 35)
 if args.sw_r4p4:
     sampler.addProposalToCycle(jp.draw_from_mean_sw_m4p4_prior, 15)
-sampler.addProposalToCycle(jp.draw_from_gwb_log_uniform_distribution, 20)
+if args.gwb_off:
+    pass
+else:
+    sampler.addProposalToCycle(jp.draw_from_gwb_log_uniform_distribution, 20)
 sampler.addProposalToCycle(jp.draw_from_empirical_distr, 55)
 
 N = args.niter

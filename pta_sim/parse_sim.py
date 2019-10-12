@@ -54,6 +54,8 @@ parser.add_argument('--gamma_rn', dest='gamma_rn', action='store',
                     help='Achromatic Red Noise spectral index to Simulate')
 parser.add_argument('--gwb_bf', dest='gwb_bf', action='store_true',
                     default=False, help='Do a GWB detection run.')
+parser.add_argument('--gwb_off', dest='gwb_off', action='store_true',
+                    default=False, help='Turn off GWB signal analysis.')
 parser.add_argument('--gwb_ul', dest='gwb_ul', action='store_true',
                     default=False, help='Do a GWB upper limit analysis.')
 parser.add_argument('--hot_chain', dest='hot_chain', action='store_true',
