@@ -140,6 +140,7 @@ else:
 
 sampler = model_utils.setup_sampler(pta=pta,
                                     outdir=Outdir,
+                                    empirical_distr=args.emp_distr,
                                     resume=True)
 
 freqs = bys.get_freqs(pta, signal_id='gw')
