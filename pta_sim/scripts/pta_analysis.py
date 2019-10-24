@@ -85,13 +85,17 @@ if args.truncate_psr is not None:
 if args.end_time is None:
     Outdir = args.outdir+'all/'
 else:
-    for psr in psrs:
+    pidxs = []
+    for pidx, psr in enumerate(psrs):
         start_time = psr.toas.min()/(24*3600)
         if (args.end_time-start_time)/365.25 <= 3.0:
             print('PSR {0} baseline too short for this slice.'.format(psr.name))
-            pass
+            pidxs.append(pidx)
         else:
             psr.filter_data(start_time=start_time, end_time=args.end_time)
+
+    for idx in reversed(pidxs):
+        del psrs[idx]
     Outdir = args.outdir+'{0}/'.format(args.nyears)
 
 with open(args.noisepath, 'r') as fin:

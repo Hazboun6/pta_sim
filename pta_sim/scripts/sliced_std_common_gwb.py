@@ -89,10 +89,14 @@ else:
 ### White Noise ###
 wn = models.white_noise_block(vary=False, inc_ecorr=inc_ecorr)
 ### Red Noise ###
-rn_plaw = models.red_noise_block(psd='powerlaw', prior='log-uniform',
+if args.gwb_ul:
+    prior = 'uniform'
+else:
+    prior = 'log-uniform'
+rn_plaw = models.red_noise_block(psd='powerlaw', prior=prior,
                                  Tspan=Tspan, components=30, gamma_val=None)
 ### GWB ###
-gw = models.common_red_noise_block(psd='powerlaw', prior='log-uniform',
+gw = models.common_red_noise_block(psd='powerlaw', prior=prior,
                                    Tspan=Tspan, gamma_val=None, name='gw')
 base_model = wn + gw
 
