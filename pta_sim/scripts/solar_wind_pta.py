@@ -165,7 +165,17 @@ if args.bayes_ephem:
     eph = deterministic_signals.PhysicalEphemerisSignal(use_epoch_toas=True)
     model += eph
 
-pta = signal_base.PTA([model(p) for p in psrs])
+models = []
+for p in psrs:
+    if p.name == 'J1713+0747':
+        dmdip = models.dm_exponential_dip(tmin=54700,tmax=54900)
+        model_j1713 = model + dmdip
+        models.append(model_j1713(p))
+    else:
+        models.append(model(p))
+
+# [model(p) for p in psrs]
+pta = signal_base.PTA(models)
 
 pta.set_default_params(noise_dict)
 
@@ -238,7 +248,7 @@ class my_JP(model_utils.JumpProposal):
 
         return q, float(lqxy)
 
-emp_dist_pkl='/home/jeffrey.hazboun/nanograv/Data/pickles/ng11yr_dmgp_emp_distr.pkl'
+emp_dist_pkl='/home/jeffrey.hazboun/nanograv/Work/solar_wind/ng11yr_emp_dist_sw_plaw_rn_be.pkl'
 jp = my_JP(pta, empirical_distr=emp_dist_pkl)
 sampler.addProposalToCycle(jp.draw_from_prior, 15)
 # sampler.addProposalToCycle(jp.draw_from_dm_sw_prior, 20)
