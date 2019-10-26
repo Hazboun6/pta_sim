@@ -25,6 +25,9 @@ parser.add_argument('--corepath', dest='corepath', action='store', type=str,
                     help='Path name (dir and filename) for output.')
 parser.add_argument('--cuts', dest='cuts', action='append',
                     help='List of cuts at which to calculate OS')
+parser.add_argument('--dm_dip', dest='dm_dip', action='store_true',
+                    default=False,
+                    help='Option to use a DM exponential dip in J1713.')
 parser.add_argument('--dm_gp_psrs',dest='dm_gp_psrs', action='append',
                     type=str, help='Pulsars to use dm gaussian process '
                                    'modeling for analysis. Append with a '

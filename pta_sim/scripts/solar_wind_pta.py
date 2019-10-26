@@ -165,16 +165,18 @@ if args.bayes_ephem:
     eph = deterministic_signals.PhysicalEphemerisSignal(use_epoch_toas=True)
     model += eph
 
-models = []
-for p in psrs:
-    if p.name == 'J1713+0747':
-        dmdip = models.dm_exponential_dip(tmin=54700,tmax=54900)
-        model_j1713 = model + dmdip
-        models.append(model_j1713(p))
-    else:
-        models.append(model(p))
+if args.dm_dip:
+    models = []
+    for p in psrs:
+        if p.name == 'J1713+0747':
+            dmdip = models.dm_exponential_dip(tmin=54700,tmax=54900)
+            model_j1713 = model + dmdip
+            models.append(model_j1713(p))
+        else:
+            models.append(model(p))
+else:
+    models = [model(p) for p in psrs]
 
-# [model(p) for p in psrs]
 pta = signal_base.PTA(models)
 
 pta.set_default_params(noise_dict)
