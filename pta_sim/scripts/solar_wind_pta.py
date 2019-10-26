@@ -166,18 +166,18 @@ if args.bayes_ephem:
     model += eph
 
 if args.dm_dip:
-    models = []
+    psr_models = []
     for p in psrs:
         if p.name == 'J1713+0747':
             dmdip = models.dm_exponential_dip(tmin=54700,tmax=54900)
             model_j1713 = model + dmdip
-            models.append(model_j1713(p))
+            psr_models.append(model_j1713(p))
         else:
-            models.append(model(p))
+            psr_models.append(model(p))
 else:
-    models = [model(p) for p in psrs]
+    psr_models = [model(p) for p in psrs]
 
-pta = signal_base.PTA(models)
+pta = signal_base.PTA(psr_models)
 
 pta.set_default_params(noise_dict)
 
