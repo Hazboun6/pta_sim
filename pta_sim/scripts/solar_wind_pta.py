@@ -159,7 +159,7 @@ if args.sw_r4p4:
 
     dm_block += mean_sw_m
 
-model += dm_block
+# model += dm_block
 
 if args.bayes_ephem:
     eph = deterministic_signals.PhysicalEphemerisSignal(use_epoch_toas=True)
@@ -170,9 +170,16 @@ if args.dm_dip:
     for p in psrs:
         if p.name == 'J1713+0747':
             dmdip = models.dm_exponential_dip(tmin=54700,tmax=54900)
-            model_j1713 = model + dmdip
+            model_j1713 = model + dm_block + dmdip
             psr_models.append(model_j1713(p))
+        elif p.name == 'J1909-3744':
+            dm_gp = models.dm_noise_block(gp_kernel='nondiag',
+                                          nondiag_kernel='sq_exp',
+                                          prior='log-uniform')
+            model_j1909 = model + dm_gp
+            psr_models.append(model_j1909(p))
         else:
+            model += dm_block
             psr_models.append(model(p))
 else:
     psr_models = [model(p) for p in psrs]
