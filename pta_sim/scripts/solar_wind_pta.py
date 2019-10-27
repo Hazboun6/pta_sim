@@ -188,12 +188,13 @@ if args.bayes_ephem:
     eph = deterministic_signals.PhysicalEphemerisSignal(use_epoch_toas=True)
     model += eph
 
+norm_model = model + dm_block
 if args.dm_dip:
     psr_models = []
     for p in psrs:
         if p.name == 'J1713+0747':
             dmdip = models.dm_exponential_dip(tmin=54700,tmax=54900)
-            model_j1713 = model + dm_block + dmdip
+            model_j1713 = norm_model + dmdip
             psr_models.append(model_j1713(p))
         elif (p.name == 'J1909-3744') and (p.name in args.dm_gp_psrs):
             log10_sigma = parameter.Uniform(-10, -4)
@@ -204,10 +205,9 @@ if args.dm_dip:
             model_j1909 = model + dm_gp
             psr_models.append(model_j1909(p))
         else:
-            model += dm_block
-            psr_models.append(model(p))
+            psr_models.append(norm_model(p))
 else:
-    psr_models = [model(p) for p in psrs]
+    psr_models = [norm_model(p) for p in psrs]
 
 pta = signal_base.PTA(psr_models)
 
