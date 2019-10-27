@@ -172,7 +172,7 @@ if args.dm_dip:
             dmdip = models.dm_exponential_dip(tmin=54700,tmax=54900)
             model_j1713 = model + dm_block + dmdip
             psr_models.append(model_j1713(p))
-        elif p.name == 'J1909-3744':
+        elif (p.name == 'J1909-3744') and (p.name in args.dm_gp_psrs):
             dm_gp = models.dm_noise_block(gp_kernel='nondiag',
                                           nondiag_kernel='sq_exp',
                                           prior='log-uniform')
