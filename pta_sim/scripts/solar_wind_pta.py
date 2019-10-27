@@ -175,9 +175,9 @@ if args.dm_dip:
         elif (p.name == 'J1909-3744') and (p.name in args.dm_gp_psrs):
             log10_sigma = parameter.Uniform(-10, -4)
             log10_ell = parameter.Uniform(1, 4)
-            dm_basis = gpk.linear_interp_basis_dm(dt=15*86400)
-            dm_prior = gpk.se_dm_kernel(log10_sigma=log10_sigma,
-                                        log10_ell=log10_ell)
+            dm_basis = models.linear_interp_basis_dm(dt=15*86400)
+            dm_prior = models.se_dm_kernel(log10_sigma=log10_sigma,
+                                           log10_ell=log10_ell)
             dm_gp = gp_signals.BasisGP(dm_prior, dm_basis, name='dm_gp')
             model_j1909 = model + dm_gp
             psr_models.append(model_j1909(p))
