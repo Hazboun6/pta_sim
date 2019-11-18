@@ -93,10 +93,39 @@ else:
                                        name='gw')
     model += gw
 
-dm_gp = models.dm_noise_block(gp_kernel='diag', psd='powerlaw',
-                               prior='log-uniform', Tspan=None,
-                               components=10, gamma_val=None,
-                               coefficients=False)
+# dm_gp = models.dm_noise_block(gp_kernel='diag', psd='powerlaw',
+#                                prior='log-uniform', Tspan=None,
+#                                components=10, gamma_val=None,
+#                                coefficients=False)
+
+@signal_base.function
+def linear_interp_basis_dm(toas, freqs, dt=15*86400):
+
+    # get linear interpolation basis in time
+    U, avetoas = utils.linear_interp_basis(toas, dt=dt)
+
+    # scale with radio frequency
+    Dm = (1400/freqs)**2
+
+    return U * Dm[:, None], avetoas
+
+@signal_base.function
+def se_dm_kernel(avetoas, log10_sigma=-7, log10_ell=2):
+
+    r = np.abs(avetoas[None, :] - avetoas[:, None])
+
+    # Convert everything into seconds
+    l = 10**log10_ell * 86400
+    sigma = 10**log10_sigma
+    d = np.eye(r.shape[0]) * (sigma/500)**2
+    K = sigma**2 * np.exp(-r**2/2/l**2) + d
+    return K
+
+log10_sigma = parameter.Uniform(-10, -4)
+log10_ell = parameter.Uniform(1, 4)
+dm_basis = linear_interp_basis_dm(dt=15*86400)
+dm_prior = se_dm_kernel(log10_sigma=log10_sigma,log10_ell=log10_ell)
+dm_gp = gp_signals.BasisGP(dm_prior, dm_basis, name='dm_gp')
 
 n_earth = SW.ACE_SWEPAM_Parameter()('n_earth')
 sw = SW.solar_wind(n_earth=n_earth)
@@ -159,31 +188,6 @@ if args.sw_r4p4:
 
     dm_block += mean_sw_m
 
-# model += dm_block
-
-@signal_base.function
-def linear_interp_basis_dm(toas, freqs, dt=30*86400):
-
-    # get linear interpolation basis in time
-    U, avetoas = utils.linear_interp_basis(toas, dt=dt)
-
-    # scale with radio frequency
-    Dm = (1400/freqs)**2
-
-    return U * Dm[:, None], avetoas
-
-@signal_base.function
-def se_dm_kernel(avetoas, log10_sigma=-7, log10_ell=2):
-
-    r = np.abs(avetoas[None, :] - avetoas[:, None])
-
-    # Convert everything into seconds
-    l = 10**log10_ell * 86400
-    sigma = 10**log10_sigma
-    d = np.eye(r.shape[0]) * (sigma/500)**2
-    K = sigma**2 * np.exp(-r**2/2/l**2) + d
-    return K
-
 if args.bayes_ephem:
     eph = deterministic_signals.PhysicalEphemerisSignal(use_epoch_toas=True)
     model += eph
@@ -196,14 +200,14 @@ if args.dm_dip:
             dmdip = models.dm_exponential_dip(tmin=54700,tmax=54900)
             model_j1713 = norm_model + dmdip
             psr_models.append(model_j1713(p))
-        elif (p.name == 'J1909-3744') and (p.name in args.dm_gp_psrs):
-            log10_sigma = parameter.Uniform(-10, -4)
-            log10_ell = parameter.Uniform(1, 4)
-            dm_basis = linear_interp_basis_dm(dt=15*86400)
-            dm_prior = se_dm_kernel(log10_sigma=log10_sigma,log10_ell=log10_ell)
-            dm_gp = gp_signals.BasisGP(dm_prior, dm_basis, name='dm_gp')
-            model_j1909 = model + dm_gp
-            psr_models.append(model_j1909(p))
+        # elif (p.name == 'J1909-3744') and (p.name in args.dm_gp_psrs):
+        #     log10_sigma = parameter.Uniform(-10, -4)
+        #     log10_ell = parameter.Uniform(1, 4)
+        #     dm_basis = linear_interp_basis_dm(dt=15*86400)
+        #     dm_prior = se_dm_kernel(log10_sigma=log10_sigma,log10_ell=log10_ell)
+        #     dm_gp = gp_signals.BasisGP(dm_prior, dm_basis, name='dm_gp')
+        #     model_j1909 = model + dm_gp
+        #     psr_models.append(model_j1909(p))
         else:
             psr_models.append(norm_model(p))
 else:
