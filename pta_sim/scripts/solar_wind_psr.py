@@ -22,7 +22,7 @@ from enterprise import constants as const
 import corner, pickle, sys, json
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 
-from enterprise_extensions import models, model_utils
+from enterprise_extensions import models, model_utils, blocks, hypermodel
 from enterprise_extensions.electromagnetic import solar_wind as SW
 from astropy import log
 import glob
@@ -67,17 +67,17 @@ else:
     psr.filter_data(start_time=start_time, end_time=args.end_time)
     Outdir = args.outdir+'{0}/{1}/'.format(args.nyears,psr.name)
 
-m = models.white_noise_block(vary=True, inc_ecorr=True)
+m = blocks.white_noise_block(vary=True, inc_ecorr=True)
 m += gp_signals.TimingModel(use_svd=False)
-m += models.red_noise_block(psd=args.psd, prior='log-uniform',
+m += blocks.red_noise_block(psd=args.psd, prior='log-uniform',
                             components=args.nfreqs, gamma_val=None)
 
-dm_gp1 = models.dm_noise_block(gp_kernel='diag', psd='powerlaw',
+dm_gp1 = blocks.dm_noise_block(gp_kernel='diag', psd='powerlaw',
                                prior='log-uniform', Tspan=None,
                                components=30, gamma_val=None,
                                coefficients=False)
 
-dm_gp2 = models.dm_noise_block(gp_kernel='diag', psd='powerlaw',
+dm_gp2 = blocks.dm_noise_block(gp_kernel='diag', psd='powerlaw',
                                prior='log-uniform', Tspan=None,
                                components=10, gamma_val=None,
                                coefficients=False)
@@ -113,9 +113,12 @@ if args.model.isdigit():
     ptas = {0:ptas[nn]}
     model_params = {0:model_params[nn]}
 
-super_model = model_utils.HyperModel(ptas)
+emp_dir = '/home/jeffrey.hazboun/nanograv/Work/noise_analysis/Notebooks/emp_distr_WN/'
+emp_path = emp_dir + '{0}_ng11yr_v2_std_plaw_emp_dist.pkl'.format(psr.name)
+super_model = hypermodel.HyperModel(ptas)
 Outdir = args.outdir+'/{0}/'.format(psr.name)
-sampler = super_model.setup_sampler(resume=True, outdir=Outdir)
+sampler = super_model.setup_sampler(resume=True, outdir=Outdir,
+                                    empirical_distr=emp_path)
 with open(Outdir+'/model_params.json' , 'w') as fout:
     json.dump(model_params,fout,sort_keys=True,indent=4,separators=(',', ': '))
 
