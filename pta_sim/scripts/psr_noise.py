@@ -48,7 +48,7 @@ if args.pickle=='no_pickle':
         if args.psr == 'J1713+0747':
             parfile = glob.glob(args.pardir + args.psr + '*.t2.*par')[0]
         else:
-            parfile = glob.glob(args.pardir + args.psr + '*.gls*par')[0]
+            parfile = glob.glob(args.pardir + args.psr + '*.gls.*par')[0]
 
         timfile = glob.glob(args.timdir + args.psr + '*.tim')[0]
         psr = Pulsar(parfile, timfile, ephem='DE436')
