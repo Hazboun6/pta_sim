@@ -64,7 +64,7 @@ if args.end_time is None:
 else:
     start_time = psr.toas.min()/(24*3600)
     if (args.end_time-start_time)/365.25 <= 3.0:
-        print('PSR {0} baseline to short for this slice.'.format(p.name))
+        print('PSR {0} baseline too short for this slice.'.format(p.name))
         sys.end()
     psr.filter_data(start_time=start_time, end_time=args.end_time)
     Outdir = args.outdir+'{0}/{1}/'.format(args.nyears,psr.name)
