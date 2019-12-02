@@ -49,6 +49,9 @@ if args.process is None:
 else:
     seed_gwb = 1978 + args.process
 
+for ii,p in enumerate(sim.libs_psrs):
+    LT.add_efac(p, seed=seed_gwb+ii)
+
 sim.createGWB(A_gwb=args.A_gwb, gamma_gw=args.gamma_gw, seed=seed_gwb)
 
 sim.init_ePulsars()
