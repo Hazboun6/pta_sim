@@ -86,6 +86,12 @@ n_earth = SW.ACE_SWEPAM_Parameter()('n_earth')
 sw = SW.solar_wind(n_earth=n_earth)
 mean_sw = deterministic_signals.Deterministic(sw, name='mean_sw')
 
+log10_sigma = parameter.Uniform(-10, -4)
+log10_ell = parameter.Uniform(1, 4)
+dm_se_basis = models.linear_interp_basis_dm(dt=15*86400)
+dm_se_prior = models.se_dm_kernel(log10_sigma=log10_sigma,log10_ell=log10_ell)
+se = gp_signals.BasisGP(dm_se_prior, dm_se_basis, name='dm_gp')
+
 log10_A_sw = parameter.Uniform(-10,1)('log10_A_sw')
 gamma_sw = parameter.Uniform(-2,1)('gamma_sw')
 dm_sw_basis = SW.createfourierdesignmatrix_solar_dm(nmodes=15,Tspan=None)
@@ -99,8 +105,8 @@ sw_models.append(m + mean_sw) #Model 1, Just Deterministic SW
 sw_models.append(m + dm_gp2 + mean_sw) #Model 2, DMGP + Deter SW
 sw_models.append(m + mean_sw + gp_sw) #Model 3, Deter SW + SW GP
 sw_models.append(m + SW.solar_wind_block(ACE_prior=True, include_dmgp=False)
-                   + dm_gp2)
-#Model 4, All the things
+                   + dm_gp2) #Model 4, All the things
+sw_models.append(m + se + mean_sw ) #Model 5, Deter SW + Square-Exponential GP
 
 ptas = {}
 model_params = {}
