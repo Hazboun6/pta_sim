@@ -22,7 +22,7 @@ from enterprise import constants as const
 import corner, pickle, sys, json
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 
-from enterprise_extensions import models, model_utils, blocks, hypermodel
+from enterprise_extensions import models, model_utils, blocks, hypermodel, gp_kernels
 from enterprise_extensions.chromatic import solar_wind as SW
 from astropy import log
 import glob
@@ -93,14 +93,22 @@ dm_sw_prior = utils.powerlaw(log10_A=log10_A_sw, gamma=gamma_sw)
 gp_sw = gp_signals.BasisGP(priorFunction=dm_sw_prior,
                            basisFunction=dm_sw_basis,
                            name='gp_sw')
+
+log10_sigma = parameter.Uniform(-10, -4)
+log10_ell = parameter.Uniform(1, 4)
+dm_se_basis = gp_kernels.linear_interp_basis_dm(dt=15*86400)
+dm_se_prior = gp_kernels.se_dm_kernel(log10_sigma=log10_sigma,
+                                      log10_ell=log10_ell)
+se = gp_signals.BasisGP(dm_se_prior, dm_se_basis, name='dm_gp')
+
 sw_models = []
 sw_models.append(m + dm_gp1) #Model 0, Just DMGP
 sw_models.append(m + mean_sw) #Model 1, Just Deterministic SW
 sw_models.append(m + dm_gp2 + mean_sw) #Model 2, DMGP + Deter SW
 sw_models.append(m + mean_sw + gp_sw) #Model 3, Deter SW + SW GP
 sw_models.append(m + SW.solar_wind_block(ACE_prior=True, include_dmgp=False)
-                   + dm_gp2)
-#Model 4, All the things
+                   + dm_gp2) #Model 4, All the things
+sw_models.append(m + mean_sw + se) #Model 5, Sqr Exp DMGP + Deter SW
 
 ptas = {}
 model_params = {}
