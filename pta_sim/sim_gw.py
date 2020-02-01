@@ -213,6 +213,82 @@ def model_simple(psrs, psd='powerlaw', components=30, freqs=None,
 
     return pta
 
+def model_efac(psrs, psd='powerlaw', components=30, freqs=None,
+                 gamma_common=None, upper_limit=False, bayesephem=False,
+                 select='backend', red_noise=False, Tspan=None):
+    """
+    Reads in list of enterprise Pulsar instance and returns a PTA
+    instantiated with the most simple model allowable for enterprise:
+    per pulsar:
+        1. fixed EFAC per backend/receiver system at 1.0
+        2. Linear timing model.
+        3. Red noise modeled as a power-law with
+            30 sampling frequencies. Default=False
+    global:
+        1.Common red noise modeled with user defined PSD with
+        30 sampling frequencies. Available PSDs are
+        ['powerlaw', 'turnover' 'spectrum']
+        2. Optional physical ephemeris modeling.
+    :param psd:
+        PSD to use for common red noise signal. Available options
+        are ['powerlaw', 'turnover' 'spectrum']. 'powerlaw' is default
+        value.
+    :param gamma_common:
+        Fixed common red process spectral index value. By default we
+        vary the spectral index over the range [0, 7].
+    :param upper_limit:
+        Perform upper limit on common red noise amplitude. By default
+        this is set to False. Note that when performing upper limits it
+        is recommended that the spectral index also be fixed to a specific
+        value.
+    :param bayesephem:
+        Include BayesEphem model. Set to False by default
+    """
+
+    amp_prior = 'uniform' if upper_limit else 'log-uniform'
+
+    # find the maximum time span to set GW frequency sampling
+    if Tspan is None:
+        Tspan = model_utils.get_tspan(psrs)
+
+    # timing model
+    model = gp_signals.TimingModel()
+
+    #Only White Noise is EFAC set to 1.0
+    selection = selections.Selection(selections.by_backend)
+    efac = parameter.Uniform(0.1, 10)
+    model += white_signals.MeasurementNoise(efac=efac, selection=selection)
+
+    # common red noise block
+    if upper_limit:
+        log10_A_gw = parameter.LinearExp(-18,-12)('gw_log10_A')
+    else:
+        log10_A_gw = parameter.Uniform(-18,-12)('gw_log10_A')
+
+    gamma_gw = parameter.Constant(4.33)('gw_gamma')
+    pl = signal_base.Function(utils.powerlaw, log10_A=log10_A_gw,
+                              gamma=gamma_gw)
+    if freqs is None:
+        gw = gp_signals.FourierBasisGP(spectrum=pl, components=30, Tspan=Tspan)
+    else:
+        gw = gp_signals.FourierBasisGP(spectrum=pl, modes=freqs)
+
+    model += gw
+
+    if red_noise:
+        # red noise
+        model += models.red_noise_block(prior=amp_prior, Tspan=Tspan,
+                                        components=components)
+
+    # ephemeris model
+    if bayesephem:
+        model += deterministic_signals.PhysicalEphemerisSignal(use_epoch_toas=True)
+
+    # set up PTA
+    pta = signal_base.PTA([model(p) for p in psrs])
+
+    return pta
+
 ######## Red Noise Parameters ############
 #Since there is no red noise we make a dictionary of low RN Values
 
