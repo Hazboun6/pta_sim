@@ -137,7 +137,7 @@ class Simulation(object):
         else:
             self.toa_cuts.append(end_time)
 
-def model_simple(psrs, psd='powerlaw', components=30, freqs=None,
+def model_simple(psrs, psd='powerlaw', efac=False, components=30, freqs=None,
                  gamma_common=None, upper_limit=False, bayesephem=False,
                  select='backend', red_noise=False, Tspan=None):
     """
@@ -180,8 +180,12 @@ def model_simple(psrs, psd='powerlaw', components=30, freqs=None,
 
     #Only White Noise is EFAC set to 1.0
     selection = selections.Selection(selections.by_backend)
-    efac = parameter.Constant(1.00)
-    model += white_signals.MeasurementNoise(efac=efac, selection=selection)
+    if efac:
+        ef = parameter.Uniform(0.1,10.0)
+    else:
+        ef = parameter.Constant(1.00)
+
+    model += white_signals.MeasurementNoise(efac=ef, selection=selection)
 
     # common red noise block
     if upper_limit:
