@@ -189,7 +189,8 @@ if args.sw_r4p4:
     dm_block += mean_sw_m
 
 if args.bayes_ephem:
-    eph = deterministic_signals.PhysicalEphemerisSignal(use_epoch_toas=True)
+    eph = deterministic_signals.PhysicalEphemerisSignal(model='setIII',
+                                                        use_epoch_toas=True)
     model += eph
 
 norm_model = model + dm_block
