@@ -71,6 +71,9 @@ parser.add_argument('--logf', dest='logf', action='store_true',
                     help='Option to use log spaced frequencies in GPs.')
 parser.add_argument('--model', dest='model', action='store',
                     type=str, default='model_2a', help='NG11yr Model Name')
+parser.add_argument('--model_kwargs_path', dest='model_kwargs_path',
+                    action='store',
+                    type=str, default=None, help='kwargs for model selection')
 parser.add_argument('--nfreqs', dest='nfreqs', action='store',
                     type=int, default=30, help='Number of Freqs in GW model')
 parser.add_argument('--nyears', dest='nyears', action='store',
