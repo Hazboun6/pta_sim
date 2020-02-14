@@ -18,7 +18,7 @@ filepath += '{0}_ng12p5yr_v3_nodmx_ePSR.pkl'.format(args.psr)
 with open(args.pickle, 'rb') as fin:
     psr = pickle.load(fin)
 
-with open(args.model_kwargs_path+'/model_kwargs.json', 'r') as fin:
+with open(args.model_kwargs_path, 'r') as fin:
     model_kwargs = json.load(fin)
 
 ptas = {}
