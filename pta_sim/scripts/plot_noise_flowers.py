@@ -19,7 +19,7 @@ cH=co.HyperModelCore(label=label,
                      chaindir=chaindir)
 
 vals, bins = np.histogram(cH.get_param('nmodel'),
-                          bins=[-0.5,0.5,1.5,2.5,3.5])
+                          bins=[-0.5,0.5,1.5,2.5,3.5,4.5,5.5])
 n_most = np.argmax(vals)
 
 dg.plot_chains(cH,hist=False,pars=['nmodel'],ncols=1,
