@@ -21,6 +21,16 @@ with open(args.pickle, 'rb') as fin:
 with open(args.model_kwargs_path, 'r') as fin:
     model_kwargs = json.load(fin)
 
+# Add to exponential dips for J1713+0747
+if args.psr == 'J1713+0747':
+    dip_kwargs = {'dm_expdip': True,
+                  'dmexp_sign': 'negative',
+                  'dm_expdip_idx': 2,
+                  'num_dmdips': 2,
+                  'dmdip_seqname':'ism'}
+    for dict in model_kwargs.values():
+        dict.update(dip_kwargs)
+
 ptas = {}
 for ky, kwargs in model_kwargs.items():
     ptas[int(ky)] = model_singlepsr_noise(psr, **kwargs)
