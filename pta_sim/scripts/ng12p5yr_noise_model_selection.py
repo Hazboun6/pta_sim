@@ -23,10 +23,11 @@ with open(args.model_kwargs_path, 'r') as fin:
 
 # Add to exponential dips for J1713+0747
 if args.psr == 'J1713+0747':
-    dip_kwargs = {'dm_expdip': True,
+    dip_kwargs = {'dm_expdip':True,
                   'dmexp_sign': 'negative',
-                  'dm_expdip_idx': 2,
-                  'num_dmdips': 2,
+                  'num_dmdips':2,
+                  'dm_expdip_tmin':[54700,57450],
+                  'dm_expdip_tmax':[54850,57560],
                   'dmdip_seqname':'ism'}
     for dict in model_kwargs.values():
         dict.update(dip_kwargs)
