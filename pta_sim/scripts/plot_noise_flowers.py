@@ -40,7 +40,7 @@ std_dir += 'SinglePsr_StandardNoise/{0}/singlepsrNoise/'.format(args.psr)
 std_core = co.Core(label='Std RN Plaw {0}'.format(args.psr),
                    chaindir=std_dir)
 
-dg.plot_chains([c5,std_core], hist=True, pars=std_core.params[:-4], ncols=4,
+dg.plot_chains([c0,std_core], hist=True, pars=std_core.params[:-4], ncols=4,
                title_y=1.05,linewidth=2,
                legend_labels=['Best Model','Std DMX'],
                save=plotdir+'{0}_std_noise_compare.pdf'.format(args.psr))
