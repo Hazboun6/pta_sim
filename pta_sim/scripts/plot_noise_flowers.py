@@ -43,7 +43,7 @@ std_core = co.Core(label='Std RN Plaw {0}'.format(args.psr),
 dg.plot_chains([c5,std_core], hist=True, pars=std_core.params[:-4], ncols=4,
                title_y=1.05,linewidth=2,
                legend_labels=['Best Model','Std DMX'],
-               plotdir+'{0}_std_noise_compare.pdf'.format(args.psr))
+               save=plotdir+'{0}_std_noise_compare.pdf'.format(args.psr))
 
 with open(chaindir+'/model_labels.json' , 'r') as fin:
     model_labels= json.load(fin)
