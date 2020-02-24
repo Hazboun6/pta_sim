@@ -43,6 +43,14 @@ def save_core(core_path, chaindir, remove=False):
         co.jp[ky] = np.loadtxt(f, dtype=float)
 
     co.jp['jumps'] = np.loadtxt(chaindir+'/jumps.txt', dtype=str)
+
+    json_files = glob.glob(chaindir+'/*.json')
+    co.json = {}
+    for f in json_files:
+        ky = f.split('/')[-1].split('.')[0]
+        with open(j,'r') as fin:
+            co.json[ky] = json.load(fin)
+
     co.save(core_path)
 
     if remove:
