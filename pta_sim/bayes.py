@@ -48,7 +48,7 @@ def save_core(core_path, chaindir, remove=False):
     co.json = {}
     for f in json_files:
         ky = f.split('/')[-1].split('.')[0]
-        with open(j,'r') as fin:
+        with open(f,'r') as fin:
             co.json[ky] = json.load(fin)
 
     co.save(core_path)
