@@ -11,7 +11,7 @@ from collections import OrderedDict
 
 from enterprise_extensions import models, model_utils
 # from enterprise_extensions.electromagnetic import solar_wind
-from la_forge.core import Core
+from la_forge.core import Core, HyperModelCore
 
 def chain_length_bool(path, N):
     chain_path = path + '/chain_1.txt'
@@ -26,8 +26,14 @@ def chain_length_bool(path, N):
     else:
         return False
 
-def save_core(core_path, chaindir, remove=False):
-    co = Core(label=core_path, chaindir=chaindir)
+def save_core(core_path, chaindir, remove=False,
+              hyper_model=False, param_dict=None):
+    if hyper_model:
+        co = HyperModelCore(label=core_path, chaindir=chaindir,
+                            param_dict=None)
+    else:
+        co = Core(label=core_path, chaindir=chaindir)
+
     try:
         co.set_rn_freqs(freq_path=chaindir+'/achrom_rn_freqs.txt')
         co.priors = np.load(chaindir+'/par_model.npy')
