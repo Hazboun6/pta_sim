@@ -287,7 +287,7 @@ class my_JP(model_utils.JumpProposal):
 
         return q, float(lqxy)
 
-emp_dist_pkl='/home/jeffrey.hazboun/nanograv/Work/solar_wind/ng11yr_emp_dist_sw_plaw_rn_be.pkl'
+emp_dist_pkl='/home/jeffrey.hazboun/nanograv/Work/solar_wind/ng11yr_emp_dist_sw_plaw_rn_be_se_dmgp.pkl'
 jp = my_JP(pta, empirical_distr=emp_dist_pkl)
 sampler.addProposalToCycle(jp.draw_from_prior, 15)
 # sampler.addProposalToCycle(jp.draw_from_dm_sw_prior, 20)
@@ -308,4 +308,4 @@ N = args.niter
 sampler.sample(x0, Niter=N, SCAMweight=30, AMweight=15,
                writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain,
-               DEweight=50, burn=200000)
+               DEweight=30, burn=200000)
