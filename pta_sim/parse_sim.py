@@ -63,6 +63,8 @@ parser.add_argument('--gwb_off', dest='gwb_off', action='store_true',
                     default=False, help='Turn off GWB signal analysis.')
 parser.add_argument('--gwb_ul', dest='gwb_ul', action='store_true',
                     default=False, help='Do a GWB upper limit analysis.')
+parser.add_argument('--hd', dest='hd', action='store_true',
+                    default=False, help='Add HD spatial correlations.')
 parser.add_argument('--hot_chain', dest='hot_chain', action='store_true',
                     default=False,
                     help='Use a hot chain with parallel tempering')
