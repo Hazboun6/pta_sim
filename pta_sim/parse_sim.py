@@ -109,6 +109,8 @@ parser.add_argument('--process', dest='process', action='store',
 parser.add_argument('--psd', dest='psd', action='store',
                     type=str, default='powerlaw',
                     help='Name of power spectral density prior.')
+parser.add_argument('--pshift', dest='pshift', action='store_true',
+                    default=False, help='Turn on phase shifts.')
 parser.add_argument('--psr', dest='psr', action='store',
                     type=str, default=None,
                     help='Name of an individual pulsar. Used for noise runs.')
