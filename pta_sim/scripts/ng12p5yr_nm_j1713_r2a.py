@@ -72,12 +72,12 @@ for ii, ent in enumerate(model_labels):
     all_kwargs[ii] = kwargs
 
 
-model_labels = [['A', 'periodic', True, True, False, False],
-                ['B', 'periodic', False, False, True, True],
-                ['C', 'periodic', True, False, False, True],
-                ['D', 'periodic', False, True, True, False],
-                ['E', 'periodic', True, False, True, False],
-                ['F', 'periodic', False, True, False, True]]
+# model_labels = [['A', 'periodic', True, True, False, False],
+#                 ['B', 'periodic', False, False, True, True],
+#                 ['C', 'periodic', True, False, False, True],
+#                 ['D', 'periodic', False, True, True, False],
+#                 ['E', 'periodic', True, False, True, False],
+#                 ['F', 'periodic', False, True, False, True]]
 
 super_model = HyperModel(ptas)
 
