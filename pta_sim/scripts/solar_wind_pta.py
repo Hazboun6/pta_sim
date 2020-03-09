@@ -134,7 +134,7 @@ if args.sw_r4p4:
 
 
     for p in psrs:
-        theta, R_earth = SW.theta_impact(p.planetssb,p.pos_t)
+        theta, R_earth = SW.theta_impact(p.planetssb, p.sunssb, p.pos_t)
         p.psi = psi_m(theta,R_earth,4.39)
         p.sol_ang = theta
 
