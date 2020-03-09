@@ -22,7 +22,7 @@ from enterprise import constants as const
 import corner, pickle, sys, json
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 
-from enterprise_extensions import models, model_utils
+from enterprise_extensions import models, model_utils, sampler
 from enterprise_extensions.chromatic import solar_wind as SW
 from enterprise_extensions.chromatic import chromatic as chr
 from enterprise_extensions.gp_kernels import linear_interp_basis_dm, se_dm_kernel
@@ -207,9 +207,9 @@ cov = np.diag(np.ones(ndim) * 0.01**2)
 
 # set up jump groups by red noise groups
 
-groups = model_utils.get_parameter_groups(pta)
+groups = sampler.get_parameter_groups(pta)
 
-sampler = ptmcmc(ndim, pta.get_lnlikelihood, pta.get_lnprior,
+Sampler = ptmcmc(ndim, pta.get_lnlikelihood, pta.get_lnprior,
                  cov, groups=groups,
                  outDir=args.outdir, resume=True)
 
@@ -217,7 +217,7 @@ np.savetxt(args.outdir + 'pars.txt', pta.param_names, fmt='%s')
 np.savetxt(args.outdir + '/priors.txt',
            list(map(lambda x: str(x.__repr__()), pta.params)), fmt='%s')
 
-class my_JP(model_utils.JumpProposal):
+class my_JP(sampler.JumpProposal):
     def __init__(self, pta, snames=None, empirical_distr=None):
         super().__init__(pta, snames=None, empirical_distr=None)
 
@@ -285,7 +285,7 @@ else:
 sampler.addProposalToCycle(jp.draw_from_empirical_distr, 55)
 
 N = args.niter
-sampler.sample(x0, Niter=N, SCAMweight=30, AMweight=15,
+Sampler.sample(x0, Niter=N, SCAMweight=30, AMweight=15,
                writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain,
                DEweight=30, burn=200000)
