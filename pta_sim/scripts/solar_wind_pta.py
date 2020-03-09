@@ -181,14 +181,6 @@ if args.dm_dip:
             dmdip = chr.dm_exponential_dip(tmin=54700,tmax=54900)
             model_j1713 = norm_model + dmdip
             psr_models.append(model_j1713(p))
-        # elif (p.name == 'J1909-3744') and (p.name in args.dm_gp_psrs):
-        #     log10_sigma = parameter.Uniform(-10, -4)
-        #     log10_ell = parameter.Uniform(1, 4)
-        #     dm_basis = linear_interp_basis_dm(dt=15*86400)
-        #     dm_prior = se_dm_kernel(log10_sigma=log10_sigma,log10_ell=log10_ell)
-        #     dm_gp = gp_signals.BasisGP(dm_prior, dm_basis, name='dm_gp')
-        #     model_j1909 = model + dm_gp
-        #     psr_models.append(model_j1909(p))
         else:
             psr_models.append(norm_model(p))
 else:
