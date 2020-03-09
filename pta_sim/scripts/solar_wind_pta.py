@@ -23,7 +23,9 @@ import corner, pickle, sys, json
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 
 from enterprise_extensions import models, model_utils
-from enterprise_extensions.electromagnetic import solar_wind as SW
+from enterprise_extensions.chromatic import solar_wind as SW
+from enterprise_extensions.chromatic import chromatic as chr
+from enterprise_extensions.gp_kernels import linear_interp_basis_dm, se_dm_kernel
 from astropy import log
 import glob
 log.setLevel('CRITICAL')
@@ -98,33 +100,6 @@ else:
                                        name='gw')
     model += gw
 
-# dm_gp = models.dm_noise_block(gp_kernel='diag', psd='powerlaw',
-#                                prior='log-uniform', Tspan=None,
-#                                components=10, gamma_val=None,
-#                                coefficients=False)
-
-@signal_base.function
-def linear_interp_basis_dm(toas, freqs, dt=15*86400):
-
-    # get linear interpolation basis in time
-    U, avetoas = utils.linear_interp_basis(toas, dt=dt)
-
-    # scale with radio frequency
-    Dm = (1400/freqs)**2
-
-    return U * Dm[:, None], avetoas
-
-@signal_base.function
-def se_dm_kernel(avetoas, log10_sigma=-7, log10_ell=2):
-
-    r = np.abs(avetoas[None, :] - avetoas[:, None])
-
-    # Convert everything into seconds
-    l = 10**log10_ell * 86400
-    sigma = 10**log10_sigma
-    d = np.eye(r.shape[0]) * (sigma/500)**2
-    K = sigma**2 * np.exp(-r**2/2/l**2) + d
-    return K
 
 log10_sigma = parameter.Uniform(-10, -4)
 log10_ell = parameter.Uniform(1, 4)
@@ -203,7 +178,7 @@ if args.dm_dip:
     psr_models = []
     for p in psrs:
         if p.name == 'J1713+0747':
-            dmdip = models.dm_exponential_dip(tmin=54700,tmax=54900)
+            dmdip = chr.dm_exponential_dip(tmin=54700,tmax=54900)
             model_j1713 = norm_model + dmdip
             psr_models.append(model_j1713(p))
         # elif (p.name == 'J1909-3744') and (p.name in args.dm_gp_psrs):
