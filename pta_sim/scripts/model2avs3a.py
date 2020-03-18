@@ -49,6 +49,7 @@ else:
         for idx in reversed(idxs):
             del psrs[idx]
 
+
 with open(args.noisepath, 'r') as fin:
     noise =json.load(fin)
 
@@ -58,6 +59,17 @@ pta_crn = models.model_2a(psrs, psd='powerlaw', noisedict=noise,
                           bayesephem=args.bayes_ephem, be_type='setIII',
                           wideband=False,
                           select='backend', pshift=False)
+
+####Sky Scramble script
+if args.sky_scramble is None:
+    pass
+else:
+    scr_npz = np.load(args.sky_scramble)
+    thetas = scr_npz['thetas'][args.process,:]
+    phis = scr_npz['phis'][args.process,:]
+    for p, theta, phi in zip(psrs, thetas, phis):
+        p._raj = phi
+        p._decj = np.pi / 2 - theta
 
 pta_gw = models.model_3a(psrs, psd='powerlaw', noisedict=noise,
                          components=args.nfreqs,
