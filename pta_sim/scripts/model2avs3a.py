@@ -68,8 +68,10 @@ else:
     thetas = scr_npz['thetas'][args.process,:]
     phis = scr_npz['phis'][args.process,:]
     for p, theta, phi in zip(psrs, thetas, phis):
+        print(p.name,': ',p.theta,p.phi,p._raj,p._decj)
         p._raj = phi
         p._decj = np.pi / 2 - theta
+        print(p.name,': ',p.theta,p.phi,p._raj,p._decj)
 
 pta_gw = models.model_3a(psrs, psd='powerlaw', noisedict=noise,
                          components=args.nfreqs,
