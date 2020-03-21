@@ -121,7 +121,7 @@ else:
     sw_r2p_ranges = args.sw_r2p_ranges
 
 for ii, (power, pr_range) in enumerate(zip(args.sw_r2p, sw_r2p_ranges)):
-
+    print(type(power),type(pr_range))
     if isinstance(power,(float,int)) and float(power) == 2.0:
         print('1 ',type(power),type(pr_range))
         n_earth = SW.ACE_SWEPAM_Parameter()('nE_{0}'.format(ii+1))
