@@ -126,12 +126,13 @@ parser.add_argument('--sky_scramble', dest='sky_scramble',
 parser.add_argument('--spat_corr_info', dest='spat_corr_info',
                     action='store_true', default=False,
                     help='Whether to write out the spatial correlation information')
-parser.add_argument('--sw_r2p', dest='sw_r2p',
-                    action='append', 
-                    help='Power(s) of solar wind model to use.')
+parser.add_argument('--sw_r2p', dest='sw_r2p', action=append,
+                    type=lambda s: [float(item) for item in s.split(',')],
+                    help='Power(s) of solar wind model to use. If list of two floats is given these will become a uniform prior.')
 parser.add_argument('--sw_r2p_ranges', dest='sw_r2p_ranges',
-                    action='append',
-                    help='Prior(s) of solar wind model powers to use. Floats are set constant. Lists are uniform prior ranges.')
+                    action=append,
+                    type=lambda s: [float(item) for item in s.split(',')],
+                    help='Amplitude for extra terms in solar wind. Range for log uniform prior provided as two item list. ')
 parser.add_argument('--sw_r4p4', dest='sw_r4p4',
                     action='store_true', default=False,
                     help='Whether to use the 1/r^4.4 in the sw model.')
