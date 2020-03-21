@@ -121,25 +121,27 @@ else:
     sw_r2p_ranges = args.sw_r2p_ranges
 
 for ii, (power, pr_range) in enumerate(zip(args.sw_r2p, sw_r2p_ranges)):
-    if power == pr_range and float(power) == 2.0:
+    if float(power) == 2.0:
         n_earth = SW.ACE_SWEPAM_Parameter()('nE_{0}'.format(ii+1))
         deter_sw = SW.solar_wind(n_earth=n_earth)
         dm_gp += deterministic_signals.Deterministic(deter_sw,
                                                  name='sw_{0}'.format(ii+1))
-    elif power == pr_range:
-        n_earth = parameter.Uniform(-20, 2)('nE_{0}'.format(ii+1))
+    elif isinstance(power,(float,int)):
+        n_earth = parameter.Uniform(pr_range[0], pr_range[1])('nE_{0}'.format(ii+1))
         sw_power = parameter.Constant(power)('sw_power_{0}'.format(ii+1))
+        log10_ne = True if pr_range[0] < 0 else False
         deter_sw = SW.solar_wind_r_to_p(n_earth=n_earth,
                                                 power=sw_power,
-                                                log10_ne=True)
+                                                log10_ne=log10_ne)
         dm_gp += deterministic_signals.Deterministic(deter_sw,
                                                      name='sw_{0}'.format(ii+1))
-    elif isinstance(pr_range, list):
-        n_earth = parameter.Uniform(-20, 2)('nE_{0}'.format(ii+1))
-        sw_power = parameter.Uniform(pr_range[0], pr_range[1])('sw_power_{0}'.format(ii+1))
+    elif isinstance(power, list):
+        n_earth = parameter.Uniform(pr_range[0], pr_range[1])('nE_{0}'.format(ii+1))
+        sw_power = parameter.Uniform(power[0], power[1])('sw_power_{0}'.format(ii+1))
+        log10_ne = True if pr_range[0] < 0 else False
         deter_sw = SW.solar_wind_r_to_p(n_earth=n_earth,
                                                 power=sw_power,
-                                                log10_ne=True)
+                                                log10_ne=log10_ne)
         dm_gp += deterministic_signals.Deterministic(deter_sw,
                                                      name='sw_{0}'.format(ii+1))
 
@@ -211,7 +213,7 @@ class my_JP(sampler.JumpProposal):
 
         return q, float(lqxy)
 
-    def draw_from_mean_sw2_prior(self, x, iter, beta):
+    def draw_from_sw2_prior(self, x, iter, beta):
 
         q = x.copy()
         lqxy = 0
@@ -234,7 +236,7 @@ class my_JP(sampler.JumpProposal):
 
         return q, float(lqxy)
 
-    def draw_from_mean_sw3_prior(self, x, iter, beta):
+    def draw_from_sw3_prior(self, x, iter, beta):
 
         q = x.copy()
         lqxy = 0
@@ -257,7 +259,7 @@ class my_JP(sampler.JumpProposal):
 
         return q, float(lqxy)
 
-    def draw_from_mean_sw4_prior(self, x, iter, beta):
+    def draw_from_sw4_prior(self, x, iter, beta):
 
         q = x.copy()
         lqxy = 0
