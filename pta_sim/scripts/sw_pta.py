@@ -133,7 +133,7 @@ for ii, (power, pr_range) in enumerate(zip(args.sw_r2p, sw_r2p_ranges)):
         print('2 ',power,pr_range)
         n_earth = parameter.Uniform(pr_range[0],
                                     pr_range[1])('nE_{0}'.format(ii+1))
-        sw_power = parameter.Constant(power)('sw_power_{0}'.format(ii+1))
+        sw_power = parameter.Constant(power[0])('sw_power_{0}'.format(ii+1))
         log10_ne = True if pr_range[0] < 0 else False
         deter_sw = SW.solar_wind_r_to_p(n_earth=n_earth,
                                                 power=sw_power,
