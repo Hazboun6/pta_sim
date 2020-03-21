@@ -124,7 +124,7 @@ for ii, (power, pr_range) in enumerate(zip(args.sw_r2p, sw_r2p_ranges)):
     if isinstance(power,(float,int)) and float(power) == 2.0:
         n_earth = SW.ACE_SWEPAM_Parameter()('nE_{0}'.format(ii+1))
         deter_sw = SW.solar_wind(n_earth=n_earth)
-        dm_gp += deterministic_signals.Deterministic(deter_sw,
+        dm_block += deterministic_signals.Deterministic(deter_sw,
                                                  name='sw_{0}'.format(ii+1))
     elif isinstance(power,(float,int)):
         n_earth = parameter.Uniform(pr_range[0], pr_range[1])('nE_{0}'.format(ii+1))
@@ -133,7 +133,7 @@ for ii, (power, pr_range) in enumerate(zip(args.sw_r2p, sw_r2p_ranges)):
         deter_sw = SW.solar_wind_r_to_p(n_earth=n_earth,
                                                 power=sw_power,
                                                 log10_ne=log10_ne)
-        dm_gp += deterministic_signals.Deterministic(deter_sw,
+        dm_block += deterministic_signals.Deterministic(deter_sw,
                                                      name='sw_{0}'.format(ii+1))
     elif isinstance(power, list):
         n_earth = parameter.Uniform(pr_range[0], pr_range[1])('nE_{0}'.format(ii+1))
@@ -142,7 +142,7 @@ for ii, (power, pr_range) in enumerate(zip(args.sw_r2p, sw_r2p_ranges)):
         deter_sw = SW.solar_wind_r_to_p(n_earth=n_earth,
                                                 power=sw_power,
                                                 log10_ne=log10_ne)
-        dm_gp += deterministic_signals.Deterministic(deter_sw,
+        dm_block += deterministic_signals.Deterministic(deter_sw,
                                                      name='sw_{0}'.format(ii+1))
 
 if args.bayes_ephem:
