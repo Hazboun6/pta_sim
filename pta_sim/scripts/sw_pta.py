@@ -121,7 +121,7 @@ else:
     sw_r2p_ranges = args.sw_r2p_ranges
 
 for ii, (power, pr_range) in enumerate(zip(args.sw_r2p, sw_r2p_ranges)):
-    print(power,pr_ranges)
+    print(power,pr_range)
     if isinstance(power,(float,int)) and float(power) == 2.0:
         n_earth = SW.ACE_SWEPAM_Parameter()('nE_{0}'.format(ii+1))
         deter_sw = SW.solar_wind(n_earth=n_earth)
