@@ -129,11 +129,17 @@ parser.add_argument('--spat_corr_info', dest='spat_corr_info',
 parser.add_argument('--sw_r2p', dest='sw_r2p',
                     type=lambda s: [[float(item) for item in l.split(',')]
                                      for l in s.split(';')],
-                    help='Power(s) of solar wind model to use. If list of two floats is given these will become a uniform prior.')
+                    help='Power(s) of solar wind model to use. '
+                         'If list of two floats is given these will become a uniform prior.'
+                         'Add as string with commas separating range and semicolons'
+                         'separating different terms, eg. \"2;3,5;14,18\"')
 parser.add_argument('--sw_r2p_ranges', dest='sw_r2p_ranges',
                     type=lambda s: [[float(item) for item in l.split(',')]
                                      for l in s.split(';')],
-                    help='Amplitude for extra terms in solar wind. Range for log uniform prior provided as two item list. ')
+                    help='Amplitude for extra terms in solar wind.'
+                         'Range for log uniform prior provided as two item list.'
+                         'Add as string with commas separating range and semicolons'
+                         'separating different terms, eg. \"2;-10,-2;-20,-8\"')
 parser.add_argument('--sw_r4p4', dest='sw_r4p4',
                     action='store_true', default=False,
                     help='Whether to use the 1/r^4.4 in the sw model.')

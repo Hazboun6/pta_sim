@@ -124,13 +124,13 @@ else:
 for ii, (power, pr_range) in enumerate(zip(args.sw_r2p, sw_r2p_ranges)):
     print(type(power),type(pr_range))
     if len(power)==1 and power[0] == 2.0:
-        print('1 ',type(power),type(pr_range))
+        print('1 ',power,pr_range)
         n_earth = SW.ACE_SWEPAM_Parameter()('nE_{0}'.format(ii+1))
         deter_sw = SW.solar_wind(n_earth=n_earth)
         dm_block += deterministic_signals.Deterministic(deter_sw,
                                                  name='sw_{0}'.format(ii+1))
     elif len(power)==1:
-        print('2 ',type(power),type(pr_range))
+        print('2 ',power,pr_range)
         n_earth = parameter.Uniform(pr_range[0],
                                     pr_range[1])('nE_{0}'.format(ii+1))
         sw_power = parameter.Constant(power)('sw_power_{0}'.format(ii+1))
@@ -141,7 +141,7 @@ for ii, (power, pr_range) in enumerate(zip(args.sw_r2p, sw_r2p_ranges)):
         dm_block += deterministic_signals.Deterministic(deter_sw,
                                                      name='sw_{0}'.format(ii+1))
     elif len(power)>1:
-        print('3 ',type(power),type(pr_range))
+        print('3 ',power,pr_range)
         n_earth = parameter.Uniform(pr_range[0], pr_range[1])('nE_{0}'.format(ii+1))
         sw_power = parameter.Uniform(power[0], power[1])('sw_power_{0}'.format(ii+1))
         log10_ne = True if pr_range[0] < 0 else False
