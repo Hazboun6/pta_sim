@@ -109,8 +109,9 @@ dm_gp = gp_signals.BasisGP(dm_prior, dm_basis, name='dm_gp')
 dm_block = dm_gp
 
 # Make solar wind signals
-if isinstance(args.sw_r2p,(float,int)):
-    args.sw_r2p = [args.sw_r2p]
+print('sw_r2p ',args.sw_r2p)
+# if isinstance(args.sw_r2p,(float,int)):
+#     args.sw_r2p = [args.sw_r2p]
 
 if args.sw_r2p_ranges is None:
     sw_r2p_ranges = args.sw_r2p
