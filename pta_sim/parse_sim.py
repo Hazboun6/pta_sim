@@ -117,6 +117,9 @@ parser.add_argument('--psr', dest='psr', action='store',
 parser.add_argument('--psr_list', dest='psr_list', action='append',
                     default=None,
                     help='List pulsar names to use in analysis.')
+parser.add_argument('--rednoise', dest='rednoise',
+                    action='store_true', default=False,
+                    help='Whether to use a red noise model.')
 parser.add_argument('--rm_psrs', dest='rm_psrs', action='append',
                     type=str,
                     default=None, help='Append to list of pulsars to remove.')
