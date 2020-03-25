@@ -52,7 +52,8 @@ else:
 for ii,p in enumerate(sim.libs_psrs):
     LT.add_efac(p, seed=seed_gwb+ii)
 
-sim.createGWB(A_gwb=args.A_gwb, gamma_gw=args.gamma_gw, seed=seed_gwb)
+sim.createGWB(A_gwb=args.A_gwb, gamma_gw=args.gamma_gw,
+              seed=seed_gwb, fit=args.fit)
 
 sim.init_ePulsars()
 

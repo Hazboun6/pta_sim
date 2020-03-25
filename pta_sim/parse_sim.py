@@ -45,6 +45,8 @@ parser.add_argument('--emp_distr', dest='emp_distr', action='store',
                     help='Option to give a pickled enterprise list of pulsars')
 parser.add_argument('--end_time', dest='end_time', action='store',
                     type=float, default=None, help='End MJD for slicing.')
+parser.add_argument('--fit', dest='fit', action='store',
+                    type=int, default=None, help='Number of fits to do after GWB injection')
 parser.add_argument('--free_spec_psrs',dest='free_spec_psrs', action='append',
                     type=str,
                     help='Pulsars for which to use a free spectral '
