@@ -125,6 +125,9 @@ parser.add_argument('--rednoise', dest='rednoise',
 parser.add_argument('--rm_psrs', dest='rm_psrs', action='append',
                     type=str,
                     default=None, help='Append to list of pulsars to remove.')
+parser.add_argument('--rn_psrs',dest='rn_psrs', default='all',
+                    type=lambda s: [str(item) for item in s.split(',')],
+                    help='List of psrs to use achrom rn models on.')
 parser.add_argument('--sky_scramble', dest='sky_scramble',
                     action='store', default=None, type=str,
                     help='Path to sky scramble sky positions.')

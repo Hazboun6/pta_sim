@@ -53,11 +53,16 @@ else:
 with open(args.noisepath, 'r') as fin:
     noise =json.load(fin)
 
+if args.rn_psrs[0]=='all':
+    rn_psrs='all'
+else:
+    rn_psrs=args.rn_psrs
+
 pta_crn = models.model_2a(psrs, psd='powerlaw', noisedict=noise,
                           components=args.nfreqs,
                           gamma_common=13/3., upper_limit=False,
                           bayesephem=args.bayes_ephem, be_type='setIII',
-                          wideband=False,
+                          wideband=False, rn_psrs=rn_psrs,
                           select='backend', pshift=False)
 
 ####Sky Scramble script
@@ -78,7 +83,7 @@ pta_gw = models.model_3a(psrs, psd='powerlaw', noisedict=noise,
                          components=args.nfreqs,
                          gamma_common=13/3., upper_limit=False,
                          bayesephem=args.bayes_ephem, be_type='setIII',
-                         wideband=False,
+                         wideband=False, rn_psrs=rn_psrs,
                          pshift=args.pshift)
 ptas = {0:pta_crn,
         1:pta_gw}
