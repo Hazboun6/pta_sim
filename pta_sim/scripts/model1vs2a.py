@@ -23,7 +23,7 @@ from enterprise.signals import deterministic_signals
 from enterprise import constants as const
 
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
-from enterprise_extensions import models, model_utils
+from enterprise_extensions import models, model_utils, hypermodel
 from enterprise_extensions.frequentist import optimal_statistic as OS
 
 
@@ -130,7 +130,7 @@ pta_gw.set_default_params(noise)
 ptas = {0:pta_noise,
         1:pta_gw}
 
-hm = model_utils.HyperModel(models=ptas)
+hm = hypermodel.HyperModel(models=ptas)
 sampler = hm.setup_sampler(outdir=args.outdir,resume=True)
 
 achrom_freqs = get_freqs(ptas[0])
