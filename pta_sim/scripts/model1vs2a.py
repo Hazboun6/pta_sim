@@ -114,7 +114,7 @@ elif isinstance(rn_psrs,list):
     model_1 = base_model + rn_plaw
     model_2a = model_1 + gw
     for p in psrs:
-        if p in rn_psrs:
+        if p.name in rn_psrs:
             model1_psrs.append(model_1(p))
             model2a_psrs.append(model_2a(p))
         else:
