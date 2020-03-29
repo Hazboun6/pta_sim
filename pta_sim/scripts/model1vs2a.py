@@ -102,13 +102,34 @@ base_model = wn
 if args.bayes_ephem:
     base_model += deterministic_signals.PhysicalEphemerisSignal(use_epoch_toas=True)
 
-model_1 = base_model + rn_plaw
-model_2a = model_1 + gw
+if args.rn_psrs[0]=='all':
+    rn_psrs='all'
+else:
+    rn_psrs=args.rn_psrs
+    
+if rn_psrs=='all':
+    model_1 = base_model + rn_plaw
+    model_2a = model_1 + gw
+    model1_psrs = [model_1(p) for p in psrs]
+    model2a_psrs = [model_2a(p) for p in psrs]
+elif isinstance(rn_psrs,list):
+    model1_psrs = []
+    model2a_psrs = []
+    model_2a_base = base_model + gw
+    model_1 = base_model + rn_plaw
+    model_2a = model_1 + gw
+    for p in psrs:
+        if p in rn_psrs:
+            model1_psrs.append(model_1(p))
+            model2a_psrs.append(model_2a(p))
+        else:
+            model1_psrs.append(base_model(p))
+            model2a_psrs.append(model_2a_base(p))
 
-pta_noise = signal_base.PTA([model_1(p) for p in psrs])
+pta_noise = signal_base.PTA(model1_psrs)
 pta_noise.set_default_params(noise)
 
-pta_gw = signal_base.PTA([model_2a(p) for p in psrs])
+pta_gw = signal_base.PTA(model2a_psrs)
 pta_gw.set_default_params(noise)
 
 ptas = {0:pta_noise,
