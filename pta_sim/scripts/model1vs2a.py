@@ -26,7 +26,6 @@ from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 from enterprise_extensions import models, model_utils
 from enterprise_extensions.frequentist import optimal_statistic as OS
 
-sys.path.insert(0,'/Users/hazboun/software_development/pta_sim/')
 
 import pta_sim
 import pta_sim.parse_sim as parse_sim
@@ -73,11 +72,7 @@ else:
             del psrs[idx]
 
 with open(args.noisepath, 'r') as fin:
-    noise_json =json.load(fin)
-
-noise = {}
-for p in psrs:
-    noise.update(noise_json[p.name])
+    noise =json.load(fin)
 
 if args.tspan is None:
     Tspan = model_utils.get_tspan(psrs)
@@ -106,7 +101,7 @@ if args.rn_psrs[0]=='all':
     rn_psrs='all'
 else:
     rn_psrs=args.rn_psrs
-    
+
 if rn_psrs=='all':
     model_1 = base_model + rn_plaw
     model_2a = model_1 + gw
