@@ -139,7 +139,7 @@ class Simulation(object):
 
 def model_simple(psrs, psd='powerlaw', efac=False, components=30, freqs=None,
                  gamma_common=None, upper_limit=False, bayesephem=False,
-                 select='backend', red_noise=False, Tspan=None):
+                 select='backend', red_noise=False, Tspan=None, hd_orf=False):
     """
     Reads in list of enterprise Pulsar instance and returns a PTA
     instantiated with the most simple model allowable for enterprise:
@@ -196,12 +196,29 @@ def model_simple(psrs, psd='powerlaw', efac=False, components=30, freqs=None,
     gamma_gw = parameter.Constant(4.33)('gw_gamma')
     pl = signal_base.Function(utils.powerlaw, log10_A=log10_A_gw,
                               gamma=gamma_gw)
-    if freqs is None:
-        gw = gp_signals.FourierBasisGP(spectrum=pl, components=30, Tspan=Tspan)
-    else:
-        gw = gp_signals.FourierBasisGP(spectrum=pl, modes=freqs)
 
-    model += gw
+
+
+
+    if hd_orf:
+        if freqs is None:
+            gw = gp_signals.FourierBasisCommonGP(spectrum=pl, utils.hd_orf(),
+                                                 components=30,
+                                                 Tspan=Tspan,
+                                                 name='gw')
+        else:
+            gw = gp_signals.FourierBasisCommonGP(spectrum=pl, utils.hd_orf(),
+                                                 modes=freqs,
+                                                 name='gw')
+        model += gw
+    else:
+        if freqs is None:
+            crn = gp_signals.FourierBasisGP(spectrum=pl, components=30,
+                                            Tspan=Tspan, name='gw')
+        else:
+            crn = gp_signals.FourierBasisGP(spectrum=pl, modes=freqs,
+                                            name='gw')
+        model += crn
 
     if red_noise:
         # red noise
