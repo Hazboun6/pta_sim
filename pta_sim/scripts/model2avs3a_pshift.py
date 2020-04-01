@@ -83,7 +83,10 @@ for ii, (m2,m3) in enumerate(zip(crn_models,gw_models)):
         crn_models[ii]._Fmat = Tmats[ii]
 
 pta_gw = signal_base.PTA(gw_models)
+pta_gw.set_default_params(noise)
+
 pta_crn = signal_base.PTA(crn_models)
+pta_crn.set_default_params(noise)
 
 ptas = {0:pta_crn,
         1:pta_gw}
