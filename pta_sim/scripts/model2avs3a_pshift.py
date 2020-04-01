@@ -5,7 +5,7 @@ import numpy as np
 import sys, os, glob, json, pickle, copy
 
 from enterprise_extensions import models, model_utils, hypermodel
-
+from enterprise.signals import signal_base
 import pta_sim
 import pta_sim.parse_sim as parse_sim
 from pta_sim.bayes import chain_length_bool, save_core, get_freqs, filter_psr_path
