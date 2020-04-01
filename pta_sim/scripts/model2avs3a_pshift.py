@@ -76,7 +76,7 @@ crn_models = models.model_2a(psrs, psd='powerlaw', noisedict=noise,
 Tmats = [mm._Fmat for mm in gw_models]
 
 # reassign mods_2a T matrices to be the 3a ones
-for ii, (m2,m3) in enumerate((crn_models,gw_models)):
+for ii, (m2,m3) in enumerate(zip(crn_models,gw_models)):
     if m2.psrname != m3.psrname:
         raise ValueError('Pulsars do not match for T Matrix Swap')
     else:
