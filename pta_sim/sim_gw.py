@@ -202,16 +202,16 @@ def model_simple(psrs, psd='powerlaw', efac=False, components=30, freqs=None,
                               gamma=gamma_gw)
 
 
-
-
     if hd_orf:
         if freqs is None:
-            gw = gp_signals.FourierBasisCommonGP(spectrum=pl, utils.hd_orf(),
+            gw = gp_signals.FourierBasisCommonGP(spectrum=pl,
+                                                 orf=utils.hd_orf(),
                                                  components=30,
                                                  Tspan=Tspan,
                                                  name='gw')
         else:
-            gw = gp_signals.FourierBasisCommonGP(spectrum=pl, utils.hd_orf(),
+            gw = gp_signals.FourierBasisCommonGP(spectrum=pl,
+                                                 orf=utils.hd_orf(),
                                                  modes=freqs,
                                                  name='gw')
         model += gw
