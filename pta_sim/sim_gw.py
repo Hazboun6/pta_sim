@@ -138,7 +138,7 @@ class Simulation(object):
             self.toa_cuts.append(end_time)
 
 def model_simple(psrs, psd='powerlaw', efac=False, components=30, freqs=None,
-                 gamma_common=None, upper_limit=False, bayesephem=False,
+                 vary_gamma=False, upper_limit=False, bayesephem=False,
                  select='backend', red_noise=False, Tspan=None, hd_orf=False):
     """
     Reads in list of enterprise Pulsar instance and returns a PTA
@@ -193,7 +193,11 @@ def model_simple(psrs, psd='powerlaw', efac=False, components=30, freqs=None,
     else:
         log10_A_gw = parameter.Uniform(-18,-12)('gw_log10_A')
 
-    gamma_gw = parameter.Constant(4.33)('gw_gamma')
+    if vary_gamma:
+        gamma_gw = parameter.Uniform(0,7)('gw_gamma')
+    else:
+        gamma_gw = parameter.Constant(4.33)('gw_gamma')
+
     pl = signal_base.Function(utils.powerlaw, log10_A=log10_A_gw,
                               gamma=gamma_gw)
 
