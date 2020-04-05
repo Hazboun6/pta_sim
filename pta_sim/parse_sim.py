@@ -38,6 +38,8 @@ parser.add_argument('--dm_sin_psrs',dest='dm_sin_psrs', action='append',
                          'Append with a flag for each pulsar.')
 parser.add_argument('--efac', dest='efac', action='store_true',
                     default=False, help='Search EFAC in an analysis.')
+parser.add_argument('--dropout', dest='dropout', action='store_true',
+                    default=False, help='Use a dropout analysis.')
 parser.add_argument('--ephem', dest='ephem', action='store',
                     type=str, default='DE436', help='SS Ephemeris')
 parser.add_argument('--emp_distr', dest='emp_distr', action='store',
