@@ -23,7 +23,7 @@ from enterprise.signals import deterministic_signals
 from enterprise import constants as const
 
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
-from enterprise_extensions import models, model_utils, hypermodel
+from enterprise_extensions import models, model_utils, hypermodel, dropout
 from enterprise_extensions.frequentist import optimal_statistic as OS
 
 
@@ -88,9 +88,25 @@ else:
 tm = gp_signals.TimingModel()
 ### White Noise ###
 wn = models.white_noise_block(vary=False, inc_ecorr=inc_ecorr)
+
 ### Red Noise ###
-rn_plaw = models.red_noise_block(psd='powerlaw', prior='log-uniform',
-                                 Tspan=Tspan, components=30, gamma_val=None)
+# Code for red noise dropout
+if dropout:
+    log10_A = parameter.Uniform(-20, -11)
+    gamma = parameter.Uniform(0, 7)
+    k_drop = parameter.Uniform(0, 1)
+
+    pl = dropout.dropout_powerlaw(log10_A=log10_A, gamma=gamma,
+                                  k_drop=k_drop, k_threshold=0.5)
+    rn = gp_signals.FourierBasisGP(pl, components=30,
+                                   Tspan=Tspan, name='red_noise')
+    model += rn_plaw
+
+else:
+    rn_plaw = models.red_noise_block(psd='powerlaw', prior='log-uniform',
+                                     Tspan=Tspan, components=30,
+                                     gamma_val=None)
+
 ### GWB ###
 gw = models.common_red_noise_block(psd='powerlaw', prior='log-uniform',
                                    Tspan=Tspan, gamma_val=13/3., name='gw')
