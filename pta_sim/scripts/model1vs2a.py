@@ -98,9 +98,8 @@ if dropout:
 
     pl = dropout.dropout_powerlaw(log10_A=log10_A, gamma=gamma,
                                   k_drop=k_drop, k_threshold=0.5)
-    rn = gp_signals.FourierBasisGP(pl, components=30,
-                                   Tspan=Tspan, name='red_noise')
-    model += rn_plaw
+    rn_plaw = gp_signals.FourierBasisGP(pl, components=30,
+                                        Tspan=Tspan, name='red_noise')
 
 else:
     rn_plaw = models.red_noise_block(psd='powerlaw', prior='log-uniform',
