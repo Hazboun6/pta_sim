@@ -238,7 +238,7 @@ def model_simple(psrs, psd='powerlaw', efac=False, components=30, freqs=None,
         pl = models.dropout_powerlaw(log10_A=log10_A, gamma=gamma,
                                      k_drop=k_drop, k_threshold=0.5)
         rn = gp_signals.FourierBasisGP(pl, components=components,
-                                       Tspan=Tspan)
+                                       Tspan=Tspan, name='red_noise')
     elif red_noise:
         # red noise
         model += models.red_noise_block(prior=amp_prior, Tspan=Tspan,
