@@ -85,11 +85,15 @@ groups = model_utils.get_parameter_groups(pta)
 sampler = ptmcmc(ndim, pta.get_lnlikelihood, pta.get_lnprior,
                  cov, groups=groups, outDir=args.outdir, resume=True)
 
-achrom_freqs = get_freqs(pta)
+
 np.save(args.outdir + 'pars.npy', pta.param_names)
 np.save(args.outdir + 'par_model.npy', np.array(pta.params).astype(str))
 np.save(args.outdir + 'signals.npy', list(pta.signals.keys()))
-np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
+if args.dropout:
+    pass
+else:
+    achrom_freqs = get_freqs(pta)
+    np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
 
 jp = model_utils.JumpProposal(pta)
 sampler.addProposalToCycle(jp.draw_from_prior, 15)
