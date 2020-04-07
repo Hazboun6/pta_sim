@@ -148,8 +148,9 @@ ptas = {0:pta_noise,
         1:pta_gw}
 
 emp_dist = '/home/jeffrey.hazboun/nanograv/Data/pickles/ng11yr_v2_std_plaw_emp_dist.pkl'
-hm = hypermodel.HyperModel(models=ptas, empirical_distr=emp_dist)
-sampler = hm.setup_sampler(outdir=args.outdir, resume=True)
+hm = hypermodel.HyperModel(models=ptas)
+sampler = hm.setup_sampler(outdir=args.outdir, resume=True,
+                           empirical_distr=emp_dist)
 
 # achrom_freqs = get_freqs(ptas[0])
 # np.save(args.outdir + 'pars.npy', pta.param_names)
