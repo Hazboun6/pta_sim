@@ -73,7 +73,16 @@ crn_models = models.model_2a(psrs, psd='powerlaw', noisedict=noise,
                              wideband=False, rn_psrs=rn_psrs,
                              select='backend', psr_models=True)
 
-Tmats = [mm._Fmat for mm in gw_models]
+#Load in T matrix from previous run to preserve same random phase shifts
+if os.path.exists(args.outdir+'Tmats.npy'):
+    Tmats = np.load(args.outdir+'Tmats.npy')
+    use_saved_Tmat = True
+    print('Using Tmat list from earlier incarnation.')
+else: # Save random phase shifted T matrices
+    Tmats = [mm._Fmat for mm in gw_models]
+    np.save(args.outdir+'Tmats.npy',Tmats)
+    use_saved_Tmat = False
+    print('Pulling Tmat from model3a and saving')
 
 # reassign mods_2a T matrices to be the 3a ones
 for ii, (m2,m3) in enumerate(zip(crn_models,gw_models)):
@@ -81,6 +90,8 @@ for ii, (m2,m3) in enumerate(zip(crn_models,gw_models)):
         raise ValueError('Pulsars do not match for T Matrix Swap')
     else:
         crn_models[ii]._Fmat = Tmats[ii]
+        if use_saved_Tmat: #Use saved T matrix if existed on startup
+            gw_models[ii]._Fmat = Tmats[ii]
 
 pta_gw = signal_base.PTA(gw_models)
 pta_gw.set_default_params(noise)
