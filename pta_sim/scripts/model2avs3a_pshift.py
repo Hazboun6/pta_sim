@@ -80,6 +80,7 @@ if os.path.exists(args.outdir+'Tmats.npy'):
     print('Using Tmat list from earlier incarnation.')
 else: # Save random phase shifted T matrices
     Tmats = [mm._Fmat for mm in gw_models]
+    os.makedirs(args.outdir)
     np.save(args.outdir+'Tmats.npy',Tmats)
     use_saved_Tmat = False
     print('Pulling Tmat from model3a and saving')
