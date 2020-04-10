@@ -60,6 +60,7 @@ class Simulation(object):
 
         print('')
         self.libs_psrs = libs_psrs
+        self.pnames = [p.name for p in libs_psrs]
         self.psrs = None
         self.ephem = ephem
         self.first_toa = np.amin([p.toas().min() for p in libs_psrs])
@@ -80,6 +81,26 @@ class Simulation(object):
             pass
         self.gwb_added = True
         self.seed = seed
+
+    def add_rn(self, rn_psrs, seeds=None):
+        """
+        Add rednoise to a subset of the pulsars.
+
+        Parameters
+        ----------
+        rn_psrs : dict
+            Dictionary of rednoise parameter entries. The keys are pulsar names
+            while each entry is an array/list/tuple of RN amplitude, RN spectral
+            index.
+        """
+        if seeds is None:
+            seeds=[None for ky in rn_psrs.keys()]
+
+        for ii, (p, pars) in enumerate(rn_psrs.items()):
+            A = pars[0]
+            gamma = pars[1]
+            LT.add_rednoise(self.libs_psrs[p], A, gamma,
+                            components=30, seed=seeds[ii])
 
     def init_ePulsars(self, **kwarg):
         if not self.gwb_added:
