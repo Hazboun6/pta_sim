@@ -162,7 +162,7 @@ class Simulation(object):
 def model_simple(psrs, psd='powerlaw', efac=False, components=30, freqs=None,
                  vary_gamma=False, upper_limit=False, bayesephem=False,
                  select='backend', red_noise=False, Tspan=None, hd_orf=False,
-                 rn_dropout=False):
+                 rn_dropout=False, dp_threshold=0.5):
     """
     Reads in list of enterprise Pulsar instance and returns a PTA
     instantiated with the most simple model allowable for enterprise:
@@ -258,7 +258,7 @@ def model_simple(psrs, psd='powerlaw', efac=False, components=30, freqs=None,
         gamma = parameter.Uniform(0, 7)
         k_drop = parameter.Uniform(0, 1)
         pl = models.dropout_powerlaw(log10_A=log10_A, gamma=gamma,
-                                     k_drop=k_drop, k_threshold=0.5)
+                                     k_drop=k_drop, k_threshold=dp_threshold)
         rn = gp_signals.FourierBasisGP(pl, components=components,
                                        Tspan=Tspan, name='red_noise')
         model += rn
