@@ -75,7 +75,7 @@ pta = model_simple(psrs=sim.psrs, psd='powerlaw', components=30,
                    vary_gamma=args.vary_gamma, upper_limit=args.gwb_ul,
                    efac=args.efac, hd_orf=args.hd, rn_dropout=args.dropout,
                    bayesephem=False, select='backend', red_noise=args.rednoise,
-                   Tspan=args.tspan)
+                   Tspan=args.tspan, dp_threshold=args.dp_thresh)
 
 x0 = np.hstack(p.sample() for p in pta.params)
 ndim = x0.size
