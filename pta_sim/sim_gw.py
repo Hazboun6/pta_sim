@@ -99,7 +99,8 @@ class Simulation(object):
         for ii, (p, pars) in enumerate(rn_psrs.items()):
             A = pars[0]
             gamma = pars[1]
-            LT.add_rednoise(self.libs_psrs[p], A, gamma,
+            pidx = self.pnames.index(p)
+            LT.add_rednoise(self.libs_psrs[pidx], A, gamma,
                             components=30, seed=seeds[ii])
 
     def init_ePulsars(self, **kwarg):
