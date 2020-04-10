@@ -40,6 +40,8 @@ parser.add_argument('--efac', dest='efac', action='store_true',
                     default=False, help='Search EFAC in an analysis.')
 parser.add_argument('--dropout', dest='dropout', action='store_true',
                     default=False, help='Use a dropout analysis.')
+parser.add_argument('--dp_thresh', dest='dp_thresh', action='store',
+                    type=float, default=0.5, help='Dropout threshold, between 0 and 1.')
 parser.add_argument('--ephem', dest='ephem', action='store',
                     type=str, default='DE436', help='SS Ephemeris')
 parser.add_argument('--emp_distr', dest='emp_distr', action='store',
