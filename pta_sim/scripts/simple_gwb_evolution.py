@@ -52,6 +52,11 @@ else:
 for ii,p in enumerate(sim.libs_psrs):
     LT.add_efac(p, seed=seed_gwb+ii)
 
+if os.path.exists(args.rn_psrs[0]) and len(args.rn_psrs)==1:
+    with open(args.rn_psrs[0],'r') as fin:
+        rn_psrs = json.load(fin)
+    sim.add_rn(rn_psrs, seeds=[seed_gwb+314+ii for ii in range(len(rn_psrs))])
+
 sim.createGWB(A_gwb=args.A_gwb, gamma_gw=args.gamma_gw,
               seed=seed_gwb, fit=args.fit)
 
