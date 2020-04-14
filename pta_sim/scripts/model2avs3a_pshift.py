@@ -59,46 +59,55 @@ else:
     rn_psrs=args.rn_psrs
 
 
-gw_models = models.model_3a(psrs, psd='powerlaw', noisedict=noise,
+pta_gw = models.model_3a(psrs, psd='powerlaw', noisedict=noise,
                             components=args.nfreqs,
                             gamma_common=13/3., upper_limit=False,
                             bayesephem=args.bayes_ephem, be_type='setIII',
                             wideband=False, rn_psrs=rn_psrs,
-                            pshift=args.pshift,psr_models=True)
+                            pshift=args.pshift, pseed=args.process,
+                            psr_models=False)
 
-crn_models = models.model_2a(psrs, psd='powerlaw', noisedict=noise,
+pta_crn = models.model_2a(psrs, psd='powerlaw', noisedict=noise,
                              components=args.nfreqs,
                              gamma_common=13/3., upper_limit=False,
                              bayesephem=args.bayes_ephem, be_type='setIII',
                              wideband=False, rn_psrs=rn_psrs,
-                             select='backend', psr_models=True)
+                             pshift=args.pshift, pseed=args.process,
+                             select='backend', psr_models=False)
 
-#Load in T matrix from previous run to preserve same random phase shifts
+print(pta_gw.get_lnlikelihood(np.hstack(p.sample() for p in pta_gw.params)))
+print(pta_crn.get_lnlikelihood(np.hstack(p.sample() for p in pta_crn.params)))
+
+#Load in T matrix from previous run to check same random phase shifts
 if os.path.exists(args.outdir+'Tmats.npy'):
     Tmats = np.load(args.outdir+'Tmats.npy')
-    use_saved_Tmat = True
-    print('Using Tmat list from earlier incarnation.')
+    print('Loading Tmat list from earlier incarnation.')
 else: # Save random phase shifted T matrices
-    Tmats = [mm._Fmat for mm in gw_models]
+    Tmats = [sc._Fmat for sc in pta_gw._signalcollections]
     os.makedirs(args.outdir)
     np.save(args.outdir+'Tmats.npy',Tmats)
-    use_saved_Tmat = False
     print('Pulling Tmat from model3a and saving')
 
-# reassign mods_2a T matrices to be the 3a ones
-for ii, (m2,m3) in enumerate(zip(crn_models,gw_models)):
-    if m2.psrname != m3.psrname:
-        raise ValueError('Pulsars do not match for T Matrix Swap')
+# Check mods_2a T matrices against the 3a ones
+for ii, (s2,s3) in enumerate(zip(pta_gw._signalcollections,
+                                 pta_crn._signalcollections)):
+    if s2.psrname != s3.psrname:
+        raise ValueError('Pulsars do not match for T Matrix check')
     else:
-        crn_models[ii]._Fmat = Tmats[ii]
-        if use_saved_Tmat: #Use saved T matrix if existed on startup
-            gw_models[ii]._Fmat = Tmats[ii]
+        if np.all(pta_crn._signalcollections[ii]._Fmat == Tmats[ii]):
+            print('CRN T Matrices match')
+        else:
+            err_msg = 'PSR {0} Stored T Matrix'.format(s3.psrname)
+            err_msg +=' does not match CRN PTA !!'
+            raise ValueError(err_msg)
 
-pta_gw = signal_base.PTA(gw_models)
-pta_gw.set_default_params(noise)
+        if np.all(pta_gw._signalcollections[ii]._Fmat == Tmats[ii]):
+            print('GW T Matrices match')
+        else:
+            err_msg = 'PSR {0} Stored T Matrix'.format(s3.psrname)
+            err_msg +=' does not match GW PTA !!'
+            raise ValueError(err_msg)
 
-pta_crn = signal_base.PTA(crn_models)
-pta_crn.set_default_params(noise)
 
 ptas = {0:pta_crn,
         1:pta_gw}
