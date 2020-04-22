@@ -77,36 +77,36 @@ pta_crn = models.model_2a(psrs, psd='powerlaw', noisedict=noise,
 
 print(pta_gw.get_lnlikelihood(np.hstack(p.sample() for p in pta_gw.params)))
 print(pta_crn.get_lnlikelihood(np.hstack(p.sample() for p in pta_crn.params)))
-
-#Load in T matrix from previous run to check same random phase shifts
-if os.path.exists(args.outdir+'Tmats.npy'):
-    Tmats = np.load(args.outdir+'Tmats.npy')
-    print('Loading Tmat list from earlier incarnation.')
-else: # Save random phase shifted T matrices
-    Tmats = [sc._Fmat for sc in pta_gw._signalcollections]
-    os.makedirs(args.outdir)
-    np.save(args.outdir+'Tmats.npy',Tmats)
-    print('Pulling Tmat from model3a and saving')
-
-# Check mods_2a T matrices against the 3a ones
-for ii, (s2,s3) in enumerate(zip(pta_gw._signalcollections,
-                                 pta_crn._signalcollections)):
-    if s2.psrname != s3.psrname:
-        raise ValueError('Pulsars do not match for T Matrix check')
-    else:
-        if np.all(pta_crn._signalcollections[ii]._Fmat == Tmats[ii]):
-            print('CRN T Matrices match')
-        else:
-            err_msg = 'PSR {0} Stored T Matrix'.format(s3.psrname)
-            err_msg +=' does not match CRN PTA !!'
-            raise ValueError(err_msg)
-
-        if np.all(pta_gw._signalcollections[ii]._Fmat == Tmats[ii]):
-            print('GW T Matrices match')
-        else:
-            err_msg = 'PSR {0} Stored T Matrix'.format(s3.psrname)
-            err_msg +=' does not match GW PTA !!'
-            raise ValueError(err_msg)
+#
+# #Load in T matrix from previous run to check same random phase shifts
+# if os.path.exists(args.outdir+'Tmats.npy'):
+#     Tmats = np.load(args.outdir+'Tmats.npy')
+#     print('Loading Tmat list from earlier incarnation.')
+# else: # Save random phase shifted T matrices
+#     Tmats = [sc._Fmat for sc in pta_gw._signalcollections]
+#     os.makedirs(args.outdir)
+#     np.save(args.outdir+'Tmats.npy',Tmats)
+#     print('Pulling Tmat from model3a and saving')
+#
+# # Check mods_2a T matrices against the 3a ones
+# for ii, (s2,s3) in enumerate(zip(pta_gw._signalcollections,
+#                                  pta_crn._signalcollections)):
+#     if s2.psrname != s3.psrname:
+#         raise ValueError('Pulsars do not match for T Matrix check')
+#     else:
+#         if np.all(pta_crn._signalcollections[ii]._Fmat == Tmats[ii]):
+#             print('CRN T Matrices match')
+#         else:
+#             err_msg = 'PSR {0} Stored T Matrix'.format(s3.psrname)
+#             err_msg +=' does not match CRN PTA !!'
+#             raise ValueError(err_msg)
+#
+#         if np.all(pta_gw._signalcollections[ii]._Fmat == Tmats[ii]):
+#             print('GW T Matrices match')
+#         else:
+#             err_msg = 'PSR {0} Stored T Matrix'.format(s3.psrname)
+#             err_msg +=' does not match GW PTA !!'
+#             raise ValueError(err_msg)
 
 
 ptas = {0:pta_crn,
