@@ -97,7 +97,7 @@ np.save(args.outdir + 'pars.npy', pta.param_names)
 np.save(args.outdir + 'par_model.npy', np.array(pta.params).astype(str))
 np.save(args.outdir + 'signals.npy', list(pta.signals.keys()))
 
-achrom_freqs = get_freqs(pta)
+achrom_freqs = get_freqs(pta, signal_id='gw')
 np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
 
 jp = model_utils.JumpProposal(pta)
