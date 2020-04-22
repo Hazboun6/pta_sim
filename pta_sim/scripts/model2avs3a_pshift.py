@@ -60,7 +60,7 @@ else:
 
 
 pta_gw = models.model_3a(psrs, psd='powerlaw', noisedict=noise,
-                            components=args.nfreqs,
+                            n_gwbfreqs=args.nfreqs,
                             gamma_common=13/3., upper_limit=False,
                             bayesephem=args.bayes_ephem, be_type='setIII',
                             wideband=False, rn_psrs=rn_psrs,
@@ -68,7 +68,7 @@ pta_gw = models.model_3a(psrs, psd='powerlaw', noisedict=noise,
                             psr_models=False)
 
 pta_crn = models.model_2a(psrs, psd='powerlaw', noisedict=noise,
-                             components=args.nfreqs,
+                             n_gwbfreqs=args.nfreqs,
                              gamma_common=13/3., upper_limit=False,
                              bayesephem=args.bayes_ephem, be_type='setIII',
                              wideband=False, rn_psrs=rn_psrs,
