@@ -24,7 +24,7 @@ from pta_sim.bayes import chain_length_bool, save_core, get_freqs, filter_psr_pa
 args = parse_sim.arguments()
 
 #Is chain longer than niter?
-longer = chain_length_bool(args.outdir, args.niter)
+longer = chain_length_bool(args.outdir, int(args.niter//10))
 
 if longer and os.path.exists(args.core_path):
     sys.end()
