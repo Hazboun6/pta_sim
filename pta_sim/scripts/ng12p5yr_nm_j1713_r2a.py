@@ -12,9 +12,6 @@ import pta_sim.parse_sim as parse_sim
 args = parse_sim.arguments()
 logging.basicConfig(level=logging.WARNING)
 
-filepath = '/home/jeffrey.hazboun/nanograv/12p5yr_work/noise_model/'
-filepath += 'noise_model_selection/no_dmx_pickles/'
-filepath += '{0}_ng12p5yr_v3_nodmx_ePSR.pkl'.format(args.psr)
 with open(args.pickle, 'rb') as fin:
     psr = pickle.load(fin)
 
@@ -55,7 +52,7 @@ for ii, ent in enumerate(model_labels):
     if ent[3]: # Add 2nd ISM event, DM
         num_dips +=1
         dm_expdip_tmin.append(57450)
-        dm_expdip_tmax.append(57450)
+        dm_expdip_tmax.append(57560)
         dm_expdip_idx.append(2)
         dmdip_seqname.append('dm_2')
     if ent[4]: # Add 1st ISM event, Scattering
@@ -67,7 +64,7 @@ for ii, ent in enumerate(model_labels):
     if ent[5]: # Add 2nd ISM event, Scattering
         num_dips +=1
         dm_expdip_tmin.append(57450)
-        dm_expdip_tmax.append(57450)
+        dm_expdip_tmax.append(57560)
         dm_expdip_idx.append(4)
         dmdip_seqname.append('chrom_2')
 
