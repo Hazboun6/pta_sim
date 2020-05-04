@@ -22,7 +22,7 @@ from enterprise import constants as const
 import corner, pickle, sys, json
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 
-from enterprise_extensions import models, model_utils
+from enterprise_extensions import models, model_utils, sampler
 
 from astropy import log
 import glob
@@ -113,6 +113,7 @@ if args.model=='model_2a':
                            upper_limit=args.gwb_ul,
                            bayesephem=args.bayes_ephem,
                            wideband=args.wideband,
+                           pshift=args.pshift,
                            select='backend')
 elif args.model=='model_general':
     pta = models.model_general(psrs, common_psd='powerlaw',
@@ -138,14 +139,16 @@ elif args.model=='model_general':
 else:
     raise NotImplementedError('Please add this model to the script.')
 
-sampler = model_utils.setup_sampler(pta=pta,
+Sampler = sampler.setup_sampler(pta=pta,
                                     outdir=Outdir,
                                     empirical_distr=args.emp_distr,
                                     resume=True)
-
-freqs = bys.get_freqs(pta, signal_id='gw')
-np.savetxt(Outdir+'achrom_freqs.txt', freqs)
+try:
+    freqs = bys.get_freqs(pta, signal_id='gw')
+    np.savetxt(Outdir+'achrom_freqs.txt', freqs)
+except:
+    pass
 
 x0 = np.hstack(p.sample() for p in pta.params)
 
-sampler.sample(x0, Niter=args.niter)
+Sampler.sample(x0, Niter=args.niter)
