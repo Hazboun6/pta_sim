@@ -97,10 +97,13 @@ np.save(args.outdir + 'pars.npy', pta.param_names)
 np.save(args.outdir + 'par_model.npy', np.array(pta.params).astype(str))
 np.save(args.outdir + 'signals.npy', list(pta.signals.keys()))
 
-achrom_freqs = get_freqs(pta, signal_id='gw')
-np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
+try:
+    achrom_freqs = get_freqs(pta, signal_id='gw')
+    np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
+except:
+    pass
 
-jp = model_utils.JumpProposal(pta)
+jp = sampler.JumpProposal(pta)
 Sampler.addProposalToCycle(jp.draw_from_prior, 15)
 Sampler.addProposalToCycle(jp.draw_from_red_prior, 15)
 Sampler.addProposalToCycle(jp.draw_from_gwb_log_uniform_distribution, 15)
