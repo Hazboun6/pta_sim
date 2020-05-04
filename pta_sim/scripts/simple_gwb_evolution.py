@@ -11,7 +11,7 @@ import libstempo.plot as LP
 from shutil import copyfile, copy2
 
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
-from enterprise_extensions import models, model_utils
+from enterprise_extensions import models, model_utils, sampler
 from enterprise_extensions.frequentist import optimal_statistic as OS
 
 
@@ -27,10 +27,10 @@ args = parse_sim.arguments()
 longer = chain_length_bool(args.outdir, int(args.niter//10))
 
 if longer and os.path.exists(args.core_path):
-    sys.end()
+    sys.exit()
 elif longer:
     save_core(args.corepath, args.outdir)
-    sys.end() #Hmmmm what to do here?
+    sys.exit() #Hmmmm what to do here?
 else:
     pass
 
@@ -87,9 +87,9 @@ cov = np.diag(np.ones(ndim) * 0.01**2)
 
 # set up jump groups by red noise groups
 
-groups = model_utils.get_parameter_groups(pta)
+groups = sampler.get_parameter_groups(pta)
 
-sampler = ptmcmc(ndim, pta.get_lnlikelihood, pta.get_lnprior,
+Sampler = ptmcmc(ndim, pta.get_lnlikelihood, pta.get_lnprior,
                  cov, groups=groups, outDir=args.outdir, resume=True)
 
 
@@ -101,15 +101,15 @@ achrom_freqs = get_freqs(pta, signal_id='gw')
 np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
 
 jp = model_utils.JumpProposal(pta)
-sampler.addProposalToCycle(jp.draw_from_prior, 15)
-sampler.addProposalToCycle(jp.draw_from_red_prior, 15)
-sampler.addProposalToCycle(jp.draw_from_gwb_log_uniform_distribution, 15)
+Sampler.addProposalToCycle(jp.draw_from_prior, 15)
+Sampler.addProposalToCycle(jp.draw_from_red_prior, 15)
+Sampler.addProposalToCycle(jp.draw_from_gwb_log_uniform_distribution, 15)
 if args.bayes_ephem:
-    sampler.addProposalToCycle(jp.draw_from_ephem_prior, 15)
+    Sampler.addProposalToCycle(jp.draw_from_ephem_prior, 15)
 
 N = int(args.niter)
 
-sampler.sample(x0, Niter=N, SCAMweight=30, AMweight=15,
+Sampler.sample(x0, Niter=N, SCAMweight=30, AMweight=15,
                DEweight=50, burn=100000)
 
 save_core(args.corepath, args.outdir)
