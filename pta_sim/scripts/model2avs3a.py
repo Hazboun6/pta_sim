@@ -46,6 +46,39 @@ else:
         for idx in reversed(idxs):
             del psrs[idx]
 
+psr_names = [p.name for p in psrs]
+
+if args.rm_psrs is not None:
+    rm_idxs = [psr_names.index(p) for p in args.rm_psrs]
+    print('Removing the following pulsars:\n {0}'.format(args.rm_psrs))
+    for idx in reversed(rm_idxs):
+        del psrs[idx]
+
+if args.truncate_psr is not None:
+    if len(args.truncate_psr)!=len(args.truncate_mjd):
+        err_msg = 'List of psrs to truncate and truncation MJDs must be equal!!'
+        raise ValueError(err_msg)
+    for pname, mjd in zip(args.truncate_psr,args.truncate_mjd):
+        pidx = psr_names.index(pname)
+        start_time = psrs[pidx].toas.min()/(24*3600)
+        psrs[pidx].filter_data(start_time=start_time, end_time=mjd)
+
+if args.end_time is None:
+    pass
+else:
+    pidxs = []
+    for pidx, psr in enumerate(psrs):
+        start_time = psr.toas.min()/(24*3600)
+        if (args.end_time-start_time)/365.25 <= 3.0:
+            print('PSR {0} baseline too short for this slice.'.format(psr.name))
+            pidxs.append(pidx)
+        else:
+            psr.filter_data(start_time=start_time, end_time=args.end_time)
+
+    for idx in reversed(pidxs):
+        del psrs[idx]
+    Outdir = args.outdir+'{0}/'.format(args.nyears)
+
 
 with open(args.noisepath, 'r') as fin:
     noise =json.load(fin)
