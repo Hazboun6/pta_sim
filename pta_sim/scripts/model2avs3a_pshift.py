@@ -15,10 +15,9 @@ args = parse_sim.arguments()
 longer = chain_length_bool(args.outdir, int(args.niter//10))
 
 if longer and os.path.exists(args.core_path):
-    sys.end()
+    sys.exit()
 elif longer:
-    save_core(args.corepath, args.outdir)
-    sys.end() #Hmmmm what to do here?
+    sys.exit() #Hmmmm what to do here?
 else:
     pass
 
