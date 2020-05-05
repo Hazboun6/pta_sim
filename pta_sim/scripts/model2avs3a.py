@@ -122,8 +122,11 @@ hm = hypermodel.HyperModel(models=ptas)
 sampler = hm.setup_sampler(outdir=args.outdir, resume=True,
                            empirical_distr = args.emp_distr)
 
-achrom_freqs = get_freqs(ptas[0], signal_id='gw')
-np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
+try:
+    achrom_freqs = get_freqs(ptas[0], signal_id='gw')
+    np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
+except:
+    pass
 
 model_params = {}
 for ii,mod in enumerate(ptas):
