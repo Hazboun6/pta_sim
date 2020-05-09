@@ -26,7 +26,7 @@ args = parse_sim.arguments()
 #Is chain longer than niter?
 longer = chain_length_bool(args.outdir, int(args.niter//10))
 
-if longer and os.path.exists(args.core_path):
+if longer and os.path.exists(args.corepath):
     sys.exit()
 elif longer:
     save_core(args.corepath, args.outdir)
