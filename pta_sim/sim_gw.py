@@ -29,7 +29,7 @@ from enterprise.signals import gp_signals
 from enterprise.signals import deterministic_signals
 import enterprise.constants as const
 
-from enterprise_extensions import models, model_utils
+from enterprise_extensions import models, model_utils, dropout
 from enterprise_extensions.frequentist import optimal_statistic as OS
 
 import argparse
@@ -257,7 +257,7 @@ def model_simple(psrs, psd='powerlaw', efac=False, components=30, freqs=None,
 
         gamma = parameter.Uniform(0, 7)
         k_drop = parameter.Uniform(0, 1)
-        pl = models.dropout_powerlaw(log10_A=log10_A, gamma=gamma,
+        pl = dropout.dropout_powerlaw(log10_A=log10_A, gamma=gamma,
                                      k_drop=k_drop, k_threshold=dp_threshold)
         rn = gp_signals.FourierBasisGP(pl, components=components,
                                        Tspan=Tspan, name='red_noise')
