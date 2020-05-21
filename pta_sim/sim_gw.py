@@ -159,7 +159,8 @@ class Simulation(object):
         else:
             self.toa_cuts.append(end_time)
 
-def model_simple(psrs, psd='powerlaw', efac=False, components=30, freqs=None,
+def model_simple(psrs, psd='powerlaw', efac=False, n_gwbfreqs=30,
+                 components=30, freqs=None,
                  vary_gamma=False, upper_limit=False, bayesephem=False,
                  select='backend', red_noise=False, Tspan=None, hd_orf=False,
                  rn_dropout=False, dp_threshold=0.5):
@@ -229,7 +230,7 @@ def model_simple(psrs, psd='powerlaw', efac=False, components=30, freqs=None,
         if freqs is None:
             gw = gp_signals.FourierBasisCommonGP(spectrum=pl,
                                                  orf=utils.hd_orf(),
-                                                 components=30,
+                                                 components=n_gwbfreqs,
                                                  Tspan=Tspan,
                                                  name='gw')
         else:
@@ -240,7 +241,7 @@ def model_simple(psrs, psd='powerlaw', efac=False, components=30, freqs=None,
         model += gw
     else:
         if freqs is None:
-            crn = gp_signals.FourierBasisGP(spectrum=pl, components=30,
+            crn = gp_signals.FourierBasisGP(spectrum=pl, components=n_gwbfreqs,
                                             Tspan=Tspan, name='gw')
         else:
             crn = gp_signals.FourierBasisGP(spectrum=pl, modes=freqs,
