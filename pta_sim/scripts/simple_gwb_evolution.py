@@ -74,7 +74,7 @@ sim.init_ePulsars()
 
 sim.filter_by_mjd(args.end_time)
 pta = model_simple(psrs=sim.psrs, psd='powerlaw', components=30,
-                   n_gwbfreqs=args.nfreqs
+                   n_gwbfreqs=args.nfreqs,
                    vary_gamma=args.vary_gamma, upper_limit=args.gwb_ul,
                    efac=args.efac, hd_orf=args.hd, rn_dropout=args.dropout,
                    bayesephem=False, select='backend', red_noise=args.rednoise,
