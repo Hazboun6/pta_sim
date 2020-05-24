@@ -258,6 +258,8 @@ def model_simple(psrs, psd='powerlaw', efac=False, n_gwbfreqs=30,
 
         gamma = parameter.Uniform(0, 7)
         k_drop = parameter.Uniform(0, 1)
+        if dp_threshold == 6.0:
+            dp_threshold = parameter.Uniform(0,1)
         pl = dropout.dropout_powerlaw(log10_A=log10_A, gamma=gamma,
                                      k_drop=k_drop, k_threshold=dp_threshold)
         rn = gp_signals.FourierBasisGP(pl, components=components,
