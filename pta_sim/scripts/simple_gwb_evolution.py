@@ -106,7 +106,8 @@ except:
 
 jp = sampler.JumpProposal(pta)
 Sampler.addProposalToCycle(jp.draw_from_prior, 15)
-Sampler.addProposalToCycle(jp.draw_from_red_prior, 15)
+if args.red_noise:
+    Sampler.addProposalToCycle(jp.draw_from_red_prior, 15)
 Sampler.addProposalToCycle(jp.draw_from_gwb_log_uniform_distribution, 15)
 if args.bayes_ephem:
     Sampler.addProposalToCycle(jp.draw_from_ephem_prior, 15)
