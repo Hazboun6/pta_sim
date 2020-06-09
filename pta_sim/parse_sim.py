@@ -83,6 +83,8 @@ parser.add_argument('--model_kwargs_path', dest='model_kwargs_path',
                     action='store',
                     type=str, default=None, help='kwargs for model selection')
 parser.add_argument('--nfreqs', dest='nfreqs', action='store',
+                    type=int, default=30, help='Number of Freqs')
+parser.add_argument('--n_gwbfreqs', dest='n_gwbfreqs', action='store',
                     type=int, default=30, help='Number of Freqs in GW model')
 parser.add_argument('--nyears', dest='nyears', action='store',
                     type=float, default=None,
