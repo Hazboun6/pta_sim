@@ -96,6 +96,7 @@ else:
         orf=None
     gw = models.common_red_noise_block(psd=args.psd, prior=prior,
                                        Tspan=Tspan, orf=orf,
+                                       components=args.n_gwbfreqs,
                                        gamma_val=args.gamma_gw,
                                        name='gw')
     model += gw
