@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 import numpy as np
-import pint.toa as toa
-import pint.models as models
-import pint.fitter as fit
-import pint.residuals as r
+# import pint.toa as toa
+# import pint.models as models
+# import pint.fitter as fit
+# import pint.residuals as r
 import astropy.units as u
 
 import enterprise
@@ -108,7 +108,17 @@ else:
 if args.model=='model_2a':
     pta = models.model_2a(psrs, psd=args.psd,
                            noisedict=noise_dict,
-                           components=args.nfreqs,
+                           n_gwbfreqs=args.nfreqs,
+                           gamma_common=gamma_gw,
+                           upper_limit=args.gwb_ul,
+                           bayesephem=args.bayes_ephem,
+                           wideband=args.wideband,
+                           pshift=args.pshift,
+                           select='backend')
+if args.model=='model_3a':
+    pta = models.model_3a(psrs, psd=args.psd,
+                           noisedict=noise_dict,
+                           n_gwbfreqs=args.nfreqs,
                            gamma_common=gamma_gw,
                            upper_limit=args.gwb_ul,
                            bayesephem=args.bayes_ephem,
