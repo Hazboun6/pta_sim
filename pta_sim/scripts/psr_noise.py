@@ -55,7 +55,7 @@ if args.pickle=='no_pickle':
 else:
     with open(args.pickle, 'rb') as fin:
         psrs = pickle.load(fin,encoding='latin1')
-    if len(psrs)>1:
+    if isinstance(psrs,list):
         pnames = [p.name for p in psrs]
         pidx = pnames.index(args.psr)
         psr = psrs[pidx]
