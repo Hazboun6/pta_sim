@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 import numpy as np
-import pint.toa as toa
-import pint.models as models
-import pint.fitter as fit
-import pint.residuals as r
+# import pint.toa as toa
+# import pint.models as models
+# import pint.fitter as fit
+# import pint.residuals as r
 import astropy.units as u
 
 import enterprise
