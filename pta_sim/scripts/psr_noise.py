@@ -22,7 +22,7 @@ from enterprise import constants as const
 import corner, pickle, sys
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 
-from enterprise_extensions import models, model_utils
+from enterprise_extensions import models, model_utils, sampler
 
 from astropy import log
 import glob
@@ -88,7 +88,7 @@ else:
                                        components=args.nfreqs,
                                        wideband=args.wideband)
 
-sampler = model_utils.setup_sampler(pta=pta,
+Sampler = sampler.setup_sampler(pta=pta,
                                     outdir=Outdir,
                                     resume=True)
 freqs = bys.get_freqs(pta, signal_id='red_noise')
@@ -96,4 +96,4 @@ np.savetxt(Outdir+'achrom_freqs.txt', freqs)
 
 x0 = np.hstack(p.sample() for p in pta.params)
 
-sampler.sample(x0, Niter=args.niter)
+Sampler.sample(x0, Niter=args.niter)
