@@ -55,9 +55,12 @@ if args.pickle=='no_pickle':
 else:
     with open(args.pickle, 'rb') as fin:
         psrs = pickle.load(fin,encoding='latin1')
-    pnames = [p.name for p in psrs]
-    pidx = pnames.index(args.psr)
-    psr = psrs[pidx]
+    if len(psrs)>1:
+        pnames = [p.name for p in psrs]
+        pidx = pnames.index(args.psr)
+        psr = psrs[pidx]
+    else:
+        psr = psrs
 
 if args.end_time is None:
     Outdir = args.outdir+'all/{0}/'.format(psr.name)
