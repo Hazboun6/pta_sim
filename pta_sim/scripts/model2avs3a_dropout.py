@@ -97,7 +97,8 @@ if dropout:
     k_drop = parameter.Uniform(0, 1)
     if args.dp_thresh == 6.0:
         dp_thresh = parameter.Uniform(0,1)('k_threshold')
-
+    else:
+        dp_thresh = args.dp_thresh
     pl = dropout.dropout_powerlaw(log10_A=log10_A, gamma=gamma,
                                   k_drop=k_drop, k_threshold=dp_thresh)
     rn_plaw = gp_signals.FourierBasisGP(pl, components=30,
