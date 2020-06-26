@@ -111,9 +111,11 @@ else:
 
 ### GWB ###
 crn = models.common_red_noise_block(psd='powerlaw', prior='log-uniform',
-                                   Tspan=Tspan, gamma_val=13/3., name='gw')
+                                    components=args.n_gwbfreqs,
+                                    Tspan=Tspan, gamma_val=13/3., name='gw')
 
-gw = models.common_red_noise_block(psd='powerlaw', prior='log-uniform',orf='hd',
+gw = models.common_red_noise_block(psd='powerlaw', prior='log-uniform',
+                                   components=args.n_gwbfreqs, orf='hd',
                                    Tspan=Tspan, gamma_val=13/3., name='gw')
 base_model = tm + wn
 
@@ -158,7 +160,7 @@ if args.emp_distr is None:
     emp_dist = '/home/jeffrey.hazboun/nanograv/Data/pickles/ng11yr_v2_std_plaw_emp_dist.pkl'
 else:
     emp_dist = args.emp_distr
-    
+
 hm = hypermodel.HyperModel(models=ptas)
 sampler = hm.setup_sampler(outdir=args.outdir, resume=True,
                            empirical_distr=emp_dist)
