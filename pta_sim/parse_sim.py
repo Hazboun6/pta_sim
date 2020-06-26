@@ -45,7 +45,7 @@ parser.add_argument('--dp_thresh', dest='dp_thresh', action='store',
 parser.add_argument('--ephem', dest='ephem', action='store',
                     type=str, default='DE436', help='SS Ephemeris')
 parser.add_argument('--emp_distr', dest='emp_distr', action='store',
-                    type=str, default=None,
+                    default=None,
                     help='Option to give a pickled enterprise list of pulsars')
 parser.add_argument('--end_time', dest='end_time', action='store',
                     type=float, default=None, help='End MJD for slicing.')
