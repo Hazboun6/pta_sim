@@ -154,7 +154,11 @@ pta_gw.set_default_params(noise)
 ptas = {0:pta_crn,
         1:pta_gw}
 
-emp_dist = '/home/jeffrey.hazboun/nanograv/Data/pickles/ng11yr_v2_std_plaw_emp_dist.pkl'
+if args.emp_distr is None:
+    emp_dist = '/home/jeffrey.hazboun/nanograv/Data/pickles/ng11yr_v2_std_plaw_emp_dist.pkl'
+else:
+    emp_dist = args.emp_distr
+    
 hm = hypermodel.HyperModel(models=ptas)
 sampler = hm.setup_sampler(outdir=args.outdir, resume=True,
                            empirical_distr=emp_dist)
