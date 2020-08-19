@@ -127,7 +127,7 @@ for ii, (power, pr_range) in enumerate(zip(args.sw_r2p, sw_r2p_ranges)):
         print('1 ',power,pr_range)
         bins = np.array([53188.38909, 53553.63909, 53918.88909, 54284.13909,
                          54649.38909, 55014.63909, 55379.88909, 55745.13909,
-                         56110.38909, 56475.63909, 56840.88909, 57206.13909])
+                         56110.38909, 56475.63909, 56840.88909, 57379.99])
         bins *= 24*3600 #Convert to secs
         n_earth = SW.ACE_SWEPAM_Parameter(size=bins.size-1)('nE')
         deter_sw = SW.solar_wind(n_earth=n_earth, n_earth_bins=bins)
