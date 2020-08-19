@@ -128,14 +128,14 @@ for ii, (power, pr_range) in enumerate(zip(args.sw_r2p, sw_r2p_ranges)):
         bins = np.array([53188.38909, 53553.63909, 53918.88909, 54284.13909,
                          54649.38909, 55014.63909, 55379.88909, 55745.13909,
                          56110.38909, 56475.63909, 56840.88909, 57206.13909])
-        n_earth = SW.ACE_SWEPAM_Parameter()('nE_{0}'.format(ii+1))
+        n_earth = SW.ACE_SWEPAM_Parameter(size=bins.size-1)('nE')
         deter_sw = SW.solar_wind(n_earth=n_earth, n_earth_bins=bins)
         dm_block += deterministic_signals.Deterministic(deter_sw,
                                                  name='sw_{0}'.format(ii+1))
     elif len(power)==1:
         print('2 ',power,pr_range)
         n_earth = parameter.Uniform(pr_range[0],
-                                    pr_range[1])('nE_{0}'.format(ii+1))
+                                    pr_range[1])('nE_{0}'.format(power))
         sw_power = parameter.Constant(power[0])('sw_power_{0}'.format(ii+1))
         log10_ne = True if pr_range[0] < 0 else False
         deter_sw = SW.solar_wind_r_to_p(n_earth=n_earth,
@@ -145,7 +145,7 @@ for ii, (power, pr_range) in enumerate(zip(args.sw_r2p, sw_r2p_ranges)):
                                                      name='sw_{0}'.format(ii+1))
     elif len(power)>1:
         print('3 ',power,pr_range)
-        n_earth = parameter.Uniform(pr_range[0], pr_range[1])('nE_{0}'.format(ii+1))
+        n_earth = parameter.Uniform(pr_range[0], pr_range[1])('nE_p{0}'.format(ii+1))
         sw_power = parameter.Uniform(power[0], power[1])('sw_power_{0}'.format(ii+1))
         log10_ne = True if pr_range[0] < 0 else False
         deter_sw = SW.solar_wind_r_to_p(n_earth=n_earth,
