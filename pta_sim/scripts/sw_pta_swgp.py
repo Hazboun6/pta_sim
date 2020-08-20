@@ -157,7 +157,11 @@ if args.bayes_ephem:
     model += eph
 
 log10_sigma = parameter.Uniform(-10, -4)
-log10_ell = parameter.Uniform(1, 4)
+if args.single_swgp_log10_ell:
+    log10_ell = parameter.Uniform(1, 4)('sw_log10_ell')
+else:
+    log10_ell = parameter.Uniform(1, 4)
+
 sw_basis = SW.linear_interp_basis_sw_dm()
 sw_prior = gpk.se_dm_kernel(log10_sigma=log10_sigma, log10_ell=log10_ell)
 
