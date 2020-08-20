@@ -163,7 +163,7 @@ else:
     log10_ell = parameter.Uniform(1, 4)
 
 sw_basis = SW.linear_interp_basis_sw_dm()
-sw_prior = gpk.se_dm_kernel(log10_sigma=log10_sigma, log10_ell=log10_ell)
+sw_prior = se_dm_kernel(log10_sigma=log10_sigma, log10_ell=log10_ell)
 
 gp_sw = gp_signals.BasisGP(sw_prior, sw_basis, name='gp_sw')
 
