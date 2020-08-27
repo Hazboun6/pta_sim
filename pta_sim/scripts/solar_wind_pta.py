@@ -255,8 +255,10 @@ class my_JP(sampler.JumpProposal):
                 param.get_logpdf(q[self.pmap[str(param)]]))
 
         return q, float(lqxy)
-
-emp_dist_pkl='/home/jeffrey.hazboun/nanograv/Work/solar_wind/ng11yr_emp_dist_sw_plaw_rn_be_se_dmgp.pkl'
+if args.emp_distr is None:
+    emp_dist_pkl='/home/jeffrey.hazboun/nanograv/Work/solar_wind/ng11yr_emp_dist_sw_plaw_rn_be_se_dmgp.pkl'
+else:
+    emp_dist_pkl = args.emp_distr
 jp = my_JP(pta, empirical_distr=emp_dist_pkl)
 Sampler.addProposalToCycle(jp.draw_from_prior, 15)
 # Sampler.addProposalToCycle(jp.draw_from_dm_sw_prior, 20)
