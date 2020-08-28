@@ -91,8 +91,8 @@ parser.add_argument('--nyears', dest='nyears', action='store',
                     help='Number of years of data to include')
 parser.add_argument('--niter', dest='niter', action='store',
                     type=int, default=1001000, help='Number of iterations')
-parser.add_argument('--noisepath', dest='noisepath', action='store', type=str,
-                    default='./os.txt', help='Path to noise file or files.')
+parser.add_argument('--noisepath', dest='noisepath', action='store',
+                    default=None, help='Path to noise file or files.')
 parser.add_argument('--obs', dest='obs', action='store',
                     type=str, default='all', help='Observatory')
 parser.add_argument('--outdir', dest='outdir', action='store', type=str,

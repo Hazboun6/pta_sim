@@ -33,8 +33,8 @@ args = parse_sim.arguments()
 
 if args.pickle=='no_pickle':
     if args.use_pint:
-        parfiles = glob.glob(args.pardir + '*.gls.par')
-        timfiles = glob.glob(args.timdir + '*.tim')
+        parfiles = sorted(glob.glob(args.pardir + '*.gls.par'))
+        timfiles = sorted(glob.glob(args.timdir + '*.tim'))
         if len(timfiles)!=len(parfiles):
             raise ValueError('List of parfiles and timfiles not equal!!!')
 
@@ -47,8 +47,8 @@ if args.pickle=='no_pickle':
             psr = Pulsar(t, f.model, ephem=args.ephem)
             psrs.append(psr)
     else:
-        parfiles = glob.glob(args.pardir + '*.par')
-        timfiles = glob.glob(args.timdir + '*.tim')
+        parfiles = sorted(glob.glob(args.pardir + '*.par'))
+        timfiles = sorted(glob.glob(args.timdir + '*.tim'))
         j1713_tempo_par = [p for p in parfiles
                            if ('J1713+0747' in p)
                            and ('.t2.' not in p)][0]
@@ -69,7 +69,10 @@ tmin = np.amin([p.toas.min() for p in psrs])
 tmax = np.amax([p.toas.max() for p in psrs])
 Tspan = tmax-tmin
 
-noise_json = '/home/jeffrey.hazboun/nanograv/Work/solar_wind/ng11yr_sw_noise_dict.json'
+if args.noisepath is None:
+    noise_json = '/home/jeffrey.hazboun/nanograv/Work/solar_wind/ng11yr_sw_noise_dict.json'
+else:
+    noise_json = args.noisepath
 with open(noise_json, "r") as f:
     noise_dict = json.load(f)
 
