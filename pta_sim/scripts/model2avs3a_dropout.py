@@ -170,6 +170,7 @@ np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
 
 
 x0 = hm.initial_sample()
+print('Initial Sample: ',x0)
 sampler.sample(x0, args.niter, SCAMweight=30, AMweight=15, DEweight=50, writeHotChains=args.writeHotChains,)
 
 save_core(args.corepath, args.outdir)
