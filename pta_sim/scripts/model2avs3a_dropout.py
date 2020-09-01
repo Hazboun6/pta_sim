@@ -91,7 +91,7 @@ wn = models.white_noise_block(vary=False, inc_ecorr=inc_ecorr)
 
 ### Red Noise ###
 # Code for red noise dropout
-if dropout:
+if args.dropout:
     log10_A = parameter.Uniform(-20, -11)
     gamma = parameter.Uniform(0, 7)
     k_drop = parameter.Uniform(0, 1)
@@ -170,6 +170,8 @@ np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
 
 
 x0 = hm.initial_sample()
+k_drop_idxs = np.where(['k_drop' in p for p in hm.param_names])
+x0[k_drop_idxs] = 1.0
 print('Initial Sample: ',x0)
 sampler.sample(x0, args.niter, SCAMweight=30, AMweight=15, DEweight=50, writeHotChains=args.writeHotChains,)
 
