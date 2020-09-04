@@ -91,8 +91,17 @@ wn = models.white_noise_block(vary=False, inc_ecorr=inc_ecorr)
 
 ### Red Noise ###
 # Code for red noise dropout
+if args.gwb_ul:
+    prior = 'uniform'
+else:
+    prior = 'log-uniform'
+
 if args.dropout:
-    log10_A = parameter.Uniform(-20, -11)
+    if args.gwb_ul:
+        log10_A = parameter.LinearExp(-20, -11)
+    else:
+        log10_A = parameter.Uniform(-20, -11)
+        
     gamma = parameter.Uniform(0, 7)
     k_drop = parameter.Uniform(0, 1)
     if args.dp_thresh == 6.0:
@@ -105,16 +114,16 @@ if args.dropout:
                                         Tspan=Tspan, name='red_noise')
 
 else:
-    rn_plaw = models.red_noise_block(psd='powerlaw', prior='log-uniform',
+    rn_plaw = models.red_noise_block(psd='powerlaw', prior=prior,
                                      Tspan=Tspan, components=30,
                                      gamma_val=None)
 
 ### GWB ###
-crn = models.common_red_noise_block(psd='powerlaw', prior='log-uniform',
+crn = models.common_red_noise_block(psd='powerlaw', prior=prior,
                                     components=args.n_gwbfreqs,
                                     Tspan=Tspan, gamma_val=13/3., name='gw')
 
-gw = models.common_red_noise_block(psd='powerlaw', prior='log-uniform',
+gw = models.common_red_noise_block(psd='powerlaw', prior=prior,
                                    components=args.n_gwbfreqs, orf='hd',
                                    Tspan=Tspan, gamma_val=13/3., name='gw')
 base_model = tm + wn
