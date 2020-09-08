@@ -97,10 +97,7 @@ else:
     prior = 'log-uniform'
 
 if args.dropout:
-    if args.gwb_ul:
-        log10_A = parameter.LinearExp(-20, -11)
-    else:
-        log10_A = parameter.Uniform(-20, -11)
+    log10_A = parameter.Uniform(-20, -11)
 
     gamma = parameter.Uniform(0, 7)
     k_drop = parameter.Uniform(0, 1)
@@ -114,7 +111,7 @@ if args.dropout:
                                         Tspan=Tspan, name='red_noise')
 
 else:
-    rn_plaw = models.red_noise_block(psd='powerlaw', prior=prior,
+    rn_plaw = models.red_noise_block(psd='powerlaw', prior='log-uniform',
                                      Tspan=Tspan, components=30,
                                      gamma_val=None)
 
