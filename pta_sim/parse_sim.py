@@ -77,6 +77,8 @@ parser.add_argument('--hot_chain', dest='hot_chain', action='store_true',
 parser.add_argument('--logf', dest='logf', action='store_true',
                     default=False,
                     help='Option to use log spaced frequencies in GPs.')
+parser.add_argument('--min_tspan', dest='min_tspan', action='store',
+                    type=float, default=3.0, help='Minimum timspan of pulsars to include.')
 parser.add_argument('--model', dest='model', action='store',
                     type=str, default='model_2a', help='NG11yr Model Name')
 parser.add_argument('--model_kwargs_path', dest='model_kwargs_path',
