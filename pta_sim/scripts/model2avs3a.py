@@ -98,9 +98,9 @@ if args.rn_psrs[0]=='all':
 else:
     rn_psrs=args.rn_psrs
 
-pta_crn = models.model_2a(psrs, psd='powerlaw', noisedict=noise,
-                          n_gwbfreqs=args.nfreqs,
-                          gamma_common=13/3., upper_limit=False,
+pta_crn = models.model_2a(psrs, psd=args.psd, noisedict=noise,
+                          n_gwbfreqs=args.nfreqs, gamma_common=13/3.,
+                          delta_common=0., upper_limit=False,
                           bayesephem=args.bayes_ephem, be_type='setIII',
                           wideband=False, rn_psrs=rn_psrs,
                           select='backend', pshift=False)
@@ -119,9 +119,9 @@ else:
         p._pos = p._get_pos()
         print(p.name,': ',p.theta,p.phi,p._raj,p._decj,p._pos)
 
-pta_gw = models.model_3a(psrs, psd='powerlaw', noisedict=noise,
-                         n_gwbfreqs=args.nfreqs,
-                         gamma_common=13/3., upper_limit=False,
+pta_gw = models.model_3a(psrs, psd=args.psd, noisedict=noise,
+                         n_gwbfreqs=args.nfreqs, gamma_common=13/3.,
+                         delta_common=0., upper_limit=False,
                          bayesephem=args.bayes_ephem, be_type='setIII',
                          wideband=False, rn_psrs=rn_psrs,
                          pshift=args.pshift)
