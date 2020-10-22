@@ -148,6 +148,7 @@ with open(args.outdir+'/model_params.json' , 'w') as fout:
 
 x0 = hm.initial_sample()
 sampler.sample(x0, args.niter, SCAMweight=30, AMweight=15,
-               DEweight=30, burn=300000)
+               DEweight=30, burn=300000, writeHotChains=args.writeHotChains,
+               hotChain=args.hot_chain)
 
 save_core(args.corepath, args.outdir)
