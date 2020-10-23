@@ -23,7 +23,7 @@ from enterprise.signals import deterministic_signals
 from enterprise import constants as const
 
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
-from enterprise_extensions import models, model_utils, hypermodel, dropout
+from enterprise_extensions import models, model_utils, hypermodel, dropout, blocks
 from enterprise_extensions.frequentist import optimal_statistic as OS
 
 
@@ -138,10 +138,10 @@ model2a_psrs = []
 if rn_psrs=='all':
     model_1 = base_model + rn_plaw
     model_2a = model_1 + gw
-    model_1_ec = model_1 + white_noise_block(vary=False, inc_ecorr=True)
-    model_1 += white_noise_block(vary=False, inc_ecorr=False)
-    model_2a_ec = model_2a + white_noise_block(vary=False, inc_ecorr=True)
-    model_2a += white_noise_block(vary=False, inc_ecorr=False)
+    model_1_ec = model_1 + blocks.white_noise_block(vary=False, inc_ecorr=True)
+    model_1 += blocks.white_noise_block(vary=False, inc_ecorr=False)
+    model_2a_ec = model_2a + blocks.white_noise_block(vary=False, inc_ecorr=True)
+    model_2a += blocks.white_noise_block(vary=False, inc_ecorr=False)
 
     for p in psrs:
         if 'NANOGrav' in p.flags['pta'] and not args.wideband:
