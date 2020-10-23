@@ -183,12 +183,13 @@ hm = hypermodel.HyperModel(models=ptas, log_weights=model_wts)
 sampler = hm.setup_sampler(outdir=args.outdir, resume=True,
                            empirical_distr=args.emp_distr)
 
-# achrom_freqs = get_freqs(ptas[0])
-# np.save(args.outdir + 'pars.npy', pta.param_names)
-# np.save(args.outdir + 'par_model.npy', np.array(pta.params).astype(str))
-# np.save(args.outdir + 'signals.npy', list(pta.signals.keys()))
-# np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
+model_params = {}
+for ii,mod in enumerate(ptas):
+    model_params.update({ii : ptas[ii].param_names})
 
+with open(args.outdir+'/model_params.json' , 'w') as fout:
+    json.dump(model_params, fout, sort_keys=True, indent=4,
+              separators=(',', ': '))
 
 x0 = hm.initial_sample()
 sampler.sample(x0, args.niter, SCAMweight=30, AMweight=20, DEweight=50,
