@@ -92,15 +92,11 @@ if args.tspan is None:
 else:
     Tspan=args.tspan
 
-if args.wideband:
-    inc_ecorr = False
-else:
-    inc_ecorr = True
 
 ### Timing Model ###
 tm = gp_signals.TimingModel()
-### White Noise ###
-wn = models.white_noise_block(vary=False, inc_ecorr=inc_ecorr)
+
+
 
 ### Red Noise ###
 # Code for red noise dropout
@@ -127,7 +123,7 @@ gw = models.common_red_noise_block(psd=args.psd, prior='log-uniform',
                                    Tspan=Tspan, gamma_val=13/3., name='gw',
                                    components=args.nfreqs,
                                    delta_val=0.0)
-base_model = tm + wn
+base_model = tm
 
 if args.bayes_ephem:
     base_model += deterministic_signals.PhysicalEphemerisSignal(use_epoch_toas=True)
@@ -137,11 +133,24 @@ if args.rn_psrs[0]=='all':
 else:
     rn_psrs=args.rn_psrs
 
+model1_psrs = []
+model2a_psrs = []
 if rn_psrs=='all':
     model_1 = base_model + rn_plaw
     model_2a = model_1 + gw
-    model1_psrs = [model_1(p) for p in psrs]
-    model2a_psrs = [model_2a(p) for p in psrs]
+    model_1_ec = model_1 + white_noise_block(vary=False, inc_ecorr=True)
+    model_1 += white_noise_block(vary=False, inc_ecorr=False)
+    model_2a_ec = model_2a + white_noise_block(vary=False, inc_ecorr=True)
+    model_2a += white_noise_block(vary=False, inc_ecorr=False)
+
+    for p in psrs:
+        if 'NANOGrav' in p.flags['pta'] and not args.wideband:
+            model1_psrs.append(model_1_ec(p))
+            model2a_psrs.append(model_2a_ec(p))
+        else:
+            model1_psrs.append(model_1(p))
+            model2a_psrs.append(model_2a(p))
+
 elif isinstance(rn_psrs,list):
     model1_psrs = []
     model2a_psrs = []
