@@ -71,6 +71,19 @@ else:
         for idx in reversed(idxs):
             del psrs[idx]
 
+
+pidxs = []
+for pidx, psr in enumerate(psrs):
+    start_time = psr.toas.min()/(24*3600)
+    last_time = psr.toas.max()/(24*3600)
+    if (last_time-start_time)/365.25 < args.min_tspan:
+        print('PSR {0} baseline less than {1} years. Not being included in analysis'.format(psr.name,args.min_tspan))
+        pidxs.append(pidx)
+
+for idx in reversed(pidxs):
+    del psrs[idx]
+
+
 with open(args.noisepath, 'r') as fin:
     noise =json.load(fin)
 
@@ -110,8 +123,10 @@ else:
                                      gamma_val=None)
 
 ### GWB ###
-gw = models.common_red_noise_block(psd='powerlaw', prior='log-uniform',
-                                   Tspan=Tspan, gamma_val=13/3., name='gw')
+gw = models.common_red_noise_block(psd=args.psd, prior='log-uniform',
+                                   Tspan=Tspan, gamma_val=13/3., name='gw',
+                                   components=args.nfreqs,
+                                   delta_val=0.0)
 base_model = tm + wn
 
 if args.bayes_ephem:
@@ -150,10 +165,10 @@ pta_gw.set_default_params(noise)
 ptas = {0:pta_noise,
         1:pta_gw}
 
-emp_dist = '/home/jeffrey.hazboun/nanograv/Data/pickles/ng11yr_v2_std_plaw_emp_dist.pkl'
-hm = hypermodel.HyperModel(models=ptas)
+
+hm = hypermodel.HyperModel(models=ptas, log_weights=args.model_wts)
 sampler = hm.setup_sampler(outdir=args.outdir, resume=True,
-                           empirical_distr=emp_dist)
+                           empirical_distr=args.emp_distr)
 
 # achrom_freqs = get_freqs(ptas[0])
 # np.save(args.outdir + 'pars.npy', pta.param_names)
@@ -163,6 +178,8 @@ sampler = hm.setup_sampler(outdir=args.outdir, resume=True,
 
 
 x0 = hm.initial_sample()
-sampler.sample(x0, args.niter, SCAMweight=30, AMweight=15, DEweight=50, )
+sampler.sample(x0, args.niter, SCAMweight=30, AMweight=20, DEweight=50,
+               burn=300000, writeHotChains=args.writeHotChains,
+               hotChain=args.hot_chain)
 
 save_core(args.corepath, args.outdir)

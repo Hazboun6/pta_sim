@@ -2,6 +2,7 @@
 # coding: utf-8
 import argparse
 import numpy as np
+import json
 
 parser = argparse.ArgumentParser()
 
@@ -84,6 +85,8 @@ parser.add_argument('--model', dest='model', action='store',
 parser.add_argument('--model_kwargs_path', dest='model_kwargs_path',
                     action='store',
                     type=str, default=None, help='kwargs for model selection')
+parser.add_argument('--model_wts', dest='model_wts', action='store',
+                    type=json.loads, default=None, help='Log Model weights for model selection.')
 parser.add_argument('--nfreqs', dest='nfreqs', action='store',
                     type=int, default=30, help='Number of Freqs')
 parser.add_argument('--n_gwbfreqs', dest='n_gwbfreqs', action='store',
