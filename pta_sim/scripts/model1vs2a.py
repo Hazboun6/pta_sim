@@ -165,8 +165,12 @@ pta_gw.set_default_params(noise)
 ptas = {0:pta_noise,
         1:pta_gw}
 
+if args.model_wts is None:
+    model_wts = None
+else:
+    model_wts = dict(enumerate(args.model_wts))
 
-hm = hypermodel.HyperModel(models=ptas, log_weights=args.model_wts)
+hm = hypermodel.HyperModel(models=ptas, log_weights=model_wts)
 sampler = hm.setup_sampler(outdir=args.outdir, resume=True,
                            empirical_distr=args.emp_distr)
 
