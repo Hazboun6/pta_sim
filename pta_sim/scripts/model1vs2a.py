@@ -100,7 +100,7 @@ tm = gp_signals.TimingModel()
 
 ### Red Noise ###
 # Code for red noise dropout
-if dropout:
+if args.dropout:
     log10_A = parameter.Uniform(-20, -11)
     gamma = parameter.Uniform(0, 7)
     k_drop = parameter.Uniform(0, 1)
