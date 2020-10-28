@@ -59,9 +59,9 @@ parser.add_argument('--gamma_dm', dest='gamma_dm', action='store',
                     type=float, default=2.0,
                     help='Chromatic f^-2 Red Noise Spectral Index to Simulate')
 parser.add_argument('--gamma_gw', dest='gamma_gw', action='store',
-                    type=float, default=13./3, help='GWB spectral index')
+                    type=float, default=None, help='GWB spectral index')
 parser.add_argument('--gamma_rn', dest='gamma_rn', action='store',
-                    type=float, default=5,
+                    type=float, default=None,
                     help='Achromatic Red Noise spectral index to Simulate')
 parser.add_argument('--gwb_bf', dest='gwb_bf', action='store_true',
                     default=False, help='Do a GWB detection run.')

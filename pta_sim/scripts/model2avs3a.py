@@ -99,7 +99,7 @@ else:
     rn_psrs=args.rn_psrs
 
 pta_crn = models.model_2a(psrs, psd=args.psd, noisedict=noise,
-                          n_gwbfreqs=args.nfreqs, gamma_common=13/3.,
+                          n_gwbfreqs=args.nfreqs, gamma_common=args.gamma_gw,
                           delta_common=0., upper_limit=False,
                           bayesephem=args.bayes_ephem, be_type='setIII',
                           wideband=False, rn_psrs=rn_psrs,
@@ -120,7 +120,7 @@ else:
         print(p.name,': ',p.theta,p.phi,p._raj,p._decj,p._pos)
 
 pta_gw = models.model_3a(psrs, psd=args.psd, noisedict=noise,
-                         n_gwbfreqs=args.nfreqs, gamma_common=13/3.,
+                         n_gwbfreqs=args.nfreqs, gamma_common=args.gamma_gw,
                          delta_common=0., upper_limit=False,
                          bayesephem=args.bayes_ephem, be_type='setIII',
                          wideband=False, rn_psrs=rn_psrs,

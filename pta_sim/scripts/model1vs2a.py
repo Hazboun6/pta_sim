@@ -120,7 +120,7 @@ else:
 
 ### GWB ###
 gw = models.common_red_noise_block(psd=args.psd, prior='log-uniform',
-                                   Tspan=Tspan, gamma_val=13/3., name='gw',
+                                   Tspan=Tspan, gamma_val=args.gamma_gw, name='gw',
                                    components=args.nfreqs,
                                    delta_val=0.0)
 base_model = tm
