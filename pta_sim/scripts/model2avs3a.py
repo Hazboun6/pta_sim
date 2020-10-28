@@ -128,7 +128,12 @@ pta_gw = models.model_3a(psrs, psd=args.psd, noisedict=noise,
 ptas = {0:pta_crn,
         1:pta_gw}
 
-hm = hypermodel.HyperModel(models=ptas)
+if args.model_wts is None:
+    model_wts = None
+else:
+    model_wts = dict(enumerate(args.model_wts))
+
+hm = hypermodel.HyperModel(models=ptas, log_weights=model_wts)
 sampler = hm.setup_sampler(outdir=args.outdir, resume=True,
                            empirical_distr = args.emp_distr)
 
