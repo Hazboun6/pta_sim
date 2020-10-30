@@ -121,7 +121,13 @@ parser.add_argument('--process', dest='process', action='store',
                     type=int, help='Condor process number')
 parser.add_argument('--psd', dest='psd', action='store',
                     type=str, default='powerlaw',
-                    help='Name of power spectral density prior.')
+                    help='Name of power spectral density prior fcn.')
+parser.add_argument('--psd_crn', dest='psd_crn', action='store',
+                    type=str, default='powerlaw',
+                    help='Name of CRN power spectral density prior fcn.')
+parser.add_argument('--psd_gw', dest='psd_gw', action='store',
+                    type=str, default='powerlaw',
+                    help='Name of GW power spectral density prior fcn.')
 parser.add_argument('--pshift', dest='pshift', action='store_true',
                     default=False, help='Turn on phase shifts.')
 parser.add_argument('--psr', dest='psr', action='store',
