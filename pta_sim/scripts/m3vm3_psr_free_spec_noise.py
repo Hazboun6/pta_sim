@@ -91,7 +91,7 @@ rn_fs = blocks.red_noise_block(psd='spectrum', prior='log-uniform',
                                Tspan=Tspan, components=30, gamma_val=None)
 
 ### GWB ###
-gw = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform',
+gw = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform',orf='hd',
                                    Tspan=Tspan, components=args.n_gwbfreqs,
                                    gamma_val=args.gamma_gw, name='gw')
 
