@@ -104,14 +104,14 @@ model_plaw = base_model + rn_plaw
 model_fs = base_model + rn_fs
 
 model_list = []
-noise = {}
+noise = noise_plaw#{}
 for psr in psrs:
     if psr.name in args.free_spec_psrs:
         model_list.append(model_fs(psr))
-        noise.update(noise_fs[psr.name])
+        # noise.update(noise_fs[psr.name])
     else:
         model_list.append(model_plaw(psr))
-        noise.update(noise_plaw[psr.name])
+        # noise.update(noise_plaw[psr.name])
 
 pta_gw_fs = signal_base.PTA(model_list)
 pta.set_default_params(noise)
