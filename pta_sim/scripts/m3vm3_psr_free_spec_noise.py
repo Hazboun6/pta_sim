@@ -121,7 +121,7 @@ pta_gw = models.model_3a(psrs, psd=args.psd, noisedict=noise,
                          n_gwbfreqs=args.nfreqs, gamma_common=args.gamma_gw,
                          delta_common=0., upper_limit=False,
                          bayesephem=args.bayes_ephem, be_type='setIII',
-                         wideband=False, rn_psrs=rn_psrs,
+                         wideband=False, rn_psrs='all',
                          pshift=args.pshift)
 ptas = {0:pta_gw,
         1:pta_gw_fs}
