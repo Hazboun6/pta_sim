@@ -114,7 +114,7 @@ for psr in psrs:
         # noise.update(noise_plaw[psr.name])
 
 pta_gw_fs = signal_base.PTA(model_list)
-pta.set_default_params(noise)
+pta_gw_fs.set_default_params(noise)
 
 
 pta_gw = models.model_3a(psrs, psd=args.psd, noisedict=noise,
