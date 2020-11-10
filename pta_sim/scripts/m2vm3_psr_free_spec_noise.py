@@ -70,8 +70,9 @@ noise_fs = {}
 fs_noisedir = '/usr/lusers/hazboun/data/nanograv/15YearPrelim1FreeSpecNoiseFiles/'
 fsnoise = sorted(glob.glob(fs_noisedir+'*_noise.json'))
 for ns in fsnoise:
+    pname = ns.split('/')[-1].split('_')[0]
     with open(ns, 'r') as fin:#.replace('plaw','fs')
-        noise_fs.update(json.load(fin))
+        noise_fs.update({pname:json.load(fin)})
 
 
 if args.tspan is None:
