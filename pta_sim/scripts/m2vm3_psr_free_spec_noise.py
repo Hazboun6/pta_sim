@@ -85,6 +85,9 @@ if args.wideband:
 else:
     inc_ecorr = True
 
+### Timing Model ###
+tm = gp_signals.TimingModel()
+
 ### White Noise ###
 wn = blocks.white_noise_block(vary=False, inc_ecorr=inc_ecorr)
 
@@ -104,8 +107,8 @@ gw = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform',orf='hd',
                                    Tspan=Tspan, components=args.n_gwbfreqs,
                                    gamma_val=args.gamma_gw, name='gw')
 
-base_model_crn = wn + crn
-base_model_gw = wn + gw
+base_model_crn = tm + wn + crn
+base_model_gw = tm + wn + gw
 
 if args.bayes_ephem:
     base_model += deterministic_signals.PhysicalEphemerisSignal(use_epoch_toas=True)

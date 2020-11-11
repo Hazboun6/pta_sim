@@ -24,6 +24,7 @@ from enterprise import constants as const
 
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 from enterprise_extensions import models, model_utils
+from enterprise_extensions import blocks, sampler
 from enterprise_extensions.frequentist import optimal_statistic as OS
 
 sys.path.insert(0,'/Users/hazboun/software_development/pta_sim/')
@@ -82,7 +83,7 @@ with open(args.noisepath.replace('plaw','fs'), 'r') as fin:
 
 
 if args.tspan is None:
-    Tspan = model_utils.get_tspan(psrs)
+    Tspan = sampler.get_tspan(psrs)
 else:
     Tspan=args.tspan
 
@@ -91,20 +92,23 @@ if args.wideband:
 else:
     inc_ecorr = True
 
+### Timing Model ###
+tm = gp_signals.TimingModel()
 ### White Noise ###
-wn = models.white_noise_block(vary=False, inc_ecorr=inc_ecorr)
+wn = blocks.white_noise_block(vary=False, inc_ecorr=inc_ecorr)
 ### Red Noise ###
-rn_plaw = models.red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan,
-                          components=30, gamma_val=None)
+rn_plaw = blocks.red_noise_block(psd='powerlaw', prior='log-uniform',
+                                 Tspan=Tspan, components=30, gamma_val=None)
 
-rn_fs = models.red_noise_block(psd='spectrum', prior='log-uniform', Tspan=Tspan,
-                    components=30, gamma_val=None)
+rn_fs = blocks.red_noise_block(psd='spectrum', prior='log-uniform',
+                               Tspan=Tspan, components=30, gamma_val=None)
 
 ### GWB ###
-gw = models.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan,
-                            gamma_val=None, name='gw')
+gw = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform',
+                                   Tspan=Tspan,
+                                   gamma_val=None, name='gw')
 
-base_model = wn + gw
+base_model = tm = wn + gw
 
 if args.bayes_ephem:
     base_model += deterministic_signals.PhysicalEphemerisSignal(use_epoch_toas=True)
@@ -133,40 +137,39 @@ cov = np.diag(np.ones(ndim) * 0.01**2)
 
 # set up jump groups by red noise groups
 
-groups = model_utils.get_parameter_groups(pta)
-if args.bayes_ephem:
-    eph_pars = ['d_jupiter_mass', 'd_neptune_mass', 'd_saturn_mass',
-                'd_uranus_mass', 'frame_drift_rate',
-                'jup_orb_elements_0', 'jup_orb_elements_1',
-                'jup_orb_elements_2', 'jup_orb_elements_3',
-                'jup_orb_elements_4', 'jup_orb_elements_5']
-    ephem_idx = [pta.param_names.index(par)
-                 for par in pta.param_names
-                 if par in eph_pars]
-    groups.append(ephem_idx)
+# groups = model_utils.get_parameter_groups(pta)
+# if args.bayes_ephem:
+#     eph_pars = ['d_jupiter_mass', 'd_neptune_mass', 'd_saturn_mass',
+#                 'd_uranus_mass', 'frame_drift_rate',
+#                 'jup_orb_elements_0', 'jup_orb_elements_1',
+#                 'jup_orb_elements_2', 'jup_orb_elements_3',
+#                 'jup_orb_elements_4', 'jup_orb_elements_5']
+#     ephem_idx = [pta.param_names.index(par)
+#                  for par in pta.param_names
+#                  if par in eph_pars]
+#     groups.append(ephem_idx)
 
-gw_idx = [pta.param_names.index(par) for par in pta.param_names if 'gw' in par]
-groups.append(gw_idx)
+# gw_idx = [pta.param_names.index(par) for par in pta.param_names if 'gw' in par]
+# groups.append(gw_idx)
 
-sampler = ptmcmc(ndim, pta.get_lnlikelihood, pta.get_lnprior,
-                 cov, groups=groups, outDir=args.outdir, resume=True)
+Sampler = sampler.setup_sampler(pta, outdir=args.outdir, resume=True,
+                                empirical_distr=args.emp_distr)
 
 achrom_freqs = get_freqs(pta)
-np.save(args.outdir + 'pars.npy', pta.param_names)
-np.save(args.outdir + 'par_model.npy', np.array(pta.params).astype(str))
-np.save(args.outdir + 'signals.npy', list(pta.signals.keys()))
 np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
 
-jp = model_utils.JumpProposal(pta, empirical_distr = args.emp_distr)
-sampler.addProposalToCycle(jp.draw_from_prior, 15)
-sampler.addProposalToCycle(jp.draw_from_red_prior, 15)
-sampler.addProposalToCycle(jp.draw_from_empirical_distr, 80)
-if args.bayes_ephem:
-    sampler.addProposalToCycle(jp.draw_from_ephem_prior, 15)
+# jp = model_utils.JumpProposal(pta, empirical_distr = args.emp_distr)
+# Sampler.addProposalToCycle(jp.draw_from_prior, 15)
+# Sampler.addProposalToCycle(jp.draw_from_red_prior, 15)
+# Sampler.addProposalToCycle(jp.draw_from_empirical_distr, 80)
+# if args.bayes_ephem:
+#     Sampler.addProposalToCycle(jp.draw_from_ephem_prior, 15)
 
 N = int(args.niter)
 
-sampler.sample(x0, Niter=N, SCAMweight=30, AMweight=15,
-               DEweight=50, burn=100000)
+Sampler.sample(x0, Niter=N, SCAMweight=30, AMweight=15,
+               DEweight=30, burn=2000000,
+               writeHotChains=args.writeHotChains,
+               hotChain=args.hot_chain,)
 
 save_core(args.corepath, args.outdir)
