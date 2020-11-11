@@ -108,7 +108,7 @@ gw = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform',
                                    Tspan=Tspan,
                                    gamma_val=None, name='gw')
 
-base_model = tm = wn + gw
+base_model = tm + wn + gw
 
 if args.bayes_ephem:
     base_model += deterministic_signals.PhysicalEphemerisSignal(use_epoch_toas=True)
