@@ -137,7 +137,7 @@ else:
 
 hm = hypermodel.HyperModel(models=ptas, log_weights=model_wts)
 
-c0=co.HyperModelCore(args.outdir,args.outdir)
+c0=co.HyperModelCore(args.outdir,chaindir=args.outdir)
 
 for ii in np.random.randint(c0.burn,c0.chain.shape[0],100):
     x = c0.chain[ii,:-4]
