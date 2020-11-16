@@ -142,7 +142,7 @@ c0=co.HyperModelCore(args.outdir,chaindir=args.outdir)
 for ii in np.random.randint(c0.burn,c0.chain.shape[0],100):
     x = c0.chain[ii,:-4]
     new_lnlike = hm.get_lnlikelihood(x)
-    new_lnpost = new_lnlike - hm.get_lnprior(x)
+    new_lnpost = new_lnlike + hm.get_lnprior(x)
     old_lnlike = c0.chain[ii,-3]
     old_lnpost = c0.chain[ii,-4]
     print('New LnLike, Old LnLike, New-Old:',new_lnlike,old_lnlike,new_lnlike-old_lnlike)
