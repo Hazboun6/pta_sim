@@ -22,8 +22,8 @@ with open(args.model_kwargs_path, 'r') as fin:
                 #Model, kernel, DM1, DM2, Chrom Kernel, Index
 model_labels = [['A', 'periodic', True, True, True, 'periodic', 4],
                 ['B', 'periodic', True, True, True, 'sq_exp', 4],
-                ['C', 'periodic', True, True, True, 'periodic_rfband', 4],
-                ['D', 'periodic', True, True, True, 'sq_exp_rfband', 4],
+                ['C', 'periodic', True, True, True, 'periodic', 4.4],
+                ['D', 'periodic', True, True, True, 'sq_exp', 4.4],
                 ['E', 'periodic', True, True, False, None, None],
                 ]
 
