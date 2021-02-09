@@ -23,7 +23,7 @@ with open(args.model_kwargs_path, 'r') as fin:
 model_labels = [['A', 'periodic', True, 'sq_exp', 4],
                 ['B', 'sq_exp', True, 'periodic', 4],
                 ['C', 'periodic_rfband', False, 'none', '-'],
-                ['D', 'sq_exp_rfband', False, 'none', '-']
+                ['D', 'sq_exp_rfband', False, 'none', '-'],
                 ['E', 'periodic_rfband', True, 'sq_exp', 4],
                 ['F', 'sq_exp_rfband', True, 'periodic', 4],
                 ]
