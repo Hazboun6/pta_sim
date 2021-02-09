@@ -32,16 +32,17 @@ ptas = {}
 all_kwargs = {}
 for ii, ent in enumerate(model_labels):
 
-    dip_kwargs = {'dm_nondiag_kernel':ent[1],
+    new_kwargs = {'dm_nondiag_kernel':ent[1],
                   'chrom_gp': ent[2],
                   'chrom_gp_kernel':'nondiag',
                   'chrom_idx':ent[4],
                   'chrom_kernel':ent[3],
                   'chrom_dt':14,
+                  'dm_expdip':False,
                   }
 
     kwargs = copy.deepcopy(model_kwargs['5'])
-    kwargs.update(dip_kwargs)
+    kwargs.update(new_kwargs)
     ptas[ii] = model_singlepsr_noise(psr, **kwargs)
     all_kwargs[ii] = kwargs
 
