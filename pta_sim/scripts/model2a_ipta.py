@@ -117,7 +117,7 @@ try:
 except:
     pass
 
-x0 = np.hstack(p.sample() for p in pta_gw_crn.params)
+x0 = np.hstack(p.sample() for p in pta_crn.params)
 Sampler.sample(x0, args.niter, SCAMweight=30, AMweight=15,
                DEweight=30, burn=300000, writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain)
