@@ -99,7 +99,7 @@ else:
     rn_psrs=args.rn_psrs
 
 pta_crn = models.model_general(psrs, tm_var=False,
-                  Tspan=None, common_psd=args.psd, red_psd='powerlaw', orf=None,
+                  Tspan=None, common_psd=args.psd, red_psd='powerlaw', orf='crn',
                   common_components=args.nfreqs, red_components=30,
                   dm_components=30, noisedict=noise, rn_psrs=rn_psrs,
                   gamma_common=args.gamma_gw, delta_common=0.,
