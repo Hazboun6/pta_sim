@@ -117,7 +117,7 @@ kwargs_out[kys[0]]['extra_sigs'] = str('chrom_quad')
 kwargs_out[kys[1]]['extra_sigs'] = str('dm_gp2 + chrom_quad')
 
 with open(args.outdir + '/model_kwargs.json', 'w') as fout:
-    json.dump(all_kwargs, fout, sort_keys=True,
+    json.dump(kwargs_out, fout, sort_keys=True,
               indent=4, separators=(',', ': '))
 
 with open(args.outdir + '/model_labels.json', 'w') as fout:
