@@ -5,6 +5,7 @@
 
 import json, pickle, copy
 import logging
+import numpy as np
 from enterprise_extensions.models import model_singlepsr_noise
 from enterprise_extensions.hypermodel import HyperModel
 from enterprise.signals import parameter, gp_signals, deterministic_signals
