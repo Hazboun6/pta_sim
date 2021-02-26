@@ -71,7 +71,14 @@ chrom_quad = deterministic_signals.Deterministic(deter_chrom,
                                                  name='deter_chrom_quad')
 
 for ii, ent in enumerate(model_labels):
-    if ent[2]:
+    if ent[2] and ent[5]:
+        extra = dmgp2 + chrom_quad
+    elif ent[2]:
+        extra = dmgp2
+    elif ent[5]:
+        extra = chrom_quad
+    else:
+        extra = None
 
     new_kwargs = {'dm_nondiag_kernel':ent[1],
                   'chrom_gp': ent[3],
@@ -80,6 +87,7 @@ for ii, ent in enumerate(model_labels):
                   'chrom_kernel':ent[4],
                   'chrom_dt':14,
                   'dm_expdip':False,
+                  'extra_sigs':extra,
                   }
 
     kwargs = copy.deepcopy(model_kwargs['5'])
@@ -99,6 +107,13 @@ for ky, pta in ptas.items():
 with open(args.outdir + '/model_params.json', 'w') as fout:
     json.dump(model_params, fout, sort_keys=True,
               indent=4, separators=(',', ': '))
+
+kwargs_out = copy.deepcopy(all_kwargs)
+kys = list(kwargs_out.keys())
+kwargs_out[kys[0]]['extra_sigs'] = None
+kwargs_out[kys[1]]['extra_sigs'] = str('dm_gp2')
+kwargs_out[kys[0]]['extra_sigs'] = str('chrom_quad')
+kwargs_out[kys[1]]['extra_sigs'] = str('dm_gp2 + chrom_quad')
 
 with open(args.outdir + '/model_kwargs.json', 'w') as fout:
     json.dump(all_kwargs, fout, sort_keys=True,
