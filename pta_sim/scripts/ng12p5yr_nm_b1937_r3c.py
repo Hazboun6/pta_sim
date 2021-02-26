@@ -44,8 +44,7 @@ dm_prior = gpk.periodic_kernel(log10_sigma=log10_sigma,
                                log10_gam_p=log10_gam_p,
                                log10_p=log10_p)
 
-dmgp2 = gp_signals.BasisGP(dm_prior, dm_basis, name='dm_gp2',
-                              coefficients=coefficients)
+dmgp2 = gp_signals.BasisGP(dm_prior, dm_basis, name='dm_gp2')
 
 @signal_base.function
 def chromatic_quad(toas, freqs, quad_coeff=np.ones(3)*1e-10, idx=4):
