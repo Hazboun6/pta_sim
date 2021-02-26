@@ -57,13 +57,10 @@ def chromatic_quad(toas, freqs, quad_coeff=np.ones(3)*1e-10, idx=4):
 
     :return ret: normalized quadratic basis matrix [Ntoa, 3]
     """
-    ret = np.zeros((len(toas), 3))
     t0 = (toas.max() + toas.min()) / 2
+    a, b, c = 10**quad_coeff[0], 10**quad_coeff[1], 10**quad_coeff[2]
+    quad = (a*(toas-t0)**2 + b*(toas-t0) + c)* (1400/freqs) ** idx
 
-    for ii in range(3):
-        ret[:, ii] = (toas-t0) ** (ii) * (1400/freqs) ** idx
-
-    quad = np.dot(10**quad_coeff,ret)
     return quad
 
 quad_coeff = parameter.Uniform(-10, -4, size=3)
