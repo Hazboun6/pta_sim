@@ -113,8 +113,8 @@ kwargs_out = copy.deepcopy(all_kwargs)
 kys = list(kwargs_out.keys())
 kwargs_out[kys[0]]['extra_sigs'] = None
 kwargs_out[kys[1]]['extra_sigs'] = str('dm_gp2')
-kwargs_out[kys[0]]['extra_sigs'] = str('chrom_quad')
-kwargs_out[kys[1]]['extra_sigs'] = str('dm_gp2 + chrom_quad')
+kwargs_out[kys[2]]['extra_sigs'] = str('chrom_quad')
+kwargs_out[kys[3]]['extra_sigs'] = str('dm_gp2 + chrom_quad')
 
 with open(args.outdir + '/model_kwargs.json', 'w') as fout:
     json.dump(kwargs_out, fout, sort_keys=True,
