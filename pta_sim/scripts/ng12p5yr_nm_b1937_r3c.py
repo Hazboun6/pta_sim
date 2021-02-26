@@ -7,7 +7,7 @@ import json, pickle, copy
 import logging
 from enterprise_extensions.models import model_singlepsr_noise
 from enterprise_extensions.hypermodel import HyperModel
-from enterprise.signals import parameter, gp_signals
+from enterprise.signals import parameter, gp_signals, deterministic_signals
 from enterprise_extensions import gp_kernels as gpk
 
 import pta_sim.parse_sim as parse_sim
