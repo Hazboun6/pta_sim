@@ -26,8 +26,6 @@ with open(args.model_kwargs_path, 'r') as fin:
                 #Model, kernel, extra DMGP, Chrom Kernel, Chrom Quad, Index
 model_labels = [['A', 'periodic', False, True, 'sq_exp', True, 4],
                 ['B', 'periodic', True, True, 'sq_exp', True, 4],
-                ['C', 'periodic', False, True, 'sq_exp', True, 4],
-                ['D', 'periodic', True, True, 'sq_exp', True, 4],
                 ]
 
 ptas = {}
@@ -83,15 +81,16 @@ chrom_quad = deterministic_signals.Deterministic(deter_chrom,
 
 for ii, ent in enumerate(model_labels):
     if ent[2] and ent[5]:
-        extra = dmgp2 + chrom_quad
+        extra = dmgp + dmgp2 + chrom_quad
     elif ent[2]:
-        extra = dmgp2
+        extra = dmgp + dmgp2
     elif ent[5]:
-        extra = chrom_quad
+        extra = dmgp + chrom_quad
     else:
-        extra = None
+        extra = dmgp
 
     new_kwargs = {'dm_nondiag_kernel':ent[1],
+                  'dm_var':False,
                   'chrom_gp': ent[3],
                   'chrom_gp_kernel':'nondiag',
                   'chrom_idx':ent[6],
