@@ -11,6 +11,7 @@ from enterprise_extensions.hypermodel import HyperModel
 from enterprise.signals import parameter, gp_signals, deterministic_signals
 from enterprise.signals import signal_base
 from enterprise_extensions import gp_kernels as gpk
+from enterprise_extensions.blocks import chromatic_noise_block
 
 import pta_sim.parse_sim as parse_sim
 args = parse_sim.arguments()
@@ -59,6 +60,8 @@ dm_prior2 = gpk.periodic_kernel(log10_sigma=log10_sigma2,
 
 dmgp2 = gp_signals.BasisGP(dm_prior2, dm_basis2, name='dm_gp2')
 
+chromgp = chromatic_noise_block(nondiag_kernel='sq_exp')
+
 @signal_base.function
 def chromatic_quad(toas, freqs, quad_coeff=np.ones(3)*1e-10, idx=4):
     """
@@ -81,13 +84,13 @@ chrom_quad = deterministic_signals.Deterministic(deter_chrom,
 
 for ii, ent in enumerate(model_labels):
     if ent[2] and ent[5]:
-        extra = dmgp + dmgp2 + chrom_quad
+        extra = dmgp + dmgp2 + chromgp + chrom_quad
     elif ent[2]:
-        extra = dmgp + dmgp2
+        extra = dmgp + dmgp2 + chromgp
     elif ent[5]:
-        extra = dmgp + chrom_quad
+        extra = dmgp + chromgp  + chrom_quad
     else:
-        extra = dmgp
+        extra = dmgp + chromgp
 
     new_kwargs = {'dm_nondiag_kernel':ent[1],
                   'dm_var':False,
@@ -120,8 +123,8 @@ with open(args.outdir + '/model_params.json', 'w') as fout:
 
 kwargs_out = copy.deepcopy(all_kwargs)
 kys = list(kwargs_out.keys())
-kwargs_out[kys[0]]['extra_sigs'] = str('dm_gp + chrom_quad')
-kwargs_out[kys[1]]['extra_sigs'] = str('dm_gp + dm_gp2 + chrom_quad')
+kwargs_out[kys[0]]['extra_sigs'] = str('dm_gp + chrom_gp + chrom_quad')
+kwargs_out[kys[1]]['extra_sigs'] = str('dm_gp + chrom_gp + dm_gp2 + chrom_quad')
 # kwargs_out[kys[2]]['extra_sigs'] = str('chrom_quad')
 # kwargs_out[kys[3]]['extra_sigs'] = str('dm_gp2 + chrom_quad')
 
