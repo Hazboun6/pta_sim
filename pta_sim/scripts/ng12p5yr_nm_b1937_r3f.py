@@ -67,8 +67,8 @@ chm_basis = gpk.linear_interp_basis_chromatic(dt=14*86400, idx=4)
 chm_prior = gpk.se_dm_kernel(log10_sigma=ch_log10_sigma, log10_ell=ch_log10_ell)
 
 chromgp = gp_signals.BasisGP(chm_prior, chm_basis, name='chrom_gp')
-
-chromgp = chromatic_noise_block(nondiag_kernel='sq_exp')
+# 
+# chromgp = chromatic_noise_block(nondiag_kernel='sq_exp')
 
 @signal_base.function
 def chromatic_quad(toas, freqs, quad_coeff=np.ones(3)*1e-10, idx=4):
