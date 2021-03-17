@@ -131,8 +131,7 @@ with open(args.outdir + '/model_params.json', 'w') as fout:
 
 kwargs_out = copy.deepcopy(all_kwargs)
 kys = list(kwargs_out.keys())
-kwargs_out[kys[0]]['extra_sigs'] = str('dm_gp + chrom_gp + chrom_quad')
-kwargs_out[kys[1]]['extra_sigs'] = str('dm_gp + chrom_gp + dm_gp2 + chrom_quad')
+kwargs_out[kys[0]]['extra_sigs'] = str('dm_gp + chrom_gp + dm_gp2 + chrom_quad')
 # kwargs_out[kys[2]]['extra_sigs'] = str('chrom_quad')
 # kwargs_out[kys[3]]['extra_sigs'] = str('dm_gp2 + chrom_quad')
 
