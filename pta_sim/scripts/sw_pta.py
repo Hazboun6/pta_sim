@@ -73,7 +73,7 @@ tmin = np.amin([p.toas.min() for p in psrs])
 tmax = np.amax([p.toas.max() for p in psrs])
 Tspan = tmax-tmin
 
-noise_json = '/home/jeffrey.hazboun/nanograv/Work/solar_wind/ng11yr_sw_noise_dict.json'
+noise_json = args.noisepath
 with open(noise_json, "r") as f:
     noise_dict = json.load(f)
 
@@ -339,7 +339,7 @@ class my_JP(sampler.JumpProposal):
         return q, float(lqxy)
 
 
-emp_dist_pkl='/home/jeffrey.hazboun/nanograv/Work/solar_wind/ng11yr_emp_dist_sw_plaw_rn_be_se_dmgp.pkl'
+emp_dist_pkl= args.emp_distr
 jp = my_JP(pta, empirical_distr=emp_dist_pkl)
 Sampler.addProposalToCycle(jp.draw_from_prior, 15)
 # Sampler.addProposalToCycle(jp.draw_from_dm_sw_prior, 20)
