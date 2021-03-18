@@ -156,6 +156,56 @@ if args.bayes_ephem:
                                                         use_epoch_toas=True)
     model += eph
 
+if args.sw_pta_gp:
+    @signal_base.function
+    def solar_wind_perturb(toas, freqs, planetssb, sunssb, pos_t, n_earth_rho=0,
+                   n_mean=5, nmodes=20,
+                   Tspan=None, logf=False, fmin=None, fmax=None, modes=None):
+
+        """
+        Construct DM-Solar Model fourier design matrix.
+
+        :param toas: vector of time series in seconds
+        :param planetssb: solar system bayrcenter positions
+        :param pos_t: pulsar position as 3-vector
+        :param freqs: radio frequencies of observations [MHz]
+        :param n_earth_rho: electron density from the solar wind
+                    at 1 AU.
+        :param n_earth_bins: Number of binned values of n_earth for which to fit or
+                    an array or list of bin edges to use for binned n_Earth values.
+                    In the latter case the first and last edges must encompass all
+                    TOAs and in all cases it must match the size (number of
+                    elements) of log10_n_earth.
+        :param t_init: Initial time of earliest TOA in entire dataset, including all
+                    pulsar.
+        :param t_final: Final time of latest TOA in entire dataset, including all
+                    pulsar.
+
+        :return dt_DM: DM due to solar wind
+        """
+        if modes is not None:
+            nmodes = len(modes)
+
+        #print(n_earth_rho)
+        if n_earth_rho.size!= 2*nmodes:
+            raise ValueError('Length of n_earth_rho must match 2 x nmodes.')
+
+        F, Ffreqs = utils.createfourierdesignmatrix_red(toas, nmodes=nmodes, Tspan=Tspan,
+                                                        logf=logf, fmin=fmin, fmax=fmax,
+                                                        modes=modes)
+
+        n_Earth = np.einsum('ij,j', F, n_earth_rho)#np.repeat(10**n_earth_rho,2))
+        theta, R_earth, _, _ = SW.theta_impact(planetssb, sunssb, pos_t)
+        dm_sol_wind = SW.dm_solar(1.0, theta, R_earth)
+        dt_sw = n_Earth * dm_sol_wind * 4.148808e3 / freqs**2
+
+        return dt_sw
+
+    n_earth_rho = parameter.Normal(0, 0.5, size=60)('n_earth_rho')
+    sw_pert = solar_wind_perturb(n_earth_rho=n_earth_rho, Tspan=Tspan, nmodes=30)
+    sw_perturb = deterministic_signals.Deterministic(sw_pert, name='sw_perturb')
+    model += sw_perturb
+
 norm_model = model + dm_block
 if args.dm_dip:
     psr_models = []

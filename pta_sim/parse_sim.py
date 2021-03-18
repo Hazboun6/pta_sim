@@ -156,6 +156,9 @@ parser.add_argument('--sky_scramble', dest='sky_scramble',
 parser.add_argument('--spat_corr_info', dest='spat_corr_info',
                     action='store_true', default=False,
                     help='Whether to write out the spatial correlation information')
+parser.add_argument('--sw_pta_gp', dest='sw_pta_gp',
+                    action='store_true', default=False,
+                    help='Whether to use a full GP across the PTA.')
 parser.add_argument('--sw_r2p', dest='sw_r2p',
                     type=lambda s: [[float(item) for item in l.split(',')]
                                      for l in s.split(';')],
