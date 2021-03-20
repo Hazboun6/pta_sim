@@ -99,13 +99,13 @@ else:
     rn_psrs=args.rn_psrs
 
 pta_crn = models.model_general(psrs, tm_var=False,
-                  Tspan=None, common_psd=args.psd, red_psd='powerlaw', orf=None,
+                  Tspan=None, common_psd=args.psd, red_psd='powerlaw', orf='crn',
                   common_components=args.nfreqs, red_components=30,
                   dm_components=30, noisedict=noise, rn_psrs=rn_psrs,
                   gamma_common=args.gamma_gw, delta_common=0.,
                   upper_limit=False,
                   bayesephem=args.bayes_ephem, be_type='setIII',
-                  dm_var=True, dm_type='gp', dm_psd='powerlaw',)
+                  dm_var=True, dm_type='gp', dm_psd='powerlaw',names=['gw'])
 
 pta_gw = models.model_general(psrs, tm_var=False,
                   Tspan=None, common_psd=args.psd, red_psd='powerlaw', orf='hd',
@@ -114,7 +114,7 @@ pta_gw = models.model_general(psrs, tm_var=False,
                   gamma_common=args.gamma_gw, delta_common=0.,
                   upper_limit=False,
                   bayesephem=args.bayes_ephem, be_type='setIII',
-                  dm_var=True, dm_type='gp', dm_psd='powerlaw',)
+                  dm_var=True, dm_type='gp', dm_psd='powerlaw',names=['gw'])
 
 # delta_common=0.,
 ptas = {0:pta_crn,
