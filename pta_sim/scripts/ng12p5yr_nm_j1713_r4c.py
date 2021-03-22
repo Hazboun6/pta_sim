@@ -3,7 +3,7 @@
 
 # Noise model selection on NANOGrav pulsars
 
-import json, pickle, copy
+import json, pickle, copy, os
 import logging
 from enterprise_extensions.models import model_singlepsr_noise
 from enterprise_extensions.hypermodel import HyperModel
