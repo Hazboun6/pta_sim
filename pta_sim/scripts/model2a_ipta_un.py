@@ -98,7 +98,7 @@ if args.rn_psrs[0]=='all':
 else:
     rn_psrs=args.rn_psrs
 
-pta_crn = models.model_general(psrs, tm_var=False,
+pta = models.model_general(psrs, tm_var=False,
                   Tspan=None, common_psd=args.psd, red_psd='powerlaw', orf='crn',
                   common_components=args.n_gwbfreqs, red_components=args.nfreqs,
                   dm_components=args.nfreqs, noisedict=noise, rn_psrs=rn_psrs,
@@ -116,7 +116,7 @@ np.savetxt(args.outdir + '/priors.txt',
 
 
 try:
-    achrom_freqs = get_freqs(pta_crn, signal_id='gw')
+    achrom_freqs = get_freqs(pta, signal_id='gw')
     np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
 except:
     pass
