@@ -11,6 +11,9 @@ import pta_sim.parse_sim as parse_sim
 from pta_sim.bayes import chain_length_bool, save_core, get_freqs, filter_psr_path
 args = parse_sim.arguments()
 
+import ultranest
+import ultranest.stepsampler
+
 #Is chain longer than niter?
 longer = chain_length_bool(args.outdir, int(args.niter//10))
 
