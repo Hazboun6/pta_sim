@@ -137,7 +137,7 @@ def transform(quantile):
     tparams = np.empty_like(quantile)
     tparams = quantile * width + pmin
     return tparams
-    ​
+
 sampler1 = ultranest.ReactiveNestedSampler(
     pta.param_names,
     pta.get_lnlikelihood,
