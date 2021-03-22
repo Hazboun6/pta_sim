@@ -109,7 +109,7 @@ pta_crn = models.model_general(psrs, tm_var=False,
 
 if not os.path.exists(args.outdir):
     os.mkdir(args.outdir)
-    
+
 np.savetxt(args.outdir + '/pars.txt', pta.param_names, fmt='%s')
 np.savetxt(args.outdir + '/priors.txt',
            list(map(lambda x: str(x.__repr__()), pta.params)), fmt='%s')
@@ -126,18 +126,18 @@ pmax = []
 for param in pta.params:
     pmin.append(param.prior._defaults['pmin'])
     pmax.append(param.prior._defaults['pmax'])
-​
+
 pmin = np.array(pmin)
 pmax = np.array(pmax)
-​
+
 width = pmax - pmin
 # print(width)
-​
+
 def transform(quantile):
     tparams = np.empty_like(quantile)
     tparams = quantile * width + pmin
     return tparams
-​
+    ​
 sampler1 = ultranest.ReactiveNestedSampler(
     pta.param_names,
     pta.get_lnlikelihood,
