@@ -157,7 +157,7 @@ for nm, param in zip(pta.param_names,pta.params):
         mu = param.prior._defaults['mu']
         sigma = param.prior._defaults['sigma']
         transforms.append(normal_trans(mu,sigma))
-    elif param.type.lower()=='ace_swepam':
+    elif param.type.lower()=='ace_swepam_parameter':
         transforms.append(sw_trans())
 
 def transform(quantile):
