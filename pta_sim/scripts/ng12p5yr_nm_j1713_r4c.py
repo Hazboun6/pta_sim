@@ -149,15 +149,15 @@ class normal_trans():
 
 transforms = []
 for nm, param in zip(pta.param_names,pta.params):
-    if param.type.lowercase()=='uniform':
+    if param.type.lower()=='uniform':
         pmin = param.prior._defaults['pmin']
         pmax = param.prior._defaults['pmax']
         transforms.append(uniform_trans(pmin,pmax))
-    elif param.type.lowercase()=='normal':
+    elif param.type.lower()=='normal':
         mu = param.prior._defaults['mu']
         sigma = param.prior._defaults['sigma']
         transforms.append(normal_trans(mu,sigma))
-    elif param.type.lowercase()=='ace_swepam':
+    elif param.type.lower()=='ace_swepam':
         transforms.append(sw_trans())
 
 def transform(quantile):
