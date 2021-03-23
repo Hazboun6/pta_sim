@@ -5,6 +5,7 @@
 
 import json, pickle, copy, os
 import logging
+import numpy as np
 import scipy.stats as sps
 from enterprise_extensions.models import model_singlepsr_noise
 from enterprise_extensions.hypermodel import HyperModel
