@@ -231,9 +231,6 @@ pta = signal_base.PTA(psr_models)
 pta.set_default_params(noise_dict)
 
 
-# initial jump covariance matrix
-cov = np.diag(np.ones(ndim) * 0.01**2)
-
 # set up jump groups by red noise groups
 
 # groups = sampler.get_parameter_groups(pta)
