@@ -156,7 +156,7 @@ for nm, param in zip(pta.param_names,pta.params):
     elif param.type.lower()=='normal':
         mu = param.prior._defaults['mu']
         sigma = param.prior._defaults['sigma']
-        tran sforms.append(normal_trans(mu,sigma))
+        transforms.append(normal_trans(mu,sigma))
     elif param.type.lower()=='ace_swepam_parameter':
         transforms.append(sw_trans())
 
