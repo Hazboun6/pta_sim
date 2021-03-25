@@ -264,7 +264,8 @@ sampler1 = ultranest.ReactiveNestedSampler(
     pta.param_names,
     pta.get_lnlikelihood,
     transform,
-    log_dir=args.outdir
+    log_dir=args.outdir,
+    resume=True,
 )
 sampler1.stepsampler = ultranest.stepsampler.RegionSliceSampler(nsteps=8)
 ndim = len(pta.params)

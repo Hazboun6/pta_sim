@@ -156,7 +156,7 @@ for nm, param in zip(pta.param_names,pta.params):
     elif param.type.lower()=='normal':
         mu = param.prior._defaults['mu']
         sigma = param.prior._defaults['sigma']
-        transforms.append(normal_trans(mu,sigma))
+        tran sforms.append(normal_trans(mu,sigma))
     elif param.type.lower()=='ace_swepam_parameter':
         transforms.append(sw_trans())
 
@@ -167,9 +167,10 @@ sampler1 = ultranest.ReactiveNestedSampler(
     pta.param_names,
     pta.get_lnlikelihood,
     transform,
-    log_dir=args.outdir
+    log_dir=args.outdir,
+    resume=True,
 )
-sampler1.stepsampler = ultranest.stepsampler.RegionSliceSampler(nsteps=8)
+sampler1.stepsampler = ultranest.stepsampler.RegionSliceSampler(nsteps=100)
 ndim = len(pta.params)
 sampler1.run(dlogz=0.5 + 0.1 * ndim,
      # update_interval_iter_fraction=0.4 if ndim > 20 else 0.2,
