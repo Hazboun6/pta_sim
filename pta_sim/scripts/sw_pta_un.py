@@ -240,22 +240,40 @@ if not os.path.exists(args.outdir):
 np.savetxt(args.outdir + '/pars.txt', pta.param_names, fmt='%s')
 np.savetxt(args.outdir + '/priors.txt',
            list(map(lambda x: str(x.__repr__()), pta.params)), fmt='%s')
-pmin = []
-pmax = []
-for param in pta.params:
-    pmin.append(param.prior._defaults['pmin'])
-    pmax.append(param.prior._defaults['pmax'])
+class sw_trans():
+    def __init__(self):
+        self.ppf = solar_wind.ACE_RV.ppf
+    def __call__(self, quantile):
+        return self.ppf(quantile)
 
-pmin = np.array(pmin)
-pmax = np.array(pmax)
+class uniform_trans():
+    def __init__(self, pmin, pmax):
+        self.width = pmax - pmin
+        self.pmin = pmin
+    def __call__(self, quantile):
+        return quantile * self.width + self.pmin
 
-width = pmax - pmin
-# print(width)
+class normal_trans():
+    def __init__(self, mean, std):
+        self.rvs = sps.norm(loc=mean,scale=std)
+    def __call__(self, quantile):
+        return self.rvs.ppf(quantile)
+
+transforms = []
+for nm, param in zip(pta.param_names,pta.params):
+    if param.type.lower()=='uniform':
+        pmin = param.prior._defaults['pmin']
+        pmax = param.prior._defaults['pmax']
+        transforms.append(uniform_trans(pmin,pmax))
+    elif param.type.lower()=='normal':
+        mu = param.prior._defaults['mu']
+        sigma = param.prior._defaults['sigma']
+        transforms.append(normal_trans(mu,sigma))
+    elif param.type.lower()=='ace_swepam_parameter':
+        transforms.append(sw_trans())
 
 def transform(quantile):
-    tparams = np.empty_like(quantile)
-    tparams = quantile * width + pmin
-    return tparams
+    return np.array([t(q) for q,t in zip(quantile,transforms)])
 
 sampler1 = ultranest.ReactiveNestedSampler(
     pta.param_names,
