@@ -7,6 +7,7 @@ import numpy as np
 # import pint.residuals as r
 import astropy.units as u
 import scipy.integrate as spi
+import scipy.stats as sps
 import enterprise
 from enterprise.pulsar import Pulsar
 import enterprise.signals.parameter as parameter
