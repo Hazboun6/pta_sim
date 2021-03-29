@@ -242,7 +242,7 @@ np.savetxt(args.outdir + '/priors.txt',
            list(map(lambda x: str(x.__repr__()), pta.params)), fmt='%s')
 class sw_trans():
     def __init__(self):
-        self.ppf = solar_wind.ACE_RV.ppf
+        self.ppf = SW.ACE_RV.ppf
     def __call__(self, quantile):
         return self.ppf(quantile)
 
