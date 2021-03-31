@@ -283,8 +283,9 @@ sampler1 = ultranest.ReactiveNestedSampler(
     log_dir=args.outdir,
     resume=True,
 )
-sampler1.stepsampler = ultranest.stepsampler.RegionSliceSampler(nsteps=8)
 ndim = len(pta.params)
+sampler1.stepsampler = ultranest.stepsampler.RegionSliceSampler(nsteps=2*ndim)
+
 sampler1.run(dlogz=0.5 + 0.1 * ndim,
      # update_interval_iter_fraction=0.4 if ndim > 20 else 0.2,
      # max_num_improvement_loops=3,
