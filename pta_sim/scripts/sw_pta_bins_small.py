@@ -203,7 +203,7 @@ class my_JP(sampler.JumpProposal):
         q = x.copy()
         lqxy = 0
 
-        signal_name = 'sw_r1'
+        signal_name = 'sw_1'
 
         # draw parameter from signal model
         param = np.random.choice(self.snames[signal_name])
