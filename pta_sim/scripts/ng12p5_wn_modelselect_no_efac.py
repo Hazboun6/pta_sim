@@ -33,16 +33,14 @@ psr = psrs[pidx]
 backend = selections.Selection(selections.by_backend)
 ng_backend = selections.Selection(selections.nanograv_backends)
 
-efac = parameter.Uniform(0.1,5)
+efac = parameter.Constant(1.0)
 equad = parameter.Uniform(-8.5,-5)
 ecorr = parameter.Uniform(-8.5,-5)
 kdrop = parameter.Uniform(0,1)
 kthresh = 0.5
 
-ef = dropout.dropout_MeasurementNoise(efac=efac,
-                                      efac_drop=kdrop,
-                                      efac_thresh=kthresh,
-                                      selection=backend)
+ef = white_signals.MeasurementNoise(efac=efac,
+                                    selection=backend)
 eq = dropout.dropout_EquadNoise(log10_equad=equad,
                                 equad_drop=kdrop,
                                 equad_thresh=kthresh,
