@@ -102,6 +102,9 @@ parser.add_argument('--noisepath', dest='noisepath', action='store',
                     default=None, help='Path to noise file or files.')
 parser.add_argument('--obs', dest='obs', action='store',
                     type=str, default='all', help='Observatory')
+parser.add_argument('--orf', dest='orf', action='store',
+                    type=str, default='hd',
+                    help='Overlap Reduction Function to use as spatial correlations.')
 parser.add_argument('--outdir', dest='outdir', action='store', type=str,
                     default='./', help='Path directory for output.')
 parser.add_argument('--outtimdir', dest='outtimdir', action='store', type=str,
