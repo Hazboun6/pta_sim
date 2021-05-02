@@ -71,7 +71,7 @@ gw_pshift = gp_signals.FourierBasisGP(spectrum=gw_pl,
                                       modes=freqs[:args.n_gwbfreqs],
                                       name='gw', pshift=True,
                                       pseed=args.process)
-                                      
+
 model_pshift = tm + ef + eq + ec + rn + gw_pshift
 
 
@@ -87,7 +87,7 @@ os_pshift = OS(psrs=psrs, pta=pta_pshift, orf=args.orf)
 c0 = co.load_Core(args.corepath)
 chain = c0.chain[c0.burn:,:-4]
 pars = c0.params[:-4]
-N = 10000
+N = args.niter
 Ahat_pshift = np.zeros(N)
 snr_pshift = np.zeros(N)
 for ii in range(N):
