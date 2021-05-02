@@ -29,6 +29,15 @@ args = parse_sim.arguments()
 with open(args.pickle,'rb')as fin:
     psrs = pickle.load(fin)
 
+pnames = ['B1855+09','B1937+21','B1953+29','J0023+0923','J0030+0451', 'J0340+4130', 'J0613-0200', 'J0636+5128',
+          'J0645+5158','J0740+6620','J0931-1902','J1012+5307','J1024-0719','J1125+7819','J1453+1902','J1455-3330',
+          'J1600-3053','J1614-2230','J1640+2224','J1643-1224','J1713+0747','J1738+0333','J1741+1351','J1744-1134',
+          'J1747-4036','J1832-0836','J1853+1303','J1903+0327','J1909-3744','J1910+1256','J1911+1347','J1918-0642',
+          'J1923+2515','J1944+0907','J2010-1323','J2017+0603','J2033+1734','J2043+1711','J2145-0750','J2214+3000',
+          'J2229+2643','J2234+0611','J2234+0944','J2302+4442','J2317+1439']
+
+psrs = [p for p in psrs if p.name in pnames]
+
 tmin = np.amin([p.toas.min() for p in psrs])
 tmax = np.amax([p.toas.max() for p in psrs])
 Tspan = tmax - tmin
@@ -90,6 +99,7 @@ pars = c0.params[:-4]
 N = args.niter
 Ahat_pshift = np.zeros(N)
 snr_pshift = np.zeros(N)
+check = np.arange(0,N,100)
 for ii in range(N):
     param_dict = {}
     idx = np.random.randint(0,chain.shape[0])
@@ -97,6 +107,8 @@ for ii in range(N):
     _, _, _, Asqr, Sigma = os_pshift.compute_os(params=param_dict)
     Ahat_pshift[ii] = Asqr
     snr_pshift[ii] = Asqr/Sigma
+    if ii in check:
+        print(f'{ii/N*100} % complete.')
 
 out = [Ahat_pshift.mean(),snr_pshift.mean(),args.process]
-np.savetxt(args.outpath, out, fmt='%e, %f, %i')
+np.save(args.outpath, out)
