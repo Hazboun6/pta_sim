@@ -111,4 +111,4 @@ for ii in range(N):
         print(f'{ii/N*100} % complete.')
 
 out = [Ahat_pshift.mean(),snr_pshift.mean(),args.process]
-np.save(args.outpath, out)
+np.save(args.outdir, out)
