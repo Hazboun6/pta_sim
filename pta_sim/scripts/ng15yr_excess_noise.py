@@ -31,7 +31,7 @@ with open(args.pickle,'rb')as fin:
     psrs = pickle.load(fin)
 
 psr = psrs[args.process]
-
+print(f'Starting {psr.name}.')
 with open(args.noisepath,'r') as fin:
     noise = json.load(fin)
 
@@ -56,6 +56,6 @@ pta.set_default_params(noise)
 x0 = np.hstack(p.sample() for p in pta.params)
 samp = sampler.setup_sampler(pta,outdir=args.outdir+f'/{psr.name}/',resume=False)
 
-args.niter=500000
+N = args.niter
 samp.sample(x0, Niter=N, burn=200000)
 print(f'{psr.name} complete.')
