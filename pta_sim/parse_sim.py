@@ -159,6 +159,8 @@ parser.add_argument('--sky_scramble', dest='sky_scramble',
 parser.add_argument('--spat_corr_info', dest='spat_corr_info',
                     action='store_true', default=False,
                     help='Whether to write out the spatial correlation information')
+parser.add_argument('--start_time', dest='start_time', action='store',
+                    type=float, default=None, help='Start MJD for slicing. In days.')
 parser.add_argument('--sw_pta_gp', dest='sw_pta_gp',
                     action='store_true', default=False,
                     help='Whether to use a full GP across the PTA.')
