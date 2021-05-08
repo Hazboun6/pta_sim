@@ -63,7 +63,7 @@ if args.truncate_psr is not None:
         start_time = psrs[pidx].toas.min()/(24*3600)
         psrs[pidx].filter_data(start_time=start_time, end_time=mjd)
 
-if args.end_time is None:
+if args.end_time is None and args.start_time is None:
     pidxs = []
     for pidx, psr in enumerate(psrs):
         start_time = psr.toas.min()/(24*3600)
@@ -74,10 +74,39 @@ if args.end_time is None:
 
     for idx in reversed(pidxs):
         del psrs[idx]
-else:
+elif args.end_time is None and args.start_time is not None:
+    pidxs = []
+    for pidx, psr in enumerate(psrs):
+        start_time = args.start_time
+        last_time = psr.toas.max()/(24*3600)
+        if (last_time-start_time)/365.25 < args.min_tspan:
+            print('PSR {0} baseline less than {1} years. Not being included in analysis'.format(psr.name,args.min_tspan))
+            pidxs.append(pidx)
+
+    for idx in reversed(pidxs):
+        del psrs[idx]
+
+    end_time = np.amax([psr.toas.max() for psr in psrs])
+    for psr in psrs:
+        psr.filter_data(self, start_time=args.start_time, end_time=end_time)
+        
+elif args.end_time is not None and args.start_time is None:
     pidxs = []
     for pidx, psr in enumerate(psrs):
         start_time = psr.toas.min()/(24*3600)
+        if (args.end_time-start_time)/365.25 <= args.min_tspan:
+            print('PSR {0} baseline too short for this slice.'.format(psr.name))
+            pidxs.append(pidx)
+        else:
+            psr.filter_data(start_time=start_time, end_time=args.end_time)
+
+    for idx in reversed(pidxs):
+        del psrs[idx]
+    Outdir = args.outdir+'{0}/'.format(args.nyears)
+elif args.end_time is not None and args.start_time is not None:
+    pidxs = []
+    for pidx, psr in enumerate(psrs):
+        start_time =args.start_time
         if (args.end_time-start_time)/365.25 <= args.min_tspan:
             print('PSR {0} baseline too short for this slice.'.format(psr.name))
             pidxs.append(pidx)
