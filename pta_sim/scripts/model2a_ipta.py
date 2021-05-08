@@ -102,7 +102,14 @@ elif args.end_time is not None and args.start_time is None:
 
     for idx in reversed(pidxs):
         del psrs[idx]
-    Outdir = args.outdir+'{0}/'.format(args.nyears)
+
+    pidxs = []
+    for pidx, psr in enumerate(psrs):
+        if (psr.toas.size==0):
+            pidxs.append(pidx)
+    for idx in reversed(pidxs):
+        del psrs[idx]
+    # Outdir = args.outdir+'{0}/'.format(args.nyears)
 elif args.end_time is not None and args.start_time is not None:
     pidxs = []
     for pidx, psr in enumerate(psrs):
@@ -115,7 +122,7 @@ elif args.end_time is not None and args.start_time is not None:
 
     for idx in reversed(pidxs):
         del psrs[idx]
-    Outdir = args.outdir+'{0}/'.format(args.nyears)
+    # Outdir = args.outdir+'{0}/'.format(args.nyears)
 
 
 
