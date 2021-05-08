@@ -109,6 +109,9 @@ elif args.end_time is not None and args.start_time is None:
             pidxs.append(pidx)
     for idx in reversed(pidxs):
         del psrs[idx]
+
+    for psr in psrs:
+        print(psr.name, psr.toas.size)
     # Outdir = args.outdir+'{0}/'.format(args.nyears)
 elif args.end_time is not None and args.start_time is not None:
     pidxs = []
