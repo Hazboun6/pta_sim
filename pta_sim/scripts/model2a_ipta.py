@@ -88,8 +88,8 @@ elif args.end_time is None and args.start_time is not None:
 
     end_time = np.amax([psr.toas.max() for psr in psrs])
     for psr in psrs:
-        psr.filter_data(self, start_time=args.start_time, end_time=end_time)
-        
+        psr.filter_data(start_time=args.start_time, end_time=end_time)
+
 elif args.end_time is not None and args.start_time is None:
     pidxs = []
     for pidx, psr in enumerate(psrs):
