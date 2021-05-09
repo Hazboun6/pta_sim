@@ -116,7 +116,7 @@ elif args.end_time is not None and args.start_time is None:
             for ii, (pta_nm, be) in enumerate(zip(psr.flags['pta'],
                                                       psr.backend_flags)):
                 if pta_nm=='NANOGrav' and be not in (ngb):
-                    psr.flags['pta'][ii] = 'NANOGrav_legacy'
+                    psr._flags['pta'][ii] = 'NANOGrav_legacy'
 
 
             print(psr.name, psr.backend_flags, psr.flags['pta'])
