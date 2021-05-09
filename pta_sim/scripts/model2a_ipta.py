@@ -113,16 +113,13 @@ elif args.end_time is not None and args.start_time is None:
     for psr in psrs:
         if 'NANOGrav' in psr.flags['pta']:
             ngb = ["ASP", "GASP", "GUPPI", "PUPPI"]
-            if any([b in psr.backend_flags for b in ngb]):
-                pass
-            else:
-                for ii, (pta_nm, be) in enumerate(zip(psr.flags['pta'],
+            for ii, (pta_nm, be) in enumerate(zip(psr.flags['pta'],
                                                       psr.backend_flags)):
-                    if pta_nm=='NANOGrav' and be not in (ngb):
-                        psr.flags['pta'][ii] = 'NANOGrav_legacy'
+                if pta_nm=='NANOGrav' and be not in (ngb):
+                    psr.flags['pta'][ii] = 'NANOGrav_legacy'
 
 
-            print(psr.name, psr.backend_flags)
+            print(psr.name, psr.backend_flags, psr.flags['pta'])
     # Outdir = args.outdir+'{0}/'.format(args.nyears)
 elif args.end_time is not None and args.start_time is not None:
     pidxs = []
