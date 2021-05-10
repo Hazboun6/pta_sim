@@ -159,12 +159,12 @@ Sampler = sampler.setup_sampler(pta_gw, outdir=args.outdir, resume=True,
                                 empirical_distr = args.emp_distr)
 
 try:
-    achrom_freqs = get_freqs(pta_crn, signal_id='gw')
+    achrom_freqs = get_freqs(pta_gw, signal_id='gw')
     np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
 except:
     pass
 
-x0 = np.hstack(p.sample() for p in pta_crn.params)
+x0 = np.hstack(p.sample() for p in pta_gw.params)
 Sampler.sample(x0, args.niter, SCAMweight=30, AMweight=15,
                DEweight=30, burn=300000, writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain)
