@@ -8,6 +8,7 @@ import numpy as np
 import astropy.units as u
 import scipy.integrate as spi
 import enterprise
+import cloudpickle
 from enterprise.pulsar import Pulsar
 import enterprise.signals.parameter as parameter
 from enterprise.signals import utils
@@ -223,6 +224,9 @@ pta = signal_base.PTA(psr_models)
 
 pta.set_default_params(noise_dict)
 
+with open(args.corepath,'rb')as fout:
+    cloudpickle.dump(pta,fout)
+    
 x0 = np.hstack(p.sample() for p in pta.params)
 
 ndim = x0.size
