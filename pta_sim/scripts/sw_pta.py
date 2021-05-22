@@ -20,7 +20,7 @@ from enterprise.signals import gp_signals
 from enterprise.signals import deterministic_signals
 from enterprise import constants as const
 
-import corner, pickle, sys, json
+import corner, pickle, sys, json, os
 from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 
 from enterprise_extensions import models, model_utils, sampler
@@ -224,9 +224,12 @@ pta = signal_base.PTA(psr_models)
 
 pta.set_default_params(noise_dict)
 
-with open(args.corepath,'rb')as fout:
-    cloudpickle.dump(pta,fout)
-    
+if os.path.exist(args.corepath):
+    pass
+else:
+    with open(args.corepath,'wb') as fout:
+        cloudpickle.dump(pta,fout)
+
 x0 = np.hstack(p.sample() for p in pta.params)
 
 ndim = x0.size
