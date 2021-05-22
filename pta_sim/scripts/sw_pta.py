@@ -36,7 +36,7 @@ import pta_sim.bayes
 import pta_sim.parse_sim as parse_sim
 args = parse_sim.arguments()
 
-if not os.path.exists(args.corepath):
+if os.path.exists(args.corepath):
     with open(args.corepath,'rb') as fin:
         pta = cloudpickle.load(fin)
 else:
