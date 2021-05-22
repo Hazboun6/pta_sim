@@ -224,7 +224,7 @@ pta = signal_base.PTA(psr_models)
 
 pta.set_default_params(noise_dict)
 
-if os.path.exist(args.corepath):
+if os.path.exists(args.corepath):
     pass
 else:
     with open(args.corepath,'wb') as fout:
