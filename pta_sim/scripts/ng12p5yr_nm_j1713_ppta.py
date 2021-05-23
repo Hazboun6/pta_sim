@@ -20,8 +20,8 @@ with open(args.model_kwargs_path, 'r') as fin:
 
 
 model_labels = [['A', 'NANOGrav'],
-                ['B', '1.13 Dip w/ Scatt GP']
-                ['C', 'PPTA']]
+                ['B', '1.13 Dip w/ Scatt GP'],
+                ['C', 'PPTA'],]
 
 ptas = {}
 all_kwargs = {}
