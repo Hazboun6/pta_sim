@@ -9,6 +9,7 @@ from enterprise_extensions.models import model_singlepsr_noise
 from enterprise_extensions.hypermodel import HyperModel
 from enterprise_extensions.chromatic import chrom_exp_decay
 from enterprise.signals import parameter
+from enterprise.signals import deterministic_signals
 
 import pta_sim.parse_sim as parse_sim
 args = parse_sim.arguments()
