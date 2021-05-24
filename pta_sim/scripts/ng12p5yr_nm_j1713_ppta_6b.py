@@ -68,7 +68,7 @@ kwargs = copy.deepcopy(model_kwargs['0'])
 
 dip_kwargs = {'dm_expdip':True,
               'dmexp_sign': 'negative',
-              'num_dmdips':2,
+              'num_dmdips':1,
               'dm_expdip_idx':[2],
               'dm_expdip_tmin':[54700],
               'dm_expdip_tmax':[54850],
