@@ -27,6 +27,7 @@ ptas = {}
 all_kwargs = {}
 
 kwargs = copy.deepcopy(model_kwargs['0'])
+kwargs.update({'red_var':True, 'psd':'powerlaw'})
 ptas[0] = model_singlepsr_noise(psr, **kwargs)
 all_kwargs[0] = kwargs
 

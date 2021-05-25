@@ -65,7 +65,7 @@ index = parameter.Uniform(0, 5)
 ppta_dip = dm_exponential_dip(57450, 57560, idx=index, sign='negative', name='exp2')
 
 kwargs = copy.deepcopy(model_kwargs['0'])
-
+kwargs.update({'red_var':True, 'psd':'powerlaw'})
 dip_kwargs = {'dm_expdip':True,
               'dmexp_sign': 'negative',
               'num_dmdips':1,
