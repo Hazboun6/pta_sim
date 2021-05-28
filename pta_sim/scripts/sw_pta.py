@@ -374,7 +374,7 @@ class my_JP(sampler.JumpProposal):
         q = x.copy()
         lqxy = 0
 
-        signal_name = 'sw_perturb_mono'
+        signal_name = 'common'
 
         # draw parameter from signal model
         param = np.random.choice(self.snames[signal_name])
