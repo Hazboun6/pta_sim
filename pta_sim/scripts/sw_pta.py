@@ -11,6 +11,7 @@ import enterprise
 import cloudpickle
 from enterprise.pulsar import Pulsar
 import enterprise.signals.parameter as parameter
+from enterprise.signals.parameter import function
 from enterprise.signals import utils
 from enterprise.signals import signal_base
 from enterprise.signals import selections
@@ -162,9 +163,20 @@ else:
         model += eph
 
     if args.sw_gp_mono_gp:
+        @function
+        def sw_free_spectrum(n_earth_rho=None):
+            """
+            Free spectral model. PSD  amplitude at each frequency
+            is a free parameter. Model is parameterized by
+            S(f_i) = \rho_i^2 * T,
+            where \rho_i is the free parameter and T is the observation
+            length.
+            """
+            return np.repeat(n_earth_rho, 2)
+
         sw_desmatrix = SW.createfourierdesignmatrix_solar_dm(nmodes=40, Tspan=Tspan)
         n_earth_rho = parameter.Normal(0, 0.5, size=40)('n_earth_rho')
-        fs = free_spectrum(n_earth_rho)
+        fs = sw_free_spectrum(n_earth_rho)
         mono = utils.monopole_orf()
         sw_perturb = gp_signals.BasisCommonGP(fs, sw_desmatrix, mono, name='sw_perturb_mono')
         model += sw_perturb
