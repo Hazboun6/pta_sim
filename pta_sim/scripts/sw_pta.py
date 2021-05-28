@@ -425,7 +425,7 @@ Sampler.addProposalToCycle(jp.draw_from_sw1_prior, 60)
 if args.sw_gp_mono_gp:
     Sampler.addProposalToCycle(jp.draw_from_swgp_mono_prior,30)
 if args.sw_pta_gp:
-    Sample.addProposalToCycle(jp.draw_from_swgp_prior,30)
+    Sampler.addProposalToCycle(jp.draw_from_swgp_prior,30)
 if args.bayes_ephem:
     Sampler.addProposalToCycle(jp.draw_from_ephem_prior, 35)
 for ii,pow in enumerate(args.sw_r2p):
