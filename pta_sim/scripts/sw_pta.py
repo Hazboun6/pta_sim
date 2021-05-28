@@ -161,7 +161,15 @@ else:
                                                             use_epoch_toas=True)
         model += eph
 
-    if args.sw_pta_gp:
+    if args.sw_gp_mono_gp:
+        sw_desmatrix = SW.createfourierdesignmatrix_solar_dm(nmodes=40, Tspan=Tspan)
+        n_earth_rho = parameter.Normal(0, 0.5, size=40)('n_earth_rho')
+        fs = free_spectrum(n_earth_rho)
+        mono = utils.monopole_orf()
+        sw_perturb = gp_signals.BasisCommonGP(fs, sw_desmatrix, mono, name='sw_perturb_mono')
+        model += sw_perturb
+
+    elif args.sw_pta_gp:
         @signal_base.function
         def solar_wind_perturb(toas, freqs, planetssb, sunssb, pos_t, n_earth_rho=0,
                        n_mean=5, nmodes=20,
@@ -206,10 +214,12 @@ else:
 
             return dt_sw
 
+
         n_earth_rho = parameter.Normal(0, 0.5, size=60)('n_earth_rho')
         sw_pert = solar_wind_perturb(n_earth_rho=n_earth_rho, Tspan=Tspan, nmodes=30)
         sw_perturb = deterministic_signals.Deterministic(sw_pert, name='sw_perturb')
         model += sw_perturb
+
 
     norm_model = model + dm_block
     if args.dm_dip:
