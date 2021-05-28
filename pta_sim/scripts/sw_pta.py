@@ -164,7 +164,7 @@ else:
 
     if args.sw_gp_mono_gp:
         @function
-        def sw_free_spectrum(n_earth_rho=None):
+        def sw_free_spectrum(f, n_earth_rho=None):
             """
             Free spectral model. PSD  amplitude at each frequency
             is a free parameter. Model is parameterized by
@@ -177,7 +177,7 @@ else:
         sw_desmatrix = SW.createfourierdesignmatrix_solar_dm(nmodes=40, Tspan=Tspan)
         n_earth_rho = parameter.Normal(0, 0.5, size=40)('n_earth_rho')
         fs = sw_free_spectrum(n_earth_rho)
-        mono = utils.monopole_orf
+        mono = utils.monopole_orf()
         sw_perturb = gp_signals.BasisCommonGP(fs, sw_desmatrix, mono, name='sw_perturb_mono')
         model += sw_perturb
 
