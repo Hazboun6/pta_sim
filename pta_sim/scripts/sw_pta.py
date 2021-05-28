@@ -380,6 +380,28 @@ class my_JP(sampler.JumpProposal):
 
         return q, float(lqxy)
 
+    def draw_from_swgp_prior(self, x, iter, beta):
+
+        q = x.copy()
+        lqxy = 0
+
+        signal_name = 'sw_perturb'
+
+        # draw parameter from signal model
+        param = np.random.choice(self.snames[signal_name])
+        if param.size:
+            idx2 = np.random.randint(0, param.size)
+            q[self.pmap[str(param)]][idx2] = param.sample()[idx2]
+
+        # scalar parameter
+        else:
+            q[self.pmap[str(param)]] = param.sample()
+
+        # forward-backward jump probability
+        lqxy = (param.get_logpdf(x[self.pmap[str(param)]]) -
+                param.get_logpdf(q[self.pmap[str(param)]]))
+
+        return q, float(lqxy)
 
 emp_dist_pkl= args.emp_distr
 jp = my_JP(pta, empirical_distr=emp_dist_pkl)
@@ -390,6 +412,8 @@ Sampler.addProposalToCycle(jp.draw_from_dm_gp_prior, 35)
 Sampler.addProposalToCycle(jp.draw_from_sw1_prior, 60)
 if args.sw_gp_mono_gp:
     Sampler.addProposalToCycle(jp.draw_from_swgp_mono_prior,30)
+if args.sw_pta_gp:
+    Sample.addProposalToCycle(jp.draw_from_swgp_prior,30)
 if args.bayes_ephem:
     Sampler.addProposalToCycle(jp.draw_from_ephem_prior, 35)
 for ii,pow in enumerate(args.sw_r2p):
