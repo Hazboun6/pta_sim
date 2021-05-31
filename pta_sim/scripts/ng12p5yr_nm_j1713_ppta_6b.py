@@ -22,7 +22,7 @@ with open(args.model_kwargs_path, 'r') as fin:
     model_kwargs = json.load(fin)
 
 
-model_labels = [['A', '1.13 Dip w/ Scatt GP'],
+model_labels = [['A', 'Vary Dip w/ Scatt GP'],
                 ['B', 'PPTA'],]
 
 ptas = {}

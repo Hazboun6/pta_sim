@@ -24,7 +24,7 @@ with open(args.model_kwargs_path, 'r') as fin:
 with open(args.noisepath, 'r') as fin:
     noise = json.load(fin)
 
-model_labels = [['A', '1.13 Dip w/ Scatt GP'],
+model_labels = [['A', 'Vary Dip w/ Scatt GP'],
                 ['B', 'PPTA'],]
 
 ptas = {}
