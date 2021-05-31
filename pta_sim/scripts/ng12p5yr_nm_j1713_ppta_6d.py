@@ -112,4 +112,4 @@ with open(args.outdir + '/model_labels.json', 'w') as fout:
 N = args.niter
 x0 = super_model.initial_sample()
 
-sampler.sample(x0, N, SCAMweight=30, AMweight=15, DEweight=50, writeHotChains=args.writeHotChains burn=300000)
+sampler.sample(x0, N, SCAMweight=30, AMweight=15, DEweight=50, writeHotChains=args.writeHotChains, burn=300000)
