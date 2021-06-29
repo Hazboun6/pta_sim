@@ -12,7 +12,7 @@ from enterprise.signals import parameter, gp_signals, deterministic_signals
 from enterprise.signals import signal_base
 from enterprise_extensions import gp_kernels as gpk
 from enterprise_extensions.blocks import chromatic_noise_block
-
+from enterprise_extensions.chromatic import solar_wind as SW
 import pta_sim.parse_sim as parse_sim
 args = parse_sim.arguments()
 logging.basicConfig(level=logging.WARNING)
@@ -70,6 +70,8 @@ chromgp = gp_signals.BasisGP(chm_prior, chm_basis, name='chrom_gp')
 #
 # chromgp = chromatic_noise_block(nondiag_kernel='sq_exp')
 
+sw = SW.solar_wind_block(n_earth=None, ACE_prior=True)
+
 @signal_base.function
 def chromatic_quad(toas, freqs, quad_coeff=np.ones(3)*1e-10, idx=4):
     """
@@ -92,13 +94,13 @@ chrom_quad = deterministic_signals.Deterministic(deter_chrom,
 
 for ii, ent in enumerate(model_labels):
     if ent[2] and ent[5]:
-        extra = dmgp + dmgp2 + chromgp + chrom_quad
+        extra = sw + dmgp + dmgp2 + chromgp + chrom_quad
     elif ent[2]:
-        extra = dmgp + dmgp2 + chromgp
+        extra = sw + dmgp + dmgp2 + chromgp
     elif ent[5]:
-        extra = dmgp + chromgp  + chrom_quad
+        extra = sw + dmgp + chromgp  + chrom_quad
     else:
-        extra = dmgp + chromgp
+        extra = sw + dmgp + chromgp
 
     new_kwargs = {'dm_nondiag_kernel':ent[1],
                   'dm_var':False,
