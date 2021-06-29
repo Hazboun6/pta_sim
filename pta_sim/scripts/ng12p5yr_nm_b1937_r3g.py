@@ -113,7 +113,7 @@ for ii, ent in enumerate(model_labels):
                   'extra_sigs':extra,
                   }
 
-    kwargs = copy.deepcopy(model_kwargs['5'])
+    kwargs = copy.deepcopy(model_kwargs['0'])
     kwargs.update(new_kwargs)
     ptas[ii] = model_singlepsr_noise(psr, **kwargs)
     all_kwargs[ii] = kwargs
