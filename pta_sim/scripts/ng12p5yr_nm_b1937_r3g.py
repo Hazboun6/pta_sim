@@ -70,7 +70,7 @@ chromgp = gp_signals.BasisGP(chm_prior, chm_basis, name='chrom_gp')
 #
 # chromgp = chromatic_noise_block(nondiag_kernel='sq_exp')
 
-sw = SW.solar_wind_block(n_earth=None, ACE_prior=True)
+sw = SW.solar_wind_block(n_earth=None, ACE_prior=True,include_swgp=False)
 
 @signal_base.function
 def chromatic_quad(toas, freqs, quad_coeff=np.ones(3)*1e-10, idx=4):
