@@ -36,7 +36,7 @@ if os.path.exists(args.outdir+'pta.pkl'):
         ptas = cloudpickle.load(f)
 else:
     with open('{0}'.format(args.pickle), "rb") as f:
-        psrs = pickle.load(f)
+        pkl_psrs = pickle.load(f)
 
     with open(args.noisepath, 'r') as fin:
         noise =json.load(fin)
