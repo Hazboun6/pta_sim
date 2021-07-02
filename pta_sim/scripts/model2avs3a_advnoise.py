@@ -59,92 +59,92 @@ else:
 
     # Set Tspan for RN
 
-Tspan_PTA = model_utils.get_tspan(pkl_psrs)
-# common red noise block
-cs = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
-                                   components=5, gamma_val=4.33, name='gw')
-gw = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
-                                   components=5, gamma_val=4.33, name='gw', orf='hd')
-# intrinsic red noise
-s = blocks.red_noise_block(prior='log-uniform', Tspan=Tspan_PTA, components=30)
-# timing model
-s += gp_signals.TimingModel()
-# adding white-noise, separating out Adv Noise Psrs, and acting on psr objects
-final_psrs = []
-psr_models = []
-### Add a stand alone SW deter model
-n_earth = chrom.solar_wind.ACE_SWEPAM_Parameter()('n_earth')
-deter_sw = chrom.solar_wind.solar_wind(n_earth=n_earth)
-mean_sw = deterministic_signals.Deterministic(deter_sw, name='sw')
-for psr in pkl_psrs:
-    # Filter out other Adv Noise Pulsars
-    if psr.name in adv_noise_psr_list:
-        ### Get the new pulsar object
-        ## Remember that J1713's pickle is something you made yourself ##
-        filepath = '/gscratch/gwastro/hazboun/nanograv/noise/noise_model_selection/no_dmx_pickles/'
-        filepath += '{0}_ng12p5yr_v3_nodmx_ePSR.pkl'.format(psr.name)
-        with open(filepath,'rb') as fin:
-            new_psr=pickle.load(fin)
+    Tspan_PTA = model_utils.get_tspan(pkl_psrs)
+    # common red noise block
+    cs = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
+                                       components=5, gamma_val=4.33, name='gw')
+    gw = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
+                                       components=5, gamma_val=4.33, name='gw', orf='hd')
+    # intrinsic red noise
+    s = blocks.red_noise_block(prior='log-uniform', Tspan=Tspan_PTA, components=30)
+    # timing model
+    s += gp_signals.TimingModel()
+    # adding white-noise, separating out Adv Noise Psrs, and acting on psr objects
+    final_psrs = []
+    psr_models = []
+    ### Add a stand alone SW deter model
+    n_earth = chrom.solar_wind.ACE_SWEPAM_Parameter()('n_earth')
+    deter_sw = chrom.solar_wind.solar_wind(n_earth=n_earth)
+    mean_sw = deterministic_signals.Deterministic(deter_sw, name='sw')
+    for psr in pkl_psrs:
+        # Filter out other Adv Noise Pulsars
+        if psr.name in adv_noise_psr_list:
+            ### Get the new pulsar object
+            ## Remember that J1713's pickle is something you made yourself ##
+            filepath = '/gscratch/gwastro/hazboun/nanograv/noise/noise_model_selection/no_dmx_pickles/'
+            filepath += '{0}_ng12p5yr_v3_nodmx_ePSR.pkl'.format(psr.name)
+            with open(filepath,'rb') as fin:
+                new_psr=pickle.load(fin)
 
-        ### Get kwargs dictionary
-        kwarg_path = args.model_kwargs_path
-        kwarg_path += f'{psr.name}_model_kwargs.json'
-        with open(kwarg_path, 'r') as fin:
-            kwargs = json.load(fin)
+            ### Get kwargs dictionary
+            kwarg_path = args.model_kwargs_path
+            kwarg_path += f'{psr.name}_model_kwargs.json'
+            with open(kwarg_path, 'r') as fin:
+                kwargs = json.load(fin)
 
-#         if 'wideband' in kwargs.keys():
-#             kwargs['is_wideband'] = kwargs['wideband']
-#             kwargs.__delitem__('wideband')
-        ## Build special DM GP models for B1937
-        if psr.name == 'B1937+21':
-            # Periodic GP kernel for DM
-            log10_sigma = parameter.Uniform(-10, -4.8)
-            log10_ell = parameter.Uniform(1, 2.4)
-            log10_p = parameter.Uniform(-2, -1)
-            log10_gam_p = parameter.Uniform(-2, 2)
-            dm_basis = gpk.linear_interp_basis_dm(dt=3*86400)
-            dm_prior = gpk.periodic_kernel(log10_sigma=log10_sigma,
-                                           log10_ell=log10_ell,
-                                           log10_gam_p=log10_gam_p,
-                                           log10_p=log10_p)
-            dmgp = gp_signals.BasisGP(dm_prior, dm_basis, name='dm_gp1')
-            # Periodic GP kernel for DM
-            log10_sigma2 = parameter.Uniform(-4.8, -3)
-            log10_ell2 = parameter.Uniform(2.4, 5)
-            log10_p2 = parameter.Uniform(-2, 2)
-            log10_gam_p2 = parameter.Uniform(-2, 2)
-            dm_basis2 = gpk.linear_interp_basis_dm(dt=3*86400)
-            dm_prior2 = gpk.periodic_kernel(log10_sigma=log10_sigma2,
-                                           log10_ell=log10_ell2,
-                                           log10_gam_p=log10_gam_p2,
-                                           log10_p=log10_p2)
-            dmgp2 = gp_signals.BasisGP(dm_prior2, dm_basis2, name='dm_gp2')
-            ch_log10_sigma = parameter.Uniform(-10, -3.5)
-            ch_log10_ell = parameter.Uniform(1, 6)
-            chm_basis = gpk.linear_interp_basis_chromatic(dt=3*86400, idx=4)
-            chm_prior = gpk.se_dm_kernel(log10_sigma=ch_log10_sigma, log10_ell=ch_log10_ell)
-            chromgp = gp_signals.BasisGP(chm_prior, chm_basis, name='chrom_gp')
-            kwargs.update({'dm_sw_deter':False,
-                           'white_vary': False,
-                           'extra_sigs':dmgp + dmgp2 + chromgp + mean_sw,
-                           'psr_model':True})
-        ## Treat all other Adv Noise pulsars the same
+    #         if 'wideband' in kwargs.keys():
+    #             kwargs['is_wideband'] = kwargs['wideband']
+    #             kwargs.__delitem__('wideband')
+            ## Build special DM GP models for B1937
+            if psr.name == 'B1937+21':
+                # Periodic GP kernel for DM
+                log10_sigma = parameter.Uniform(-10, -4.8)
+                log10_ell = parameter.Uniform(1, 2.4)
+                log10_p = parameter.Uniform(-2, -1)
+                log10_gam_p = parameter.Uniform(-2, 2)
+                dm_basis = gpk.linear_interp_basis_dm(dt=3*86400)
+                dm_prior = gpk.periodic_kernel(log10_sigma=log10_sigma,
+                                               log10_ell=log10_ell,
+                                               log10_gam_p=log10_gam_p,
+                                               log10_p=log10_p)
+                dmgp = gp_signals.BasisGP(dm_prior, dm_basis, name='dm_gp1')
+                # Periodic GP kernel for DM
+                log10_sigma2 = parameter.Uniform(-4.8, -3)
+                log10_ell2 = parameter.Uniform(2.4, 5)
+                log10_p2 = parameter.Uniform(-2, 2)
+                log10_gam_p2 = parameter.Uniform(-2, 2)
+                dm_basis2 = gpk.linear_interp_basis_dm(dt=3*86400)
+                dm_prior2 = gpk.periodic_kernel(log10_sigma=log10_sigma2,
+                                               log10_ell=log10_ell2,
+                                               log10_gam_p=log10_gam_p2,
+                                               log10_p=log10_p2)
+                dmgp2 = gp_signals.BasisGP(dm_prior2, dm_basis2, name='dm_gp2')
+                ch_log10_sigma = parameter.Uniform(-10, -3.5)
+                ch_log10_ell = parameter.Uniform(1, 6)
+                chm_basis = gpk.linear_interp_basis_chromatic(dt=3*86400, idx=4)
+                chm_prior = gpk.se_dm_kernel(log10_sigma=ch_log10_sigma, log10_ell=ch_log10_ell)
+                chromgp = gp_signals.BasisGP(chm_prior, chm_basis, name='chrom_gp')
+                kwargs.update({'dm_sw_deter':False,
+                               'white_vary': False,
+                               'extra_sigs':dmgp + dmgp2 + chromgp + mean_sw,
+                               'psr_model':True})
+            ## Treat all other Adv Noise pulsars the same
+            else:
+                ### Turn SW model off. Add in stand alone SW model and common process. Return model.
+                kwargs.update({'dm_sw_deter':False,
+                               'white_vary': False,
+                               'extra_sigs':mean_sw,
+                               'psr_model':True})
+            ### Load the appropriate single_pulsar_model
+            psr_models.append(model_singlepsr_noise(new_psr, **kwargs))#(new_psr))
+            final_psrs.append(new_psr)
+        # Treat all other DMX pulsars in the standard way
         else:
-            ### Turn SW model off. Add in stand alone SW model and common process. Return model.
-            kwargs.update({'dm_sw_deter':False,
-                           'white_vary': False,
-                           'extra_sigs':mean_sw,
-                           'psr_model':True})
-        ### Load the appropriate single_pulsar_model
-        psr_models.append(model_singlepsr_noise(new_psr, **kwargs))#(new_psr))
-        final_psrs.append(new_psr)
-    # Treat all other DMX pulsars in the standard way
-    else:
-        s2 = s + blocks.white_noise_block(vary=False, inc_ecorr=True, select='backend')
-        psr_models.append(s2)#(psr))
-        final_psrs.append(psr)
+            s2 = s + blocks.white_noise_block(vary=False, inc_ecorr=True, select='backend')
+            psr_models.append(s2)#(psr))
+            final_psrs.append(psr)
 
-    print(f'\r{psr.name} Complete.',end='',flush=True)
+        print(f'\r{psr.name} Complete.',end='',flush=True)
 
     crn_models = [(m + cs)(psr) for psr,m in  zip(final_psrs,psr_models)]
     gw_models = [(m + gw)(psr) for psr,m in  zip(final_psrs,psr_models)]
