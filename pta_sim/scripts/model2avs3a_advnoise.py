@@ -189,7 +189,7 @@ with open(args.outdir+'/model_params.json' , 'w') as fout:
               separators=(',', ': '))
 
 noise['gw_log10_A'] = np.log10(2e-15)
-x0 = [noise[k] for k in pta_crn.param_names]
+x0 = [noise[k] for k in ptas[0].param_names]
 x0.append(0.1)
 
 sampler.sample(x0, args.niter, SCAMweight=30, AMweight=15,
