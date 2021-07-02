@@ -159,6 +159,12 @@ else:
     with open(args.outdir+'pta.pkl','wb') as fout:
         cloudpickle.dump(ptas,fout)
 
+with open(args.noisepath, 'r') as fin:
+    noise =json.load(fin)
+
+ptas[0].set_default_params(noise)
+ptas[1].set_default_params(noise)
+
 if args.model_wts is None:
     model_wts = None
 else:
