@@ -4,6 +4,7 @@
 import numpy as np
 import sys, os, glob, json, pickle, copy
 import cloudpickle
+import logging
 
 from enterprise_extensions import models, model_utils, hypermodel
 from enterprise.signals.signal_base import PTA
@@ -23,6 +24,7 @@ import pta_sim.parse_sim as parse_sim
 from pta_sim.bayes import chain_length_bool, save_core, get_freqs, filter_psr_path
 args = parse_sim.arguments()
 
+logging.basicConfig(format="%(levelname)s: %(name)s: %(message)s", level=logging.INFO)
 #Is chain longer than niter?
 # longer = chain_length_bool(args.outdir, int(args.niter//10))
 
@@ -156,7 +158,7 @@ for psr in pkl_psrs:
 
     with open(args.outdir+'pta.pkl','wb') as fout:
         cloudpickle.dump(ptas,fout)
-        
+
 if args.model_wts is None:
     model_wts = None
 else:
