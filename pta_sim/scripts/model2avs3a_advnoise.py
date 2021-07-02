@@ -154,6 +154,9 @@ for psr in pkl_psrs:
     ptas = {0:pta_crn,
             1:pta_gw}
 
+    with open(args.outdir+'pta.pkl','wb') as fout:
+        cloudpickle.dump(ptas,fout)
+        
 if args.model_wts is None:
     model_wts = None
 else:
