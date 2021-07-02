@@ -85,7 +85,7 @@ for psr in pkl_psrs:
             new_psr=pickle.load(fin)
 
         ### Get kwargs dictionary
-        kwarg_path = '/gscratch/gwastro/hazboun/nanograv/noise/'
+        kwarg_path = args.model_kwargs_path
         kwarg_path += f'{psr.name}_model_kwargs.json'
         with open(kwarg_path, 'r') as fin:
             kwargs = json.load(fin)
