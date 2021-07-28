@@ -168,21 +168,14 @@ Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
                                 empirical_distr = args.emp_distr)
 
 try:
-    achrom_freqs = get_freqs(ptas[0], signal_id='gw')
+    achrom_freqs = get_freqs(pta_crn, signal_id='gw')
     np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
 except:
     pass
 
-model_params = {}
-for ii,mod in enumerate(ptas):
-    model_params.update({ii : ptas[ii].param_names})
-
-with open(args.outdir+'/model_params.json' , 'w') as fout:
-    json.dump(model_params, fout, sort_keys=True, indent=4,
-              separators=(',', ': '))
 
 noise['gw_log10_A'] = np.log10(2e-15)
-x0 = np.array([noise[k] for k in ptas[0].param_names])
+x0 = np.array([noise[k] for k in pta_crn.param_names])
 
 Sampler.sample(x0, args.niter, SCAMweight=30, AMweight=15,
                DEweight=30, burn=300000, writeHotChains=args.writeHotChains,
