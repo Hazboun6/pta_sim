@@ -6,7 +6,7 @@ import sys, os, glob, json, pickle, copy
 import cloudpickle
 import logging
 
-from enterprise_extensions import models, model_utils, hypermodel
+from enterprise_extensions import models, model_utils, hypermodel, sampler
 from enterprise.signals.signal_base import PTA
 from enterprise.signals import gp_signals, signal_base, deterministic_signals, parameter, selections, white_signals, utils
 from enterprise.signals import gp_bases as gpb
@@ -32,8 +32,8 @@ logging.basicConfig(format="%(levelname)s: %(name)s: %(message)s", level=logging
 #     sys.exit() #Hmmmm what to do here?
 # else:
 #     pass
-cloud_pkl_path = '/gscratch/gwastro/hazboun/nanograv/noise/ng12p5yr/adv_noise_full_pta/'
-if os.path.exists(args.outdir+'pta.pkl'):
+
+if os.path.exists(args.pta_pkl):
     with open(cloud_pkl_path+'pta.pkl', "rb") as f:
         ptas = cloudpickle.load(f)
 else:
@@ -147,32 +147,25 @@ else:
         print(f'\r{psr.name} Complete.',end='',flush=True)
 
     crn_models = [(m + cs)(psr) for psr,m in  zip(final_psrs,psr_models)]
-    gw_models = [(m + gw)(psr) for psr,m in  zip(final_psrs,psr_models)]
+    # gw_models = [(m + gw)(psr) for psr,m in  zip(final_psrs,psr_models)]
 
     pta_crn = signal_base.PTA(crn_models)
-    pta_gw = signal_base.PTA(gw_models)
+    # pta_gw = signal_base.PTA(gw_models)
 
-    # delta_common=0.,
-    ptas = {0:pta_crn,
-            1:pta_gw}
+    # # delta_common=0.,
+    # ptas = {0:pta_crn,
+    #         1:pta_gw}
+    with open(args.noisepath, 'r') as fin:
+        noise =json.load(fin)
 
-    with open(cloud_pkl_path+'pta.pkl','wb') as fout:
-        cloudpickle.dump(ptas,fout)
+    pta_crn.set_default_params(noise)
 
-with open(args.noisepath, 'r') as fin:
-    noise =json.load(fin)
+    with open(args.pta_pkl,'wb') as fout:
+        cloudpickle.dump(pta_crn,fout)
 
-ptas[0].set_default_params(noise)
-ptas[1].set_default_params(noise)
 
-if args.model_wts is None:
-    model_wts = None
-else:
-    model_wts = dict(enumerate(args.model_wts))
-
-hm = hypermodel.HyperModel(models=ptas, log_weights=model_wts)
-sampler = hm.setup_sampler(outdir=args.outdir, resume=True,
-                           empirical_distr = args.emp_distr)
+Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
+                                empirical_distr = args.emp_distr)
 
 try:
     achrom_freqs = get_freqs(ptas[0], signal_id='gw')
@@ -189,10 +182,8 @@ with open(args.outdir+'/model_params.json' , 'w') as fout:
               separators=(',', ': '))
 
 noise['gw_log10_A'] = np.log10(2e-15)
-y0 = [noise[k] for k in ptas[0].param_names]
+x0 = np.array([noise[k] for k in ptas[0].param_names])
 
-x0 = hm.initial_sample()
-x0[:-1] = y0
-sampler.sample(x0, args.niter, SCAMweight=30, AMweight=15,
+Sampler.sample(x0, args.niter, SCAMweight=30, AMweight=15,
                DEweight=30, burn=300000, writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain)
