@@ -34,8 +34,8 @@ logging.basicConfig(format="%(levelname)s: %(name)s: %(message)s", level=logging
 #     pass
 
 if os.path.exists(args.pta_pkl):
-    with open(cloud_pkl_path+'pta.pkl', "rb") as f:
-        ptas = cloudpickle.load(f)
+    with open(args.pta_pkl, "rb") as f:
+        pta_crn = cloudpickle.load(f)
 else:
     with open('{0}'.format(args.pickle), "rb") as f:
         pkl_psrs = pickle.load(f)
