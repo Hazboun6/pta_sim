@@ -33,6 +33,9 @@ logging.basicConfig(format="%(levelname)s: %(name)s: %(message)s", level=logging
 # else:
 #     pass
 
+with open(args.noisepath, 'r') as fin:
+    noise =json.load(fin)
+
 if os.path.exists(args.pta_pkl):
     with open(args.pta_pkl, "rb") as f:
         pta_crn = cloudpickle.load(f)
@@ -155,8 +158,6 @@ else:
     # # delta_common=0.,
     # ptas = {0:pta_crn,
     #         1:pta_gw}
-    with open(args.noisepath, 'r') as fin:
-        noise =json.load(fin)
 
     pta_crn.set_default_params(noise)
 
