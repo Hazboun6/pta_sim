@@ -263,8 +263,9 @@ cov = np.diag(np.ones(ndim) * 0.01**2)
 
 # set up jump groups by red noise groups
 
-groups = sampler.get_parameter_groups(pta)
 
+groups = sampler.get_parameter_groups(pta)
+groups.extend(sampler.get_psr_groups(pta))
 Sampler = ptmcmc(ndim, pta.get_lnlikelihood, pta.get_lnprior,
                  cov, groups=groups,
                  outDir=args.outdir, resume=True)
@@ -435,7 +436,12 @@ if args.gwb_off:
     pass
 else:
     Sampler.addProposalToCycle(jp.draw_from_gwb_log_uniform_distribution, 20)
+
 Sampler.addProposalToCycle(jp.draw_from_empirical_distr, 60)
+Sampler.addProposalToCycle(jp.draw_from_psr_empirical_distr, 50)
+Sampler.addProposalToCycle(jp.draw_from_psr_prior, 50)
+Sampler.addProposalToCycle(jp.draw_from_red_prior, 20)
+Sampler.addProposalToCycle(jp.draw_from_dm_gp_prior, 40)
 
 N = args.niter
 Sampler.sample(x0, Niter=N, SCAMweight=30, AMweight=15,
