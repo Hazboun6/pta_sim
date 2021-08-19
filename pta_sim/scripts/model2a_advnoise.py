@@ -164,9 +164,16 @@ else:
     with open(args.pta_pkl,'wb') as fout:
         cloudpickle.dump(pta_crn,fout)
 
-
+groups = get_parameter_groups(pta_crn)
+groups.extend(sampler.get_psr_groups(pta_crn))
 Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
-                                empirical_distr = args.emp_distr)
+                                empirical_distr = args.emp_distr, groups=groups)
+
+Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 50)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_prior, 50)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 50)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 20)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
 
 try:
     achrom_freqs = get_freqs(pta_crn, signal_id='gw')
@@ -178,6 +185,6 @@ except:
 noise['gw_log10_A'] = np.log10(2e-15)
 x0 = np.array([noise[k] for k in pta_crn.param_names])
 
-Sampler.sample(x0, args.niter, SCAMweight=30, AMweight=15,
+Sampler.sample(x0, args.niter, SCAMweight=50, AMweight=15,
                DEweight=30, burn=300000, writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain)
