@@ -174,6 +174,9 @@ Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_prior, 50)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 50)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 20)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 30)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_dmexpcusp_prior, 30)
+
 
 try:
     achrom_freqs = get_freqs(pta_crn, signal_id='gw')
