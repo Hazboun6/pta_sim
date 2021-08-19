@@ -164,7 +164,7 @@ else:
     with open(args.pta_pkl,'wb') as fout:
         cloudpickle.dump(pta_crn,fout)
 
-groups = get_parameter_groups(pta_crn)
+groups = sampler.get_parameter_groups(pta_crn)
 groups.extend(sampler.get_psr_groups(pta_crn))
 Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
                                 empirical_distr = args.emp_distr, groups=groups)
