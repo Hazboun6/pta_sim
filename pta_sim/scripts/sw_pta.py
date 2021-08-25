@@ -439,12 +439,12 @@ else:
 
 Sampler.addProposalToCycle(jp.draw_from_empirical_distr, 60)
 Sampler.addProposalToCycle(jp.draw_from_psr_empirical_distr, 50)
-Sampler.addProposalToCycle(jp.draw_from_psr_prior, 50)
-Sampler.addProposalToCycle(jp.draw_from_red_prior, 20)
+Sampler.addProposalToCycle(jp.draw_from_psr_prior, 10)
+Sampler.addProposalToCycle(jp.draw_from_red_prior, 40)
 Sampler.addProposalToCycle(jp.draw_from_dm_gp_prior, 40)
 
 N = args.niter
-Sampler.sample(x0, Niter=N, SCAMweight=30, AMweight=15,
+Sampler.sample(x0, Niter=N, SCAMweight=30, AMweight=30,
                writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain,
-               DEweight=30, burn=200000)
+               DEweight=60, burn=200000)
