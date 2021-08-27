@@ -419,14 +419,13 @@ class my_JP(sampler.JumpProposal):
 emp_dist_pkl= args.emp_distr
 jp = my_JP(pta, empirical_distr=emp_dist_pkl)
 Sampler.addProposalToCycle(jp.draw_from_prior, 15)
-# Sampler.addProposalToCycle(jp.draw_from_dm_sw_prior, 20)
 Sampler.addProposalToCycle(jp.draw_from_signal_prior, 20)
 Sampler.addProposalToCycle(jp.draw_from_dm_gp_prior, 35)
-Sampler.addProposalToCycle(jp.draw_from_sw1_prior, 60)
+Sampler.addProposalToCycle(jp.draw_from_sw1_prior, 30)
 if args.sw_gp_mono_gp:
-    Sampler.addProposalToCycle(jp.draw_from_swgp_mono_prior,30)
+    Sampler.addProposalToCycle(jp.draw_from_swgp_mono_prior,60)
 if args.sw_pta_gp:
-    Sampler.addProposalToCycle(jp.draw_from_swgp_prior,30)
+    Sampler.addProposalToCycle(jp.draw_from_swgp_prior,90)
 if args.bayes_ephem:
     Sampler.addProposalToCycle(jp.draw_from_ephem_prior, 35)
 for ii,pow in enumerate(args.sw_r2p):
