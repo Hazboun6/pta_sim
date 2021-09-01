@@ -142,7 +142,7 @@ else:
             psr_models.append(model_singlepsr_noise(new_psr, **kwargs))#(new_psr))
             final_psrs.append(new_psr)
         # Treat all other DMX pulsars in the standard way
-        else:
+        elif not args.adv_noise_psrs_only:
             s2 = s + blocks.white_noise_block(vary=False, inc_ecorr=True, select='backend')
             psr_models.append(s2)#(psr))
             final_psrs.append(psr)
@@ -169,9 +169,9 @@ groups.extend(sampler.get_psr_groups(pta_crn))
 Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
                                 empirical_distr = args.emp_distr, groups=groups)
 
-Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 50)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 70)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_prior, 10)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 50)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 70)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 50)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 30)
