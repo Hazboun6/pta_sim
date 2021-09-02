@@ -228,8 +228,8 @@ else:
             return dt_sw
 
 
-        n_earth_rho = parameter.Normal(0, 0.5, size=60)('n_earth_rho')
-        sw_pert = solar_wind_perturb(n_earth_rho=n_earth_rho, Tspan=Tspan, nmodes=30)
+        n_earth_rho = parameter.Normal(0, 0.5, size=args.n_swgp_freqs*2)('n_earth_rho')
+        sw_pert = solar_wind_perturb(n_earth_rho=n_earth_rho, Tspan=Tspan, nmodes=args.n_swgp_freqs)
         sw_perturb = deterministic_signals.Deterministic(sw_pert, name='sw_perturb')
         model += sw_perturb
 
@@ -435,7 +435,7 @@ class my_JP(sampler.JumpProposal):
 
         # forward-backward jump probability
         lqxy = (self.sw_mv_gauss.logpdf(x[idxs])
-                - self.sw_mv_gauss.logpdf(q[idxs])
+                - self.sw_mv_gauss.logpdf(q[idxs]))
 
         return q, float(lqxy)
 

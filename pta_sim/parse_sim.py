@@ -93,6 +93,8 @@ parser.add_argument('--model_wts', dest='model_wts', action='append',
                     help='Log Model weights for model selection. Append one per model.')
 parser.add_argument('--nfreqs', dest='nfreqs', action='store',
                     type=int, default=30, help='Number of Freqs')
+parser.add_argument('--n_swgp_freqs', dest='n_swgp_freqs', action='store',
+                    type=int, default=20, help='Number of Freqs for SW GP')
 parser.add_argument('--n_crnfreqs', dest='n_crnfreqs', action='store',
                     type=int, default=30, help='Number of Freqs in CRN model')
 parser.add_argument('--n_gwbfreqs', dest='n_gwbfreqs', action='store',
