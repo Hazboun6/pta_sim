@@ -7,6 +7,7 @@ import numpy as np
 # import pint.residuals as r
 import astropy.units as u
 import scipy.integrate as spi
+from scipy.stats import multivariate_normal
 import enterprise
 import cloudpickle
 from enterprise.pulsar import Pulsar
@@ -275,8 +276,14 @@ np.savetxt(args.outdir + '/priors.txt',
            list(map(lambda x: str(x.__repr__()), pta.params)), fmt='%s')
 
 class my_JP(sampler.JumpProposal):
-    def __init__(self, pta, snames=None, empirical_distr=None):
-        super().__init__(pta, snames=None, empirical_distr=None)
+    def __init__(self, pta, snames=None, empirical_distr=None,
+                 sw_fit=None):
+        super().__init__(pta, snames=snames, empirical_distr=empirical_distr)
+        if sw_fit is not None:
+            with open(sw_fit,'rb') as fin:
+                fit,cov = pickle.load(fin)
+            self.sw_fit_len = fit.size
+            self.sw_mv_gauss = multivariate_normal(mean=fit,cov=cov)
 
     def draw_from_sw1_prior(self, x, iter, beta):
 
@@ -416,8 +423,24 @@ class my_JP(sampler.JumpProposal):
 
         return q, float(lqxy)
 
+    def draw_from_fit_to_sw_bins(self, x, iter, beta):
+
+        q = x.copy()
+        lqxy = 0
+        L = self.sw_fit_len-1
+        idxs = [self.pimap[f'n_earth_rho_{ii}'] for ii in range(L)]
+        idxs.append(self.pimap['nE_1'])
+
+        q[idxs] = self.sw_mv_gauss.rvs(1)
+
+        # forward-backward jump probability
+        lqxy = (self.sw_mv_gauss.logpdf(x[idxs])
+                - self.sw_mv_gauss.logpdf(q[idxs])
+
+        return q, float(lqxy)
+
 emp_dist_pkl= args.emp_distr
-jp = my_JP(pta, empirical_distr=emp_dist_pkl)
+jp = my_JP(pta, empirical_distr=emp_dist_pkl, sw_fit=args.sw_fit_path)
 Sampler.addProposalToCycle(jp.draw_from_prior, 15)
 Sampler.addProposalToCycle(jp.draw_from_signal_prior, 20)
 Sampler.addProposalToCycle(jp.draw_from_dm_gp_prior, 35)
@@ -425,7 +448,9 @@ Sampler.addProposalToCycle(jp.draw_from_sw1_prior, 30)
 if args.sw_gp_mono_gp:
     Sampler.addProposalToCycle(jp.draw_from_swgp_mono_prior,60)
 if args.sw_pta_gp:
-    Sampler.addProposalToCycle(jp.draw_from_swgp_prior,90)
+    Sampler.addProposalToCycle(jp.draw_from_swgp_prior,50)
+if args.sw_fit_path is not None:
+    Sampler.addProposalToCycle(jp.draw_from_fit_to_sw_bins,90)
 if args.bayes_ephem:
     Sampler.addProposalToCycle(jp.draw_from_ephem_prior, 35)
 for ii,pow in enumerate(args.sw_r2p):

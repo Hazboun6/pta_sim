@@ -168,6 +168,9 @@ parser.add_argument('--spat_corr_info', dest='spat_corr_info',
                     help='Whether to write out the spatial correlation information')
 parser.add_argument('--start_time', dest='start_time', action='store',
                     type=float, default=None, help='Start MJD for slicing. In days.')
+parser.add_argument('--sw_fit_path', dest='sw_fit_path',
+                    action='store', default=None, type=str,
+                    help='Path to pickled list with best fit values and cov matrix.')
 parser.add_argument('--sw_gp_mono_gp', dest='sw_gp_mono_gp',
                     action='store_true', default=False,
                     help='Whether to use a full monopole GP across the PTA.')
