@@ -221,10 +221,13 @@ else:
                                                             modes=modes)
 
             n_Earth = np.einsum('ij,j', F, n_earth_rho)#np.repeat(10**n_earth_rho,2))
-            theta, R_earth, _, _ = SW.theta_impact(planetssb, sunssb, pos_t)
-            dm_sol_wind = SW.dm_solar(1.0, theta, R_earth)
-            dt_sw = n_Earth * dm_sol_wind * 4.148808e3 / freqs**2
-
+            if np.any(np.logical_or(n_Earth<0,n_Earth>50)):
+                dt_sw = np.zeros_like(dm_sol_wind)
+            else:
+                theta, R_earth, _, _ = SW.theta_impact(planetssb, sunssb, pos_t)
+                dm_sol_wind = SW.dm_solar(1.0, theta, R_earth)
+                dt_sw = n_Earth * dm_sol_wind * 4.148808e3 / freqs**2
+                
             return dt_sw
 
 
