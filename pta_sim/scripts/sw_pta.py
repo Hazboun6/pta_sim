@@ -231,7 +231,8 @@ else:
             return dt_sw
 
 
-        n_earth_rho = parameter.Normal(0, 0.5, size=args.n_swgp_freqs*2)('n_earth_rho')
+        n_earth_rho = parameter.Uniform(-5, 5, size=args.n_swgp_freqs*2)('n_earth_rho')
+        #parameter.Normal(0, 0.5, size=args.n_swgp_freqs*2)('n_earth_rho')
         sw_pert = solar_wind_perturb(n_earth_rho=n_earth_rho, Tspan=Tspan, nmodes=args.n_swgp_freqs)
         sw_perturb = deterministic_signals.Deterministic(sw_pert, name='sw_perturb')
         model += sw_perturb
@@ -259,7 +260,8 @@ else:
 
 
 x0 = np.hstack(p.sample() for p in pta.params)
-
+# x0 = np.array([val for ky,val in noise_dict.items() if ky in pta.params])
+# extra = np.hstack([p.sample() for p in pta.params if ])
 ndim = x0.size
 
 # initial jump covariance matrix
@@ -286,7 +288,7 @@ class my_JP(sampler.JumpProposal):
             with open(sw_fit,'rb') as fin:
                 fit,cov = pickle.load(fin)
             self.sw_fit_len = fit.size
-            self.sw_mv_gauss = multivariate_normal(mean=fit,cov=cov)
+            self.sw_mv_gauss = multivariate_normal(mean=fit,cov=10*cov)
 
     def draw_from_sw1_prior(self, x, iter, beta):
 
@@ -453,7 +455,7 @@ if args.sw_gp_mono_gp:
 if args.sw_pta_gp:
     Sampler.addProposalToCycle(jp.draw_from_swgp_prior,50)
 if args.sw_fit_path is not None:
-    Sampler.addProposalToCycle(jp.draw_from_fit_to_sw_bins,90)
+    Sampler.addProposalToCycle(jp.draw_from_fit_to_sw_bins,50)
 if args.bayes_ephem:
     Sampler.addProposalToCycle(jp.draw_from_ephem_prior, 35)
 for ii,pow in enumerate(args.sw_r2p):
