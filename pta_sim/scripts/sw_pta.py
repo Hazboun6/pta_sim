@@ -221,17 +221,18 @@ else:
                                                             modes=modes)
 
             n_Earth = np.einsum('ij,j', F, n_earth_rho)#np.repeat(10**n_earth_rho,2))
-            if np.any(np.logical_or(n_Earth<0,n_Earth>50)):
-                dt_sw = np.zeros_like(n_Earth)
-            else:
-                theta, R_earth, _, _ = SW.theta_impact(planetssb, sunssb, pos_t)
-                dm_sol_wind = SW.dm_solar(1.0, theta, R_earth)
-                dt_sw = n_Earth * dm_sol_wind * 4.148808e3 / freqs**2
+            # if np.any(np.logical_or(n_Earth<0,n_Earth>50)):
+            #     dt_sw = np.zeros_like(n_Earth)
+            # else:
+            theta, R_earth, _, _ = SW.theta_impact(planetssb, sunssb, pos_t)
+            dm_sol_wind = SW.dm_solar(1.0, theta, R_earth)
+            dt_sw = n_Earth * dm_sol_wind * 4.148808e3 / freqs**2
 
             return dt_sw
 
 
-        n_earth_rho = parameter.Uniform(-5, 5, size=args.n_swgp_freqs*2)('n_earth_rho')
+        n_earth_rho = parameter.Normal(0, 0.5, size=args.n_swgp_freqs*2)('n_earth_rho')
+        # parameter.Uniform(-5, 5, size=args.n_swgp_freqs*2)('n_earth_rho')
         #parameter.Normal(0, 0.5, size=args.n_swgp_freqs*2)('n_earth_rho')
         sw_pert = solar_wind_perturb(n_earth_rho=n_earth_rho, Tspan=Tspan, nmodes=args.n_swgp_freqs)
         sw_perturb = deterministic_signals.Deterministic(sw_pert, name='sw_perturb')
