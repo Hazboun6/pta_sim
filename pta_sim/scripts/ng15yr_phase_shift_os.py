@@ -79,7 +79,7 @@ gw_pl = utils.powerlaw(log10_A=gw_log10_A, gamma=gw_gamma)
 gw_pshift = gp_signals.FourierBasisGP(spectrum=gw_pl,
                                       modes=freqs[:args.n_gwbfreqs],
                                       name='gw', pshift=True,
-                                      pseed=args.process)
+                                      pseed=parameter.Uniform(0,10000)('gw_pseed'))#args.process)
 
 model_pshift = tm + ef + eq + ec + rn + gw_pshift
 
@@ -97,18 +97,22 @@ c0 = co.load_Core(args.corepath)
 chain = c0.chain[c0.burn:,:-4]
 pars = c0.params[:-4]
 N = args.niter
-Ahat_pshift = np.zeros(N)
-snr_pshift = np.zeros(N)
+M = args.miter
+out = np.zeros((M,3))
 check = np.arange(0,N,100)
-for ii in range(N):
-    param_dict = {}
-    idx = np.random.randint(0,chain.shape[0])
-    param_dict = dict(zip(pars,chain[idx,:]))
-    _, _, _, Asqr, Sigma = os_pshift.compute_os(params=param_dict)
-    Ahat_pshift[ii] = Asqr
-    snr_pshift[ii] = Asqr/Sigma
-    if ii in check:
-        print(f'{ii/N*100} % complete.')
+for ii in range(M):
+    Ahat_pshift = np.zeros(N)
+    snr_pshift = np.zeros(N)
+    for ii in range(N):
+        param_dict = {}
+        idx = np.random.randint(0,chain.shape[0])
+        param_dict = dict(zip(pars,chain[idx,:]))
+        param_dict.update({'gw_pseed':jj+args.process})
+        _, _, _, Asqr, Sigma = os_pshift.compute_os(params=param_dict)
+        Ahat_pshift[ii] = Asqr
+        snr_pshift[ii] = Asqr/Sigma
+        if ii in check:
+            print(f'{ii/N*100} % complete.')
 
 out = [Ahat_pshift.mean(),snr_pshift.mean(),args.process]
 np.save(args.outdir+f'os_snr_seed_{args.process}', out)
