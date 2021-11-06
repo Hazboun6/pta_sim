@@ -78,8 +78,8 @@ tm = gp_signals.TimingModel()
 gw_pl = utils.powerlaw(log10_A=gw_log10_A, gamma=gw_gamma)
 gw_pshift = gp_signals.FourierBasisGP(spectrum=gw_pl,
                                       modes=freqs[:args.n_gwbfreqs],
-                                      name='gw', pshift=True,
-                                      pseed=parameter.Uniform(0,100000)('gw_pseed'))#args.process)
+                                      name='gw_crn', pshift=True,
+                                      pseed=parameter.Uniform(0,100000)('pseed'))#args.process)
 
 model_pshift = tm + ef + eq + ec + rn + gw_pshift
 
