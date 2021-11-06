@@ -36,7 +36,7 @@ for ii, ent in enumerate(model_labels):
                   'chrom_idx':ent[5],
                   'chrom_kernel':ent[3],
                   'chrom_dt':14,
-                  'chrom_quad':ent[4],
+                  'chrom_quad':True,
                   'dm_expdip':False,
                   }
 
