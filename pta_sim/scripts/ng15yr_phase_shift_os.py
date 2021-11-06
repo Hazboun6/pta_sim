@@ -91,7 +91,7 @@ pta_pshift.set_default_params(noise)
 
 os_pshift = OS(psrs=psrs, pta=pta_pshift, orf=args.orf)
 
-c0 = co.load_Core(args.corepath)
+c0 = co.Core(corepath=args.corepath)
 chain = c0.chain[c0.burn:,:-4]
 pars = c0.params[:-4]
 N = args.niter
