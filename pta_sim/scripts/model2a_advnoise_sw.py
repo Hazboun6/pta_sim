@@ -203,7 +203,6 @@ try:
 except:
     pass
 
-
 noise['gw_log10_A'] = np.log10(2e-15)
 x0 = np.array([noise[k] for k in pta_crn.param_names])
 
