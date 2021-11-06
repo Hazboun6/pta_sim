@@ -204,6 +204,10 @@ except:
     pass
 
 noise['gw_log10_A'] = np.log10(2e-15)
+nearth_pars = [p for p in pta_crn.param_names if 'n_earth' in p]
+for npar in nearth_pars:
+    noise[npar]=6.0
+noise['np_4p39']=-2.86
 x0 = np.array([noise[k] for k in pta_crn.param_names])
 
 Sampler.sample(x0, args.niter, SCAMweight=50, AMweight=30,

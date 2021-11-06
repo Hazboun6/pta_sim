@@ -79,15 +79,13 @@ gw_pl = utils.powerlaw(log10_A=gw_log10_A, gamma=gw_gamma)
 gw_pshift = gp_signals.FourierBasisGP(spectrum=gw_pl,
                                       modes=freqs[:args.n_gwbfreqs],
                                       name='gw', pshift=True,
-                                      pseed=parameter.Uniform(0,10000)('gw_pseed'))#args.process)
+                                      pseed=parameter.Uniform(0,100000)('gw_pseed'))#args.process)
 
 model_pshift = tm + ef + eq + ec + rn + gw_pshift
-
 
 pta_pshift = signal_base.PTA([model_pshift(p) for p in psrs])
 with open(args.noisepath,'r') as fin:
     noise = json.load(fin)
-
 
 pta_pshift.set_default_params(noise)
 
@@ -98,21 +96,24 @@ chain = c0.chain[c0.burn:,:-4]
 pars = c0.params[:-4]
 N = args.niter
 M = args.miter
-out = np.zeros((M,3))
-check = np.arange(0,N,100)
-for ii in range(M):
+seed_par = [p for p in pta_pshift.param_names if 'pseed' in p][0]
+with open(args.outdir+f'os_snr_seed_{args.process}.txt','w') as file:
+    file.write('\t'.join(['OS (Ahat)','SNR','Pshift Seed'])+'\n')
+
+for jj in range(M):
     Ahat_pshift = np.zeros(N)
     snr_pshift = np.zeros(N)
     for ii in range(N):
         param_dict = {}
         idx = np.random.randint(0,chain.shape[0])
         param_dict = dict(zip(pars,chain[idx,:]))
-        param_dict.update({'gw_pseed':jj+args.process})
+        param_dict.update({seed_par:jj+args.process})
         _, _, _, Asqr, Sigma = os_pshift.compute_os(params=param_dict)
         Ahat_pshift[ii] = Asqr
         snr_pshift[ii] = Asqr/Sigma
-        if ii in check:
-            print(f'{ii/N*100} % complete.')
+        # if ii in check:
+        #     print(f'{ii/N*100} % complete.')
 
-out = [Ahat_pshift.mean(),snr_pshift.mean(),args.process]
-np.save(args.outdir+f'os_snr_seed_{args.process}', out)
+    out = np.array([np.median(Ahat_pshift),np.median(snr_pshift),param_dict[seed_par]])
+    with open(args.outdir+f'os_snr_seed_{args.process}.txt','a') as file:
+        file.write('\t'.join(out.astype(str))+'\n')
