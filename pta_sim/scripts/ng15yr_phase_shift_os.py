@@ -107,7 +107,7 @@ for jj in range(M):
         param_dict = {}
         idx = np.random.randint(0,chain.shape[0])
         param_dict = dict(zip(pars,chain[idx,:]))
-        param_dict.update({seed_par:jj+args.process})
+        param_dict.update({seed_par:jj+args.miter*args.process})
         _, _, _, Asqr, Sigma = os_pshift.compute_os(params=param_dict)
         Ahat_pshift[ii] = Asqr
         snr_pshift[ii] = Asqr/Sigma
