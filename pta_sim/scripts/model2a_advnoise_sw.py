@@ -72,7 +72,7 @@ else:
     Tspan_PTA = model_utils.get_tspan(pkl_psrs)
     # common red noise block
     cs = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
-                                       components=5, gamma_val=4.33, name='gw')
+                                       components=5, gamma_val=args.gamma_gw, name='gw')
     # gw = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
     #                                    components=5, gamma_val=4.33, name='gw', orf='hd')
 

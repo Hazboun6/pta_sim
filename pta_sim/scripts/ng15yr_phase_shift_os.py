@@ -26,68 +26,72 @@ import pta_sim.parse_sim as parse_sim
 from pta_sim.bayes import chain_length_bool, save_core, get_freqs, filter_psr_path
 args = parse_sim.arguments()
 
-with open(args.pickle,'rb')as fin:
-    psrs = pickle.load(fin)
+if os.path.exists(args.pta_pkl):
+    with open(args.pta_pkl, "rb") as f:
+        pta_pshift = cloudpickle.load(f)
+else:
+    with open(args.pickle,'rb')as fin:
+        psrs = pickle.load(fin)
 
-pnames = ['B1855+09','B1937+21','B1953+29','J0023+0923','J0030+0451', 'J0340+4130', 'J0613-0200', 'J0636+5128',
-          'J0645+5158','J0740+6620','J0931-1902','J1012+5307','J1024-0719','J1125+7819','J1453+1902','J1455-3330',
-          'J1600-3053','J1614-2230','J1640+2224','J1643-1224','J1713+0747','J1738+0333','J1741+1351','J1744-1134',
-          'J1747-4036','J1832-0836','J1853+1303','J1903+0327','J1909-3744','J1910+1256','J1911+1347','J1918-0642',
-          'J1923+2515','J1944+0907','J2010-1323','J2017+0603','J2033+1734','J2043+1711','J2145-0750','J2214+3000',
-          'J2229+2643','J2234+0611','J2234+0944','J2302+4442','J2317+1439']
+    # pnames = ['B1855+09','B1937+21','B1953+29','J0023+0923','J0030+0451', 'J0340+4130', 'J0613-0200', 'J0636+5128',
+    #           'J0645+5158','J0740+6620','J0931-1902','J1012+5307','J1024-0719','J1125+7819','J1453+1902','J1455-3330',
+    #           'J1600-3053','J1614-2230','J1640+2224','J1643-1224','J1713+0747','J1738+0333','J1741+1351','J1744-1134',
+    #           'J1747-4036','J1832-0836','J1853+1303','J1903+0327','J1909-3744','J1910+1256','J1911+1347','J1918-0642',
+    #           'J1923+2515','J1944+0907','J2010-1323','J2017+0603','J2033+1734','J2043+1711','J2145-0750','J2214+3000',
+    #           'J2229+2643','J2234+0611','J2234+0944','J2302+4442','J2317+1439']
+    #
+    # psrs = [p for p in psrs if p.name in pnames]
+    #
+    tmin = np.amin([p.toas.min() for p in psrs])
+    tmax = np.amax([p.toas.max() for p in psrs])
+    Tspan = tmax - tmin
 
-psrs = [p for p in psrs if p.name in pnames]
+    # Red noise parameter priors
+    log10_A = parameter.Uniform(-20, -11)
+    gamma = parameter.Uniform(0, 7)
 
-tmin = np.amin([p.toas.min() for p in psrs])
-tmax = np.amax([p.toas.max() for p in psrs])
-Tspan = tmax - tmin
+    # GW parameter priors
+    gw_log10_A = parameter.Uniform(-18, -14)('gw_log10_A')
+    gw_gamma = parameter.Constant(13./3)('gw_gamma')
 
-# Red noise parameter priors
-log10_A = parameter.Uniform(-20, -11)
-gamma = parameter.Uniform(0, 7)
+    # White noise parameter priors
+    efac = parameter.Constant()
+    equad = parameter.Constant()
+    ecorr = parameter.Constant()
 
-# GW parameter priors
-gw_log10_A = parameter.Uniform(-18, -14)('gw_log10_A')
-gw_gamma = parameter.Constant(13./3)('gw_gamma')
-
-# White noise parameter priors
-efac = parameter.Constant()
-equad = parameter.Constant()
-ecorr = parameter.Constant()
-
-Nf = args.nfreqs
-freqs = np.linspace(1/Tspan,Nf/Tspan,Nf)
+    Nf = args.nfreqs
+    freqs = np.linspace(1/Tspan,Nf/Tspan,Nf)
 
 
-# # white noise
-selection = selections.Selection(selections.nanograv_backends)
+    # # white noise
+    selection = selections.Selection(selections.nanograv_backends)
 
-ef = white_signals.MeasurementNoise(efac=efac, selection=selection)
-eq = white_signals.EquadNoise(log10_equad=equad, selection=selection)
-ec = white_signals.EcorrKernelNoise(log10_ecorr=ecorr, selection=selection)
+    ef = white_signals.MeasurementNoise(efac=efac, selection=selection)
+    eq = white_signals.EquadNoise(log10_equad=equad, selection=selection)
+    ec = white_signals.EcorrKernelNoise(log10_ecorr=ecorr, selection=selection)
 
-# red noise (powerlaw with 30 frequencies)
-pl = utils.powerlaw(log10_A=log10_A, gamma=gamma)
-rn = gp_signals.FourierBasisGP(spectrum=pl, modes=freqs)
+    # red noise (powerlaw with 30 frequencies)
+    pl = utils.powerlaw(log10_A=log10_A, gamma=gamma)
+    rn = gp_signals.FourierBasisGP(spectrum=pl, modes=freqs)
 
-# timing model
-tm = gp_signals.TimingModel()
+    # timing model
+    tm = gp_signals.TimingModel()
 
-# gw (powerlaw with 5 frequencies)
+    # gw (powerlaw with 5 frequencies)
 
-gw_pl = utils.powerlaw(log10_A=gw_log10_A, gamma=gw_gamma)
-gw_pshift = gp_signals.FourierBasisGP(spectrum=gw_pl,
-                                      modes=freqs[:args.n_gwbfreqs],
-                                      name='gw_crn', pshift=True,
-                                      pseed=parameter.Uniform(0,100000)('pseed'))#args.process)
+    gw_pl = utils.powerlaw(log10_A=gw_log10_A, gamma=gw_gamma)
+    gw_pshift = gp_signals.FourierBasisGP(spectrum=gw_pl,
+                                          modes=freqs[:args.n_gwbfreqs],
+                                          name='gw_crn', pshift=True,
+                                          pseed=parameter.Uniform(0,100000)('pseed'))#args.process)
 
-model_pshift = tm + ef + eq + ec + rn + gw_pshift
+    model_pshift = tm + ef + eq + ec + rn + gw_pshift
 
-pta_pshift = signal_base.PTA([model_pshift(p) for p in psrs])
-with open(args.noisepath,'r') as fin:
-    noise = json.load(fin)
+    pta_pshift = signal_base.PTA([model_pshift(p) for p in psrs])
+    with open(args.noisepath,'r') as fin:
+        noise = json.load(fin)
 
-pta_pshift.set_default_params(noise)
+    pta_pshift.set_default_params(noise)
 
 os_pshift = OS(psrs=psrs, pta=pta_pshift, orf=args.orf)
 
@@ -98,7 +102,7 @@ N = args.niter
 M = args.miter
 seed_par = [p for p in pta_pshift.param_names if 'pseed' in p][0]
 with open(args.outdir+f'os_snr_seed_{args.process}.txt','w') as file:
-    file.write('\t'.join(['OS (Ahat)','SNR','Pshift Seed'])+'\n')
+    file.write('\t'.join(['OS (\hat{A}^2)','SNR','Pshift Seed'])+'\n')
 
 for jj in range(M):
     Ahat_pshift = np.zeros(N)
