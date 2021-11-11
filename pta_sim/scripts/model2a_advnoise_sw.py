@@ -204,6 +204,7 @@ except:
     pass
 
 noise['gw_log10_A'] = np.log10(2e-15)
+noise['gw_gamma'] = 4.33333
 nearth_pars = [p for p in pta_crn.param_names if 'n_earth' in p]
 for npar in nearth_pars:
     noise[npar]=6.0
