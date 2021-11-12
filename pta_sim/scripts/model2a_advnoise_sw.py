@@ -84,7 +84,7 @@ else:
     final_psrs = []
     psr_models = []
     ### Add a stand alone SW deter model
-    bins = np.arange(53215, 57934, 51)
+    bins = np.linspace(53215, 57934, 51)
     bins = np.append(bins, 57934)
     bins *= 24*3600 #Convert to secs
     n_earth = chrom.solar_wind.ACE_SWEPAM_Parameter(size=bins.size-1)('n_earth')
@@ -190,12 +190,16 @@ Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
 
 Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 70)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_prior, 10)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 70)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 50)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 100)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 60)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 30)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_dmexpcusp_prior, 30)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['n_earth']), 30)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['n_earth',
+                                                           'np_4p39',
+                                                           'dm_cusp',
+                                                           'dmexp']),
+                                                           30)
 
 try:
     achrom_freqs = get_freqs(pta_crn, signal_id='gw')
@@ -211,6 +215,6 @@ for npar in nearth_pars:
 noise['np_4p39']=-2.86
 x0 = np.array([noise[k] for k in pta_crn.param_names])
 
-Sampler.sample(x0, args.niter, SCAMweight=50, AMweight=30,
-               DEweight=60, burn=300000, writeHotChains=args.writeHotChains,
+Sampler.sample(x0, args.niter, SCAMweight=100, AMweight=100,
+               DEweight=100, burn=200000, writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain)
