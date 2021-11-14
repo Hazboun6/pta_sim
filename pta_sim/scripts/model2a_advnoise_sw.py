@@ -217,4 +217,4 @@ x0 = np.array([noise[k] for k in pta_crn.param_names])
 
 Sampler.sample(x0, args.niter, SCAMweight=100, AMweight=100,
                DEweight=100, burn=200000, writeHotChains=args.writeHotChains,
-               hotChain=args.hot_chain)
+               hotChain=args.hot_chain, Tskip=25, Tmax=11.0)
