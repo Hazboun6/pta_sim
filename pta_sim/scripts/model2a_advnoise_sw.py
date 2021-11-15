@@ -189,17 +189,17 @@ Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
                                 empirical_distr = args.emp_distr, groups=groups)
 
 Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 70)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_prior, 10)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_prior, 10)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 100)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 60)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 30)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_dmexpcusp_prior, 30)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['n_earth',
-                                                           'np_4p39',
-                                                           'dm_cusp',
-                                                           'dmexp']),
-                                                           30)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 60)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 30)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_dmexpcusp_prior, 30)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['n_earth',
+#                                                            'np_4p39',
+#                                                            'dm_cusp',
+#                                                            'dmexp']),
+#                                                            30)
 
 try:
     achrom_freqs = get_freqs(pta_crn, signal_id='gw')
