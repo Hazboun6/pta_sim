@@ -84,8 +84,7 @@ else:
     final_psrs = []
     psr_models = []
     ### Add a stand alone SW deter model
-    bins = np.linspace(53215, 57934, 51)
-    bins = np.append(bins, 57934)
+    bins = np.linspace(53215, 57934, 26)
     bins *= 24*3600 #Convert to secs
     n_earth = chrom.solar_wind.ACE_SWEPAM_Parameter(size=bins.size-1)('n_earth')
     deter_sw = chrom.solar_wind.solar_wind(n_earth=n_earth, n_earth_bins=bins)
@@ -149,14 +148,16 @@ else:
                 kwargs.update({'dm_sw_deter':False,
                                'white_vary': False,
                                'extra_sigs':dmgp + dmgp2 + chromgp + mean_sw,
-                               'psr_model':True})
+                               'psr_model':True,
+                               'tm_marg':True})
             ## Treat all other Adv Noise pulsars the same
             else:
                 ### Turn SW model off. Add in stand alone SW model and common process. Return model.
                 kwargs.update({'dm_sw_deter':False,
                                'white_vary': False,
                                'extra_sigs':mean_sw,
-                               'psr_model':True})
+                               'psr_model':True,
+                               'tm_marg':True})
             ### Load the appropriate single_pulsar_model
             psr_models.append(model_singlepsr_noise(new_psr, **kwargs))#(new_psr))
             final_psrs.append(new_psr)
@@ -190,7 +191,7 @@ Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
 
 Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 70)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_prior, 10)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 100)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 70)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 60)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 30)
@@ -216,5 +217,5 @@ noise['np_4p39']=-2.86
 x0 = np.array([noise[k] for k in pta_crn.param_names])
 
 Sampler.sample(x0, args.niter, SCAMweight=100, AMweight=100,
-               DEweight=100, burn=200000, writeHotChains=args.writeHotChains,
-               hotChain=args.hot_chain, Tskip=25, Tmax=22.0)
+               DEweight=100, burn=100000, writeHotChains=args.writeHotChains,
+               hotChain=args.hot_chain, Tskip=25, Tmax=30.0)
