@@ -27,12 +27,13 @@ import pta_sim.parse_sim as parse_sim
 from pta_sim.bayes import chain_length_bool, save_core, get_freqs, filter_psr_path
 args = parse_sim.arguments()
 
+with open(args.pickle,'rb')as fin:
+    psrs = pickle.load(fin)
+
 if os.path.exists(args.pta_pkl):
     with open(args.pta_pkl, "rb") as f:
         pta_pshift = cloudpickle.load(f)
 else:
-    with open(args.pickle,'rb')as fin:
-        psrs = pickle.load(fin)
 
     # pnames = ['B1855+09','B1937+21','B1953+29','J0023+0923','J0030+0451', 'J0340+4130', 'J0613-0200', 'J0636+5128',
     #           'J0645+5158','J0740+6620','J0931-1902','J1012+5307','J1024-0719','J1125+7819','J1453+1902','J1455-3330',
