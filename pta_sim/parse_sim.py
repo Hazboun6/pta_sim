@@ -81,6 +81,8 @@ parser.add_argument('--hot_chain', dest='hot_chain', action='store_true',
 parser.add_argument('--logf', dest='logf', action='store_true',
                     default=False,
                     help='Option to use log spaced frequencies in GPs.')
+parser.add_argument('--mk_ptapkl', dest='mk_ptapkl', action='store_true',
+                    default=False, help='Make pickled Enterprise PTA')
 parser.add_argument('--min_tspan', dest='min_tspan', action='store',
                     type=float, default=3.0, help='Minimum timspan of pulsars to include.')
 parser.add_argument('--miter', dest='miter', action='store',

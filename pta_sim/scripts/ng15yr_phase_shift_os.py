@@ -93,6 +93,11 @@ else:
 
     pta_pshift.set_default_params(noise)
 
+    if args.mk_ptapkl:
+        with open(args.pta_pkl, "wb") as f:
+            cloudpickle.dump(pta_pshift,f)
+
+
 os_pshift = OS(psrs=psrs, pta=pta_pshift, orf=args.orf)
 
 c0 = co.Core(corepath=args.corepath)
