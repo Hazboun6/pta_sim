@@ -4,7 +4,7 @@
 
 import numpy as np
 import la_forge.core as co
-import pickle, json, copy
+import pickle, json, copy, os
 import matplotlib.pyplot as plt
 
 import enterprise
@@ -100,11 +100,21 @@ chain = c0.chain[c0.burn:,:-4]
 pars = c0.params[:-4]
 N = args.niter
 M = args.miter
-seed_par = [p for p in pta_pshift.param_names if 'pseed' in p][0]
-with open(args.outdir+f'os_snr_seed_{args.process}.txt','w') as file:
-    file.write('\t'.join(['OS (\hat{A}^2)','SNR','Pshift Seed'])+'\n')
 
-for jj in range(M):
+seed_par = [p for p in pta_pshift.param_names if 'pseed' in p][0]
+
+if os.path.exists(args.outdir+f'os_snr_seed_{args.process}.txt'):
+    with open(args.outdir+f'os_snr_seed_{args.process}.txt','r') as file:
+        # get the last line and the start
+        for line in file:
+            pass
+        Mstart = int(line[-1]) - args.miter*args.process + 1
+else:
+    with open(args.outdir+f'os_snr_seed_{args.process}.txt','w') as file:
+        file.write('\t'.join(['OS (\hat{A}^2)','SNR','Pshift Seed'])+'\n')
+    Mstart = 0
+
+for jj in range(Mstart, M):
     Ahat_pshift = np.zeros(N)
     snr_pshift = np.zeros(N)
     for ii in range(N):
