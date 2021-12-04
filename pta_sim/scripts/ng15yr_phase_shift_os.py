@@ -6,6 +6,7 @@ import numpy as np
 import la_forge.core as co
 import pickle, json, copy, os
 import matplotlib.pyplot as plt
+import cloudpickle
 
 import enterprise
 from enterprise.pulsar import Pulsar
