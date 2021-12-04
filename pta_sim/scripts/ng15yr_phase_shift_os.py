@@ -114,7 +114,7 @@ if os.path.exists(args.outdir+f'os_snr_seed_{args.process}.txt'):
         # get the last line and the start
         for line in file:
             pass
-        Mstart = int(line[-1]) - args.miter*args.process + 1
+        Mstart = int(line.split('\t')[-1].split('\n')[0]) - args.miter*args.process + 1
 else:
     with open(args.outdir+f'os_snr_seed_{args.process}.txt','w') as file:
         file.write('\t'.join(['OS (\hat{A}^2)','SNR','Pshift Seed'])+'\n')
