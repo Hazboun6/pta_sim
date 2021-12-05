@@ -105,6 +105,12 @@ os_pshift = OS(psrs=psrs, pta=pta_pshift, orf=args.orf)
 c0 = co.Core(corepath=args.corepath)
 chain = c0.chain[c0.burn:,:-4]
 pars = c0.params[:-4]
+
+#If core has "crn" replace...
+if 'gw_crn_log10_A' in pars:
+    pidx = pars.index('gw_crn_log10_A')
+    pars[pidx] = 'gw_log10_A'
+
 N = args.niter
 M = args.miter
 
