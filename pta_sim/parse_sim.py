@@ -71,6 +71,8 @@ parser.add_argument('--gwb_bf', dest='gwb_bf', action='store_true',
                     default=False, help='Do a GWB detection run.')
 parser.add_argument('--gwb_off', dest='gwb_off', action='store_true',
                     default=False, help='Turn off GWB signal analysis.')
+parser.add_argument('--gwb_on', dest='gwb_on', action='store_true',
+                    default=False, help='Turn on GWB signal analysis.')
 parser.add_argument('--gwb_ul', dest='gwb_ul', action='store_true',
                     default=False, help='Do a GWB upper limit analysis.')
 parser.add_argument('--hd', dest='hd', action='store_true',

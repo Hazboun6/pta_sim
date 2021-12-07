@@ -35,8 +35,10 @@ print(f'Starting {psr.name}.')
 with open(args.noisepath,'r') as fin:
     noise = json.load(fin)
 
-
-Tspan = model_utils.get_tspan([psr])
+if args.tspan is None:
+    Tspan = model_utils.get_tspan([psr])
+else:
+    Tspan = args.tspan
 
 tm = gp_signals.TimingModel()
 log10_rho = parameter.Uniform(-10,-4,size=30)
@@ -50,7 +52,13 @@ plaw = gp_signals.FourierBasisGP(plaw_pr,components=30,Tspan=Tspan)
 rn  = gp_signals.FourierBasisGP(fs,components=30,Tspan=Tspan, name='excess_noise')
 
 m = tm + wn + plaw + rn
-
+if args.gwb_on:
+    gw_log10_A = parameter.Constant('gw_log10_A')
+    gw_gamma = parameter.Constant(4.3333)('gw_gamma')
+    gw_pr = gp_priors.powerlaw(log10_A=gw_log10_A,gamma=gw_gamma)
+    gwb = gp_signals.FourierBasisGP(gw_pr,components=args.n_gwbfreqs,Tspan=Tspan)
+    m += gwb
+    
 pta = signal_base.PTA(m(psr))
 pta.set_default_params(noise)
 x0 = np.hstack(p.sample() for p in pta.params)
