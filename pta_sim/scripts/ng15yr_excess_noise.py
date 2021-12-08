@@ -22,6 +22,8 @@ from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 
 from enterprise_extensions import models, model_utils, sampler, blocks
 
+from la_forge.core import Core
+
 import pta_sim
 import pta_sim.parse_sim as parse_sim
 from pta_sim.bayes import chain_length_bool, save_core, get_freqs, filter_psr_path
@@ -66,4 +68,6 @@ samp = sampler.setup_sampler(pta,outdir=args.outdir+f'/{psr.name}/',resume=False
 
 N = args.niter
 samp.sample(x0, Niter=N, burn=200000)
-print(f'{psr.name} complete.')
+
+c0 = Core(chaindir=args.outdir)
+c0.save(args.corepath+f'{psr.name}.core')
