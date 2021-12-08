@@ -69,5 +69,5 @@ samp = sampler.setup_sampler(pta,outdir=args.outdir+f'/{psr.name}/',resume=False
 N = args.niter
 samp.sample(x0, Niter=N, burn=200000)
 
-c0 = Core(chaindir=args.outdir)
+c0 = Core(chaindir=args.outdir+f'/{psr.name}/')
 c0.save(args.corepath+f'{psr.name}.core')
