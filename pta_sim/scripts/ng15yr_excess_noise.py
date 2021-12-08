@@ -58,7 +58,7 @@ if args.gwb_on:
     gw_pr = gp_priors.powerlaw(log10_A=gw_log10_A,gamma=gw_gamma)
     gwb = gp_signals.FourierBasisGP(gw_pr,components=args.n_gwbfreqs,Tspan=Tspan)
     m += gwb
-    
+
 pta = signal_base.PTA(m(psr))
 pta.set_default_params(noise)
 x0 = np.hstack(p.sample() for p in pta.params)
