@@ -72,7 +72,7 @@ else:
     Tspan_PTA = model_utils.get_tspan(pkl_psrs)
     # common red noise block
     cs = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
-                                       components=5, gamma_val=args.gamma_gw, name='gw')
+                                       components=args.n_gwbfreqs, gamma_val=args.gamma_gw, name='gw')
     # gw = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
     #                                    components=5, gamma_val=4.33, name='gw', orf='hd')
 
@@ -194,13 +194,13 @@ Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 70)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 70)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 60)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
-# Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 30)
-# Sampler.addProposalToCycle(Sampler.jp.draw_from_dmexpcusp_prior, 30)
-# Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['n_earth',
-#                                                            'np_4p39',
-#                                                            'dm_cusp',
-#                                                            'dmexp']),
-#                                                            30)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 10)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_dmexpcusp_prior, 10)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['n_earth',
+                                                           'np_4p39',
+                                                           'dm_cusp',
+                                                           'dmexp']),
+                                                           30)
 
 try:
     achrom_freqs = get_freqs(pta_crn, signal_id='gw')
