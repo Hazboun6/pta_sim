@@ -106,6 +106,8 @@ c0 = co.Core(corepath=args.corepath)
 chain = c0.chain[c0.burn:,:-4]
 pars = c0.params[:-4]
 
+mlv_idx = np.argmax(c0.chain[c0.burn:,-4])
+
 #If core has "crn" replace...
 if 'gw_crn_log10_A' in pars:
     pidx = pars.index('gw_crn_log10_A')
@@ -132,7 +134,10 @@ for jj in range(Mstart, M):
     snr_pshift = np.zeros(N)
     for ii in range(N):
         param_dict = {}
-        idx = np.random.randint(0,chain.shape[0])
+        if not args.mlv
+            idx = np.random.randint(0,chain.shape[0])
+        else:
+            idx = mlv_idx
         param_dict = dict(zip(pars,chain[idx,:]))
         param_dict.update({seed_par:jj+args.miter*args.process})
         _, _, _, Asqr, Sigma = os_pshift.compute_os(params=param_dict)
