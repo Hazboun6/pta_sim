@@ -218,6 +218,9 @@ parser.add_argument('--truncate_mjd', dest='truncate_mjd', action='append',
 parser.add_argument('--tspan', dest='tspan', action='store',
                     type=float, default=None,
                     help='Timespan to use for GP frequencies.')
+parser.add_argument('--tempmax', dest='tempmax', action='store',
+                    type=float, default=None,
+                    help='Max temperature for parallel tempering.')
 parser.add_argument('--use_pint', dest='use_pint',
                     action='store_true', default=False,
                     help='Whether to use PINT as the timing package.')

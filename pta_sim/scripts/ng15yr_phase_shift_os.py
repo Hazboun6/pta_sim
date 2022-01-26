@@ -134,7 +134,7 @@ for jj in range(Mstart, M):
     snr_pshift = np.zeros(N)
     for ii in range(N):
         param_dict = {}
-        if not args.mlv
+        if not args.mlv:
             idx = np.random.randint(0,chain.shape[0])
         else:
             idx = mlv_idx
