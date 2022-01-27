@@ -217,5 +217,5 @@ noise['np_4p39']=-2.86
 x0 = np.array([noise[k] for k in pta_crn.param_names])
 
 Sampler.sample(x0, args.niter, SCAMweight=100, AMweight=100,
-               DEweight=100, burn=100000, writeHotChains=args.writeHotChains,
+               DEweight=100, burn=1000, writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain, Tskip=25, Tmax=args.tempmax)
