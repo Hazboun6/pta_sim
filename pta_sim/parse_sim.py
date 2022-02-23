@@ -80,6 +80,9 @@ parser.add_argument('--hd', dest='hd', action='store_true',
 parser.add_argument('--hot_chain', dest='hot_chain', action='store_true',
                     default=False,
                     help='Use a hot chain with parallel tempering')
+parser.add_argument('--initsamp', dest='initsamp',
+                    action='store', default=None, type=str,
+                    help='Path to JSON file/dictionary of enterprise parameters to use as starting sample.')
 parser.add_argument('--logf', dest='logf', action='store_true',
                     default=False,
                     help='Option to use log spaced frequencies in GPs.')
