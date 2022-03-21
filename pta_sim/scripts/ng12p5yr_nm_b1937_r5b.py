@@ -97,13 +97,13 @@ chrom_quad = deterministic_signals.Deterministic(deter_chrom,
 
 for ii, ent in enumerate(model_labels):
     if ent[2] and ent[5]:
-        extra = dmgp + dmgp2 + chromgp + chrom_quad
+        extra = sw + dmgp + dmgp2 + chromgp + chrom_quad
     elif ent[2]:
-        extra = dmgp + dmgp2 + chromgp
+        extra = sw + dmgp + dmgp2 + chromgp
     elif ent[5]:
-        extra = dmgp + chromgp  + chrom_quad
+        extra = sw + dmgp + chromgp  + chrom_quad
     else:
-        extra = dmgp + chromgp
+        extra = sw + dmgp + chromgp
 
 
     Tspan = 407576851.48121357
