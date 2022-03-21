@@ -13,7 +13,7 @@ from enterprise.signals import signal_base
 from enterprise_extensions import gp_kernels as gpk
 from enterprise_extensions.blocks import chromatic_noise_block
 from enterprise_extensions.blocks import common_red_noise_block, red_noise_block
-
+from enterprise_extensions.chromatic.solar_wind import solar_wind_block
 
 import pta_sim.parse_sim as parse_sim
 args = parse_sim.arguments()
@@ -71,6 +71,8 @@ chm_prior = gpk.se_dm_kernel(log10_sigma=ch_log10_sigma, log10_ell=ch_log10_ell)
 chromgp = gp_signals.BasisGP(chm_prior, chm_basis, name='chrom_gp')
 #
 # chromgp = chromatic_noise_block(nondiag_kernel='sq_exp')
+
+sw = solar_wind_block(ACE_prior=True, include_swgp=False)
 
 @signal_base.function
 def chromatic_quad(toas, freqs, quad_coeff=np.ones(3)*1e-10, idx=4):
