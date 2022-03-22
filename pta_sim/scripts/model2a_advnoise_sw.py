@@ -149,6 +149,8 @@ else:
                                'white_vary': False,
                                'extra_sigs':dmgp + dmgp2 + chromgp + mean_sw,
                                'psr_model':True,
+                               'chrom_df':None,
+                               'dm_df':None,
                                'tm_marg':True})
             ## Treat all other Adv Noise pulsars the same
             else:
@@ -157,6 +159,8 @@ else:
                                'white_vary': False,
                                'extra_sigs':mean_sw,
                                'psr_model':True,
+                               'chrom_df':None,
+                               'dm_df':None,
                                'tm_marg':True})
             ### Load the appropriate single_pulsar_model
             psr_models.append(model_singlepsr_noise(new_psr, **kwargs))#(new_psr))
