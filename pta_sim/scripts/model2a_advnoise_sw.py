@@ -145,9 +145,10 @@ else:
                 chm_basis = gpk.linear_interp_basis_chromatic(dt=3*86400, idx=4)
                 chm_prior = gpk.se_dm_kernel(log10_sigma=ch_log10_sigma, log10_ell=ch_log10_ell)
                 chromgp = gp_signals.BasisGP(chm_prior, chm_basis, name='chrom_gp')
+                rn = blocks.red_noise_block(prior='log-uniform', Tspan=Tspan_PTA, components=30)
                 kwargs.update({'dm_sw_deter':False,
                                'white_vary': False,
-                               'extra_sigs':dmgp + dmgp2 + chromgp + mean_sw,
+                               'extra_sigs':dmgp + dmgp2 + chromgp + mean_sw + rn,
                                'psr_model':True,
                                'chrom_df':None,
                                'dm_df':None,
@@ -225,6 +226,47 @@ else:
         init = json.load(fin)
     x0 = np.array([init[k] for k in pta_crn.param_names])
 
-Sampler.sample(x0, args.niter, SCAMweight=100, AMweight=100,
+ladder = [1.0,
+          1.05,
+          1.10,
+          1.15,
+          1.2663801734674032,
+          1.35,
+          1.48,
+          1.60371874375133,
+          2.0309176209047353,
+          2.5719138090593443,
+          3.2570206556597823,
+          4.124626382901351,
+          5.22334507426684,
+          6.614740641230147,
+          8.376776400682914,
+          10.608183551394479,
+          13.433993325988993,
+          17.012542798525878,
+          21.54434690031882,
+          27.283333764867656,
+          34.551072945922165,
+          43.75479375074181,
+          55.41020330009486,
+          70.1703828670382,
+          88.86238162743393,
+          112.53355826007638,
+          142.51026703029964,
+          180.4721766827168,
+          228.54638641349874,
+          289.4266124716747,
+          366.52412370796225,
+          464.15888336127716,
+          587.8016072274903,
+          744.3803013251676,
+          942.6684551178836,
+          1193.7766417144344,
+          1511.7750706156594,
+          1914.4819761699544,
+          2424.4620170823237,
+          3000]
+
+Sampler.sample(x0, args.niter, ladder=ladder, SCAMweight=100, AMweight=100,
                DEweight=100, burn=1000, writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain, Tskip=100, Tmax=args.tempmax)
