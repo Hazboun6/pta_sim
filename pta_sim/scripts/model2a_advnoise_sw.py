@@ -196,7 +196,7 @@ Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
 
 Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 70)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_prior, 10)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 70)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 120)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 60)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 10)
@@ -231,6 +231,6 @@ if args.ladderpath is not None:
 else:
     ladder = None
 
-Sampler.sample(x0, args.niter, ladder=ladder, SCAMweight=100, AMweight=100,
-               DEweight=100, burn=1000, writeHotChains=args.writeHotChains,
+Sampler.sample(x0, args.niter, ladder=ladder, SCAMweight=200, AMweight=100,
+               DEweight=200, burn=3000, writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain, Tskip=100, Tmax=args.tempmax)
