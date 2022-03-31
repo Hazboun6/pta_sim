@@ -206,6 +206,79 @@ Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['n_earth',
                                                            'dm_cusp',
                                                            'dmexp']),
                                                            30)
+def draw_from_sw_prior(self, x, iter, beta):
+
+    q = x.copy()
+    lqxy = 0
+
+    signal_name = 'sw_r2'
+
+    # draw parameter from signal model
+    param = np.random.choice(self.snames[signal_name])
+    if param.size:
+        idx2 = np.random.randint(0, param.size)
+        q[self.pmap[str(param)]][idx2] = param.sample()[idx2]
+
+    # scalar parameter
+    else:
+        q[self.pmap[str(param)]] = param.sample()
+
+    # forward-backward jump probability
+    lqxy = (param.get_logpdf(x[self.pmap[str(param)]]) -
+            param.get_logpdf(q[self.pmap[str(param)]]))
+
+    return q, float(lqxy)
+
+def draw_from_sw4p39_prior(self, x, iter, beta):
+
+    q = x.copy()
+    lqxy = 0
+
+    signal_name = 'sw_4p39'
+
+    # draw parameter from signal model
+    param = np.random.choice(self.snames[signal_name])
+    if param.size:
+        idx2 = np.random.randint(0, param.size)
+        q[self.pmap[str(param)]][idx2] = param.sample()[idx2]
+
+    # scalar parameter
+    else:
+        q[self.pmap[str(param)]] = param.sample()
+
+    # forward-backward jump probability
+    lqxy = (param.get_logpdf(x[self.pmap[str(param)]]) -
+            param.get_logpdf(q[self.pmap[str(param)]]))
+
+    return q, float(lqxy)
+
+def draw_from_gw_gamma_prior(self, x, iter, beta):
+
+        q = x.copy()
+        lqxy = 0
+
+        # draw parameter from signal model
+        signal_name = [par for par in self.pnames
+                       if ('gw' in par and 'gamma' in par)][0]
+        idx = list(self.pnames).index(signal_name)
+        param = self.params[idx]
+
+        q[self.pmap[str(param)]] = np.random.uniform(param.prior._defaults['pmin'], param.prior._defaults['pmax'])
+
+        # forward-backward jump probability
+        lqxy = (param.get_logpdf(x[self.pmap[str(param)]]) -
+                param.get_logpdf(q[self.pmap[str(param)]]))
+
+        return q, float(lqxy)
+
+sampler.JumpProposal.draw_from_sw_prior = draw_from_sw_prior
+sampler.JumpProposal.draw_from_sw4p39_prior = draw_from_sw4p39_prior
+sampler.JumpProposal.draw_from_gw_gamma_prior = draw_from_gw_gamma_prior
+
+Sampler.addProposalToCycle(Sampler.jp.draw_from_sw_prior, 25)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_sw4p39_prior, 25)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_gamma_prior, 25)
+
 
 try:
     achrom_freqs = get_freqs(pta_crn, signal_id='gw')
