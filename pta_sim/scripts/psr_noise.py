@@ -63,7 +63,7 @@ else:
         psr = psrs
 
 if args.end_time is None:
-    Outdir = args.outdir+'all/{0}/'.format(psr.name)
+    Outdir = args.outdir+'/{0}/'.format(psr.name)
 else:
     start_time = psr.toas.min()/(24*3600)
     if (args.end_time-start_time)/365.25 <= 3.0:
@@ -87,7 +87,7 @@ if args.gwb_bf or args.gwb_ul:
 
 else:
     pta = models.model_singlepsr_noise(psr, red_var=True,
-                                       psd=args.psd,
+                                       psd=args.psd,Tspan=args.tspan,
                                        components=args.nfreqs,
                                        wideband=args.wideband)
 
