@@ -80,7 +80,7 @@ else:
     psr.filter_data(start_time=start_time, end_time=args.end_time)
     Outdir = args.outdir+'{0}/{1}/'.format(args.nyears,psr.name)
 
-longer = bys.chain_length_bool(Outdir, args.niter)
+longer = bys.chain_length_bool(Outdir, int(args.niter/10))
 
 if longer and os.path.exists(args.core_path):
     sys.end()
