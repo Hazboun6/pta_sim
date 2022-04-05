@@ -92,7 +92,7 @@ else:
     pta = models.model_singlepsr_noise(psr, red_var=True,
                                        psd=args.psd,Tspan=args.tspan,
                                        components=args.nfreqs,
-                                       wideband=args.wideband)
+                                       is_wideband=args.wideband)
 
 Sampler = sampler.setup_sampler(pta=pta,
                                     outdir=Outdir,
