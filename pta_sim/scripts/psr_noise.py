@@ -57,7 +57,10 @@ else:
         psrs = pickle.load(fin,encoding='latin1')
     if isinstance(psrs,list):
         pnames = [p.name for p in psrs]
-        pidx = pnames.index(args.psr)
+        if args.psr is not None:
+            pidx = pnames.index(args.psr)
+        elif args.process is not None:
+            pidx = args.process
         psr = psrs[pidx]
     else:
         psr = psrs
