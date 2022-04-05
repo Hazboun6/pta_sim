@@ -28,10 +28,15 @@ from astropy import log
 import glob
 log.setLevel('CRITICAL')
 
+from la_forge.core import Core
+
 import pta_sim
 import pta_sim.bayes as bys
 import pta_sim.parse_sim as parse_sim
 args = parse_sim.arguments()
+
+#Is chain longer than niter?
+
 
 if args.pickle=='no_pickle':
     if args.use_pint:
@@ -75,6 +80,18 @@ else:
     psr.filter_data(start_time=start_time, end_time=args.end_time)
     Outdir = args.outdir+'{0}/{1}/'.format(args.nyears,psr.name)
 
+longer = bys.chain_length_bool(Outdir, args.niter)
+
+if longer and os.path.exists(args.core_path):
+    sys.end()
+elif longer:
+    c0 = Core(chaindir=Outdir)
+    co.set_rn_freqs(freq_path=Outdir+'/achrom_rn_freqs.txt')
+    c0.save(args.corepath+f'{psr.name}.core')
+    sys.end() #Hmmmm what to do here?
+else:
+    pass
+
 if args.gwb_bf or args.gwb_ul:
     if args.gwb_bf:
         prior = 'log-uniform'
@@ -103,3 +120,7 @@ np.savetxt(Outdir+'achrom_freqs.txt', freqs)
 x0 = np.hstack(p.sample() for p in pta.params)
 
 Sampler.sample(x0, Niter=args.niter)
+
+c0 = Core(chaindir=Outdir)
+co.set_rn_freqs(freq_path=Outdir+'/achrom_rn_freqs.txt')
+c0.save(args.corepath+f'{psr.name}.core')

@@ -36,26 +36,8 @@ def save_core(core_path, chaindir, remove=False,
 
     try:
         co.set_rn_freqs(freq_path=chaindir+'/achrom_rn_freqs.txt')
-        co.priors = np.load(chaindir+'/par_model.npy')
-        co.signals = np.load(chaindir+'/signals.npy')
     except:
         pass
-
-    co.cov = np.load(chaindir+'/cov.npy')
-    jp_files = glob.glob(chaindir+'/*_jump.txt')
-    co.jp = {}
-    for f in jp_files:
-        ky = psr_name(f, rhs='.')
-        co.jp[ky] = np.loadtxt(f, dtype=float)
-
-    co.jp['jumps'] = np.loadtxt(chaindir+'/jumps.txt', dtype=str)
-
-    json_files = glob.glob(chaindir+'/*.json')
-    co.json = {}
-    for f in json_files:
-        ky = f.split('/')[-1].split('.')[0]
-        with open(f,'r') as fin:
-            co.json[ky] = json.load(fin)
 
     co.save(core_path)
 
