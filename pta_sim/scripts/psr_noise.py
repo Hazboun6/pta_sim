@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
+import os
 import numpy as np
 # import pint.toa as toa
 # import pint.models as models
@@ -76,19 +77,19 @@ else:
     start_time = psr.toas.min()/(24*3600)
     if (args.end_time-start_time)/365.25 <= 3.0:
         print('PSR {0} baseline too short for this slice.'.format(p.name))
-        sys.end()
+        sys.exit()
     psr.filter_data(start_time=start_time, end_time=args.end_time)
     Outdir = args.outdir+'{0}/{1}/'.format(args.nyears,psr.name)
 
 longer = bys.chain_length_bool(Outdir, int(args.niter/10))
 
-if longer and os.path.exists(args.core_path):
-    sys.end()
+if longer and os.path.exists(args.corepath+f'{psr.name}.core'):
+    sys.exit()
 elif longer:
     c0 = Core(chaindir=Outdir)
     co.set_rn_freqs(freq_path=Outdir+'/achrom_rn_freqs.txt')
     c0.save(args.corepath+f'{psr.name}.core')
-    sys.end() #Hmmmm what to do here?
+    sys.exit() #Hmmmm what to do here?
 else:
     pass
 
