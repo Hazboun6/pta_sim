@@ -105,7 +105,7 @@ with open(args.outdir + '/model_params.json', 'w') as fout:
 
 kwargs_out = copy.deepcopy(all_kwargs)
 kys = list(kwargs_out.keys())
-kwargs_out[kys[1]]['extra_sigs'] = str('vary_idx_dip + fact like')
+kwargs_out[kys[0]]['extra_sigs'] = str('vary_idx_dip + fact like')
 
 with open(args.outdir + '/model_kwargs.json', 'w') as fout:
     json.dump(kwargs_out, fout, sort_keys=True,

@@ -25,6 +25,21 @@ with open(args.pickle, 'rb') as fin:
 with open(args.model_kwargs_path, 'r') as fin:
     model_kwargs = json.load(fin)
 
+def filter_Mmat(psr, ltm_list=[]):
+    """Filters the pulsar's design matrix of parameters
+    :param psr: Pulsar object
+    :param ltm_list: a list of parameters that will linearly varied, default is to vary anything not in tm_param_list
+    :return: A new pulsar object with the filtered design matrix
+    """
+    idx_lin_pars = [psr.fitpars.index(p) for p in psr.fitpars if p in ltm_list]
+    psr.fitpars = list(np.array(psr.fitpars)[idx_lin_pars])
+    psr._designmatrix = psr._designmatrix[:, idx_lin_pars]
+    return psr
+
+nltm = copy.deepcopy(psr.fitpars)
+nltm.remove('DM2')
+_ = filter_Mmat(psr,nltm)
+print(psr.fitpars)
 # Add to exponential dips for J1713+0747
                 #Model, kernel, extra DMGP, Chrom Kernel, Chrom Quad, Index, GWB
 model_labels = [['A', 'periodic', True, True, 'sq_exp', False, 4, False],
