@@ -273,11 +273,11 @@ def draw_from_gw_gamma_prior(self, x, iter, beta):
 
 sampler.JumpProposal.draw_from_sw_prior = draw_from_sw_prior
 sampler.JumpProposal.draw_from_sw4p39_prior = draw_from_sw4p39_prior
-sampler.JumpProposal.draw_from_gw_gamma_prior = draw_from_gw_gamma_prior
+# sampler.JumpProposal.draw_from_gw_gamma_prior = draw_from_gw_gamma_prior
 
 Sampler.addProposalToCycle(Sampler.jp.draw_from_sw_prior, 25)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_sw4p39_prior, 25)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_gamma_prior, 25)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_gamma_prior, 25)
 
 
 try:
