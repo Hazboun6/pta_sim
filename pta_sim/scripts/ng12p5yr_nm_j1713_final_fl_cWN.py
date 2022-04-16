@@ -22,6 +22,8 @@ with open(args.pickle, 'rb') as fin:
 with open(args.model_kwargs_path, 'r') as fin:
     model_kwargs = json.load(fin)
 
+with open(args.noisepath, 'r') as fin:
+    noise = json.load(fin)
 
 model_labels = [['A', 'Vary Dip'],]
 
@@ -76,6 +78,8 @@ kwargs = copy.deepcopy(model_kwargs['0'])
 kwargs.update({'red_var':False,
                'dm_dt':3,
                'dm_df':None,
+               'white_vary':False,
+               'noisedict':noise,
                'chrom_dt':3,})
 
 dip_kwargs = {'dm_expdip':True,
