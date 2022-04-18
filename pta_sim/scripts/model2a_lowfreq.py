@@ -143,10 +143,11 @@ def draw_from_gw_rho_prior(self, x, iter, beta):
         lqxy = 0
 
         # draw parameter from signal model
-        par_name = [par.name for par in self.params
-                    if ('gw' in par.name and 'rho' in par.name)][0]
+        parnames = [par.name for par in self.params]
+        pname = [pnm for pnm in parnames
+                    if ('gw' in pnm and 'rho' in pnm)][0]
 
-        idx = list(self.pnames).index(par_name)
+        idx = parnames.index(pname)
         param = self.params[idx]
 
         if param.size:
