@@ -67,7 +67,7 @@ else:
     s += blocks.red_noise_block(psd='powerlaw', prior='log-uniform',
                                 Tspan=Tspan_PTA, modes=modes, wgts=wgts,)
 
-    log10_rho_gw = parameter.Uniform(-9, -4, size=19)('gw_crn_log10_rho')
+    log10_rho_gw = parameter.Uniform(-9, -2, size=19)('gw_crn_log10_rho')
     cpl = gpp.free_spectrum(log10_rho=log10_rho_gw)
     s += gp_signals.FourierBasisGP(cpl, modes=modes, name='gw_crn')
 
