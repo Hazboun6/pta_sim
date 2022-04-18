@@ -54,7 +54,7 @@ else:
     Tspan_PTA = model_utils.get_tspan(pkl_psrs)
     # common red noise block
     fmin = 10.0
-    modes, wgts = model_utils.linBinning(Tspan, 0,
+    modes, wgts = model_utils.linBinning(Tspan_PTA, 0,
                                          1.0 / fmin / Tspan_PTA,
                                          14, 5)
     wgts = wgts**2.0
@@ -64,8 +64,8 @@ else:
 
     s += blocks.white_noise_block(vary=False, inc_ecorr=True, select='backend')
 
-    s += red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
-                         modes=modes, wgts=wgts,)
+    s += blocks.red_noise_block(psd='powerlaw', prior='log-uniform',
+                                Tspan=Tspan_PTA, modes=modes, wgts=wgts,)
 
     log10_rho_gw = parameter.Uniform(-9, -4, size=19)('gw_crn_log10_rho')
     cpl = gpp.free_spectrum(log10_rho=log10_rho_gw)
@@ -122,7 +122,7 @@ try:
 except:
     pass
 
-
+x0 = np.hstack(p.sample() for p in pta_crn.params)
 Sampler.sample(x0, args.niter, SCAMweight=200, AMweight=100,
                DEweight=200, burn=50000, writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain, Tskip=100, Tmax=args.tempmax)
