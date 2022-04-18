@@ -119,21 +119,44 @@ def draw_from_gw_rho_prior(self, x, iter, beta):
         q = x.copy()
         lqxy = 0
 
+        signal_name = 'gw_crn'
+
         # draw parameter from signal model
-        signal_name = [par for par in self.pnames
-                       if ('gw' in par and 'rho' in par)]
+        param = np.random.choice(self.snames[signal_name])
+        if param.size:
+            idx2 = np.random.randint(0, param.size)
+            q[self.pmap[str(param)]][idx2] = param.sample()[idx2]
 
-        par_name = np.random.choice(signal_name)
-        idx = list(self.pnames).index(signal_name)
-        param = self.params[idx]
-
-        q[self.pmap[str(param)]] = np.random.uniform(param.prior._defaults['pmin'], param.prior._defaults['pmax'])
+        # scalar parameter
+        else:
+            q[self.pmap[str(param)]] = param.sample()
 
         # forward-backward jump probability
         lqxy = (param.get_logpdf(x[self.pmap[str(param)]]) -
                 param.get_logpdf(q[self.pmap[str(param)]]))
 
         return q, float(lqxy)
+
+# def draw_from_gw_rho_prior(self, x, iter, beta):
+#
+#         q = x.copy()
+#         lqxy = 0
+#
+#         # draw parameter from signal model
+#         signal_name = [par for par in self.pnames
+#                        if ('gw' in par and 'rho' in par)]
+#
+#         par_name = np.random.choice(signal_name)
+#         idx = list(self.pnames).index(par_name)
+#         param = self.params[idx]
+#
+#         q[self.pmap[str(param)]] = np.random.uniform(param.prior._defaults['pmin'], param.prior._defaults['pmax'])
+#
+#         # forward-backward jump probability
+#         lqxy = (param.get_logpdf(x[self.pmap[str(param)]]) -
+#                 param.get_logpdf(q[self.pmap[str(param)]]))
+#
+#         return q, float(lqxy)
 
 sampler.JumpProposal.draw_from_gw_rho_prior = draw_from_gw_rho_prior
 Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_rho_prior, 25)
