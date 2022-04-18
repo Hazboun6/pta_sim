@@ -67,8 +67,11 @@ else:
     s += blocks.red_noise_block(psd='powerlaw', prior='log-uniform',
                                 Tspan=Tspan_PTA, modes=modes, wgts=wgts,)
 
-    log10_rho_gw = parameter.Uniform(-9, -2, size=19)('gw_crn_log10_rho')
-    cpl = gpp.free_spectrum(log10_rho=log10_rho_gw)
+    gamma_gw = parameter.Uniform(0, 7)('gw_gamma')
+    log10_Agw = parameter.Uniform(-18, -11)('gw_log10_A')
+    cpl = gpp.powerlaw_genmodes(log10_A=log10_Agw,
+                                gamma=gamma_gw,
+                                wgts=wgts)
     s += gp_signals.FourierBasisGP(cpl, modes=modes, name='gw_crn')
 
     # gw = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
@@ -114,60 +117,8 @@ def draw_from_gw_gamma_prior(self, x, iter, beta):
 
         return q, float(lqxy)
 
-# def draw_from_gw_rho_prior(self, x, iter, beta):
-#
-#         q = x.copy()
-#         lqxy = 0
-#
-#         signal_name = 'gw_crn'
-#
-#         # draw parameter from signal model
-#         param = np.random.choice(self.snames[signal_name])
-#         if param.size:
-#             idx2 = np.random.randint(0, param.size)
-#             q[self.pmap[str(param)]][idx2] = param.sample()[idx2]
-#
-#         # scalar parameter
-#         else:
-#             q[self.pmap[str(param)]] = param.sample()
-#
-#         # forward-backward jump probability
-#         lqxy = (param.get_logpdf(x[self.pmap[str(param)]]) -
-#                 param.get_logpdf(q[self.pmap[str(param)]]))
-#
-#         return q, float(lqxy)
-
-def draw_from_gw_rho_prior(self, x, iter, beta):
-
-        q = x.copy()
-        lqxy = 0
-
-        # draw parameter from signal model
-        parnames = [par.name for par in self.params]
-        pname = [pnm for pnm in parnames
-                    if ('gw' in pnm and 'rho' in pnm)][0]
-
-        idx = parnames.index(pname)
-        param = self.params[idx]
-
-        if param.size:
-            idx2 = np.random.randint(0, param.size)
-            q[self.pmap[str(param)]][idx2] = param.sample()[idx2]
-
-        # scalar parameter
-        else:
-            q[self.pmap[str(param)]] = param.sample()
-
-
-        # forward-backward jump probability
-        lqxy = (param.get_logpdf(x[self.pmap[str(param)]]) -
-                param.get_logpdf(q[self.pmap[str(param)]]))
-
-        return q, float(lqxy)
-
-sampler.JumpProposal.draw_from_gw_rho_prior = draw_from_gw_rho_prior
-Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_rho_prior, 25)
-
+sampler.JumpProposal.draw_from_gw_gamma_prior = draw_from_gw_gamma_prior
+Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_gamma_prior, 25)
 
 try:
     achrom_freqs = get_freqs(pta_crn, signal_id='gw_crn')
