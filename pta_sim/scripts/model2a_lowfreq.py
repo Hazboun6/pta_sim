@@ -114,11 +114,34 @@ def draw_from_gw_gamma_prior(self, x, iter, beta):
 
         return q, float(lqxy)
 
-# Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_gamma_prior, 25)
+def draw_from_gw_rho_prior(self, x, iter, beta):
+
+        q = x.copy()
+        lqxy = 0
+
+        # draw parameter from signal model
+        signal_name = [par for par in self.pnames
+                       if ('gw' in par and 'rho' in par)]
+
+        par_name = np.random.choice(signal_name)
+        idx = list(self.pnames).index(signal_name)
+        param = self.params[idx]
+
+        q[self.pmap[str(param)]] = np.random.uniform(param.prior._defaults['pmin'], param.prior._defaults['pmax'])
+
+        # forward-backward jump probability
+        lqxy = (param.get_logpdf(x[self.pmap[str(param)]]) -
+                param.get_logpdf(q[self.pmap[str(param)]]))
+
+        return q, float(lqxy)
+
+sampler.JumpProposal.draw_from_gw_rho_prior = draw_from_gw_rho_prior
+Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_rho_prior, 25)
+
 
 try:
-    achrom_freqs = get_freqs(pta_crn, signal_id='gw')
-    np.savetxt(args.outdir + 'gwb_freqs.txt', achrom_freqs, fmt='%.18e')
+    achrom_freqs = get_freqs(pta_crn, signal_id='gw_crn')
+    np.savetxt(args.outdir + 'achrom_freqs.txt', achrom_freqs, fmt='%.18e')
 except:
     pass
 
