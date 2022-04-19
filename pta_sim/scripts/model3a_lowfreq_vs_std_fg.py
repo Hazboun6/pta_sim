@@ -70,8 +70,10 @@ else:
 
     s += blocks.white_noise_block(vary=False, inc_ecorr=True, select='backend')
 
-    s += blocks.red_noise_block(psd='powerlaw', prior='log-uniform',
-                                Tspan=Tspan_PTA, modes=modes, wgts=wgts,)
+    rn_low = blocks.red_noise_block(psd='powerlaw', prior='log-uniform',
+                                    Tspan=Tspan_PTA, modes=modes, wgts=wgts,)
+    rn_std = blocks.red_noise_block(psd='powerlaw', prior='log-uniform',
+                                    Tspan=Tspan_PTA, components=30)
 
     gamma_gw = parameter.Uniform(0, 7)('gw_gamma')
     log10_Agw = parameter.Uniform(-18, -14)('gw_log10_A')
@@ -93,8 +95,8 @@ else:
                                              name='gw')
 
 
-    std_models = [(s + gw_std)(psr) for psr in pkl_psrs]
-    low_models = [(s + gw_low)(psr) for psr in pkl_psrs]
+    std_models = [(s + rn_std + gw_std)(psr) for psr in pkl_psrs]
+    low_models = [(s + rn_low + gw_low)(psr) for psr in pkl_psrs]
 
     pta_std = signal_base.PTA(std_models)
     pta_low = signal_base.PTA(low_models)
