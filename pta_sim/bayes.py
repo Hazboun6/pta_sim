@@ -61,7 +61,10 @@ def get_freqs(pta, signal_id='red_noise'):
     for sig in pta._signalcollections[0]._signals:
         if sig.signal_id == signal_id:
             sig._construct_basis()
-            freqs = np.array(sig._labels[''])[::2]
+            try:
+                freqs = np.array(sig._labels[''])[::2]
+            except IndexError:
+                freqs = sig._labels[::2]
             break
     return freqs
 

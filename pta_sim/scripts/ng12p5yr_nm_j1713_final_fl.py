@@ -91,6 +91,10 @@ kwargs.update(dip_kwargs)
 ptas[0] = model_singlepsr_noise(psr, **kwargs)
 all_kwargs[0] = kwargs
 
+if args.pta_pkl is not None:
+    with open(args.pta_pkl,'wb') as fout:
+        cloudpickle.dump(ptas[0],fout)
+
 super_model = HyperModel(ptas)
 
 sampler = super_model.setup_sampler(resume=True, outdir=args.outdir,

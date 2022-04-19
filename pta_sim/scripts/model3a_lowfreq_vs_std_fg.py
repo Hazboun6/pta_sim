@@ -75,7 +75,7 @@ else:
     rn_std = blocks.red_noise_block(psd='powerlaw', prior='log-uniform',
                                     Tspan=Tspan_PTA, components=30)
 
-    gamma_gw = parameter.Uniform(0, 7)('gw_gamma')
+    gamma_gw = parameter.Constant(4.3333)('gw_gamma')
     log10_Agw = parameter.Uniform(-18, -14)('gw_log10_A')
     plaw_low = gpp.powerlaw_genmodes(log10_A=log10_Agw,
                                      gamma=gamma_gw,
