@@ -85,7 +85,7 @@ else:
     gw_pshift = gp_signals.FourierBasisGP(spectrum=gw_pl,
                                           modes=freqs[:args.n_gwbfreqs],
                                           name='gw_crn', pshift=True,
-                                          pseed=parameter.Uniform(0,100000)('pseed'))#args.process)
+                                          pseed=parameter.Uniform(0,100000000)('pseed'))#args.process)
 
     model_pshift = tm + ef + eq + ec + rn + gw_pshift
 
