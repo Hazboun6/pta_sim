@@ -4,7 +4,7 @@
 
 import numpy as np
 import la_forge.core as co
-import pickle, json, copy, os
+import pickle, json, copy, os, sys
 import matplotlib.pyplot as plt
 import cloudpickle
 
@@ -130,23 +130,26 @@ else:
         file.write('\t'.join(['OS (\hat{A}^2)','SNR','Pshift Seed'])+'\n')
     Mstart = 0
 
-for jj in range(Mstart, M):
-    Ahat_pshift = np.zeros(N)
-    snr_pshift = np.zeros(N)
-    for ii in range(N):
-        param_dict = {}
-        if not args.mlv:
-            idx = np.random.randint(0,chain.shape[0])
-        else:
-            idx = mlv_idx
-        param_dict = dict(zip(pars,chain[idx,:]))
-        param_dict.update({seed_par:jj+args.miter*args.process})
-        _, _, _, Asqr, Sigma = os_pshift.compute_os(params=param_dict)
-        Ahat_pshift[ii] = Asqr
-        snr_pshift[ii] = Asqr/Sigma
-        # if ii in check:
-        #     print(f'{ii/N*100} % complete.')
+if Mstart == M-1:
+    sys.exit()
+else:
+    for jj in range(Mstart, M):
+        Ahat_pshift = np.zeros(N)
+        snr_pshift = np.zeros(N)
+        for ii in range(N):
+            param_dict = {}
+            if not args.mlv:
+                idx = np.random.randint(0,chain.shape[0])
+            else:
+                idx = mlv_idx
+            param_dict = dict(zip(pars,chain[idx,:]))
+            param_dict.update({seed_par:jj+args.miter*args.process})
+            _, _, _, Asqr, Sigma = os_pshift.compute_os(params=param_dict)
+            Ahat_pshift[ii] = Asqr
+            snr_pshift[ii] = Asqr/Sigma
+            # if ii in check:
+            #     print(f'{ii/N*100} % complete.')
 
-    out = np.array([np.median(Ahat_pshift),np.median(snr_pshift),param_dict[seed_par]])
-    with open(args.outdir+f'os_snr_seed_{args.process}.txt','a') as file:
-        file.write('\t'.join(out.astype(str))+'\n')
+        out = np.array([np.median(Ahat_pshift),np.median(snr_pshift),param_dict[seed_par]])
+        with open(args.outdir+f'os_snr_seed_{args.process}.txt','a') as file:
+            file.write('\t'.join(out.astype(str))+'\n')
