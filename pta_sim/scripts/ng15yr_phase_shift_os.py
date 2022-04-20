@@ -71,7 +71,6 @@ else:
     ef = white_signals.MeasurementNoise(efac=efac,
                                         log10_t2equad=equad,
                                         selection=selection)
-    # eq = white_signals.EquadNoise(log10_equad=equad, selection=selection)
     ec = white_signals.EcorrKernelNoise(log10_ecorr=ecorr, selection=selection)
 
     # red noise (powerlaw with 30 frequencies)
@@ -89,7 +88,7 @@ else:
                                           name='gw_crn', pshift=True,
                                           pseed=parameter.Uniform(0,100000000)('pseed'))#args.process)
 
-    model_pshift = tm + ef + eq + ec + rn + gw_pshift
+    model_pshift = tm + ef + ec + rn + gw_pshift
 
     pta_pshift = signal_base.PTA([model_pshift(p) for p in psrs])
     with open(args.noisepath,'r') as fin:
