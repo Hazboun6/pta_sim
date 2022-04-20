@@ -68,8 +68,10 @@ else:
     # # white noise
     selection = selections.Selection(selections.nanograv_backends)
 
-    ef = white_signals.MeasurementNoise(efac=efac, selection=selection)
-    eq = white_signals.EquadNoise(log10_equad=equad, selection=selection)
+    ef = white_signals.MeasurementNoise(efac=efac,
+                                        log10_t2equad=equad,
+                                        selection=selection)
+    # eq = white_signals.EquadNoise(log10_equad=equad, selection=selection)
     ec = white_signals.EcorrKernelNoise(log10_ecorr=ecorr, selection=selection)
 
     # red noise (powerlaw with 30 frequencies)
