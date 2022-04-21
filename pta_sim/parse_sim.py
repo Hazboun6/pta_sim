@@ -83,6 +83,9 @@ parser.add_argument('--hot_chain', dest='hot_chain', action='store_true',
 parser.add_argument('--initsamp', dest='initsamp',
                     action='store', default=None, type=str,
                     help='Path to JSON file/dictionary of enterprise parameters to use as starting sample.')
+parser.add_argument('--label', dest='label',
+                    action='store',
+                    type=str, default=None, help='Additional label for various uses.')
 parser.add_argument('--ladderpath', dest='ladderpath',
                     action='store',
                     type=str, default=None, help='Ladder temps for PT')
@@ -211,6 +214,8 @@ parser.add_argument('--sw_r2p_ranges', dest='sw_r2p_ranges',
 parser.add_argument('--sw_r4p4', dest='sw_r4p4',
                     action='store_true', default=False,
                     help='Whether to use the 1/r^4.4 in the sw model.')
+parser.add_argument('--thin', dest='thin', action='store', type=int,
+                    default=1, help='Thin TOAs and data by.')
 parser.add_argument('--timdir', dest='timdir', action='store', type=str,
                     default=timdir, help='Tim file Directory')
 parser.add_argument('--timpath', dest='timpath', action='store', type=str,
