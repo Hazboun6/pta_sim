@@ -118,40 +118,39 @@ else:
     freqs = np.linspace(1/Tspan,args.n_gwbfreqs/Tspan,args.n_gwbfreqs)
 
 
-psrs = []
-specs = []
-thin = args.thin
-for ePsr in ePsrs:
-    corr = make_corr(ePsr,noise=noise)[::thin,::thin]
-    if args.A_gwb != 0.0:
-        gwb = hsen.red_noise_powerlaw(A=args.A_gwb, gamma=13/3., freqs=freqs)
-        corr += hsen.corr_from_psd(freqs=freqs, psd=gwb,
-                                   toas=ePsr.toas[::thin])
-    if args.rednoise:
-        Amp, gam = rn[ePsr.name]
-        plaw = hsen.red_noise_powerlaw(A=Amp, gamma=gam, freqs=freqs)
-        corr += hsen.corr_from_psd(freqs=freqs, psd=plaw,
-                                   toas=ePsr.toas[::thin])
+ePsr = ePsrs[args.process]
+if ePsr.toas.size>20_000:
+    thin = 5
+else:
+    thin = args.thin
+corr = make_corr(ePsr,noise=noise)[::thin,::thin]
+if args.A_gwb != 0.0:
+    gwb = hsen.red_noise_powerlaw(A=args.A_gwb, gamma=13/3., freqs=freqs)
+    corr += hsen.corr_from_psd(freqs=freqs, psd=gwb,
+                               toas=ePsr.toas[::thin])
+if args.rednoise:
+    Amp, gam = rn[ePsr.name]
+    plaw = hsen.red_noise_powerlaw(A=Amp, gamma=gam, freqs=freqs)
+    corr += hsen.corr_from_psd(freqs=freqs, psd=plaw,
+                               toas=ePsr.toas[::thin])
 
-    psr = hsen.Pulsar(toas=ePsr.toas[::thin],
-                      toaerrs=ePsr.toaerrs[::thin],
-                      phi=ePsr.phi,
-                      theta=ePsr.theta,
-                      N=corr,
-                      designmatrix=ePsr.Mmat[::thin,:])
+psr = hsen.Pulsar(toas=ePsr.toas[::thin],
+                  toaerrs=ePsr.toaerrs[::thin],
+                  phi=ePsr.phi,
+                  theta=ePsr.theta,
+                  N=corr,
+                  designmatrix=ePsr.Mmat[::thin,:])
 
-    psr.name = ePsr.name
-    _ = psr.G
+psr.name = ePsr.name
+_ = psr.G
+
+if args.savepsr:
     with open(args.outdir+f'/{args.label}_psr_{ePsr.name}.has', 'wb') as fout:
         pickle.dump(psr,fout)
 
-    sp = hsen.Spectrum(psr, freqs=freqs)
-    sp.name = psr.name
-    _ = sp.NcalInv
-    with open(args.outdir+f'/{args.label}_spec_{ePsr.name}.has', 'wb') as fout:
-        pickle.dump(sp,fout)
+sp = hsen.Spectrum(psr, freqs=freqs)
+sp.name = psr.name
+_ = sp.NcalInv
 
-    print('\rPSR {0} complete'.format(spT.name),end='',flush=True)
-    del sp
-    del ePsr
-    del psr
+with open(args.outdir+f'/{args.label}_spec_{ePsr.name}.has', 'wb') as fout:
+    pickle.dump(sp,fout)
