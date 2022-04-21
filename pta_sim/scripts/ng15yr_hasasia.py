@@ -139,6 +139,7 @@ for ePsr in ePsrs:
                       designmatrix=ePsr.Mmat[::thin,:])
 
     psr.name = ePsr.name
+    _ = psr.G
     with open(args.corepath+f'/{args.label}_{ePsr.name}.has', 'wb') as fout:
         pickle.dump(psr,fout)
 
