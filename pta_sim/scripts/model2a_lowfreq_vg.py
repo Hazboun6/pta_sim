@@ -54,7 +54,7 @@ else:
     Tspan_PTA = model_utils.get_tspan(pkl_psrs)
     # common red noise block
     fmin = 10.0
-    modes, wgts = model_utils.linBinning(Tspan_PTA, 0,
+    modes, wgts = model_utils.linBinning(Tspan_PTA, 1,
                                          1.0 / fmin / Tspan_PTA,
                                          14, 5)
     # wgts = wgts**2.0

@@ -139,7 +139,7 @@ else:
         for ii in range(N):
             param_dict = {}
             if not args.mlv:
-                idx = np.random.randint(0,chain.shape[0])
+                idx = ii#np.random.randint(0,chain.shape[0])
             else:
                 idx = mlv_idx
             param_dict = dict(zip(pars,chain[idx,:]))
