@@ -14,6 +14,8 @@ import hasasia.skymap as hsky
 
 from enterprise.pulsar import Pulsar as ePulsar
 
+import pta_sim.parse_sim as parse_sim
+args = parse_sim.arguments()
 
 with open(args.pickle, 'rb') as fin:
     ePsrs=pickle.load(fin)
@@ -86,7 +88,7 @@ def make_corr(psr,noise):
     for be in backends:
         mask = np.where(psr.flags['f']==be)
         key_ef = '{0}_{1}_{2}'.format(psr.name,be,'efac')
-        key_eq = '{0}_{1}_log10_{2}'.format(psr.name,be,'equad')
+        key_eq = '{0}_{1}_log10_{2}'.format(psr.name,be,'t2equad')
         sigma_sqr[mask] = (noise[key_ef]**2 * (psr.toaerrs[mask]**2)
                            + (10**noise[key_eq])**2)
         mask_ec = np.where(fl==be)
