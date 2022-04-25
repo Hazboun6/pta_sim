@@ -87,6 +87,8 @@ else:
     bins = np.linspace(53215, 57934, 26)
     bins *= 24*3600 #Convert to secs
     n_earth = chrom.solar_wind.ACE_SWEPAM_Parameter(size=bins.size-1)('n_earth')
+    n_earth.prior._defaults.update({'pmin':chrom.solar_wind.ace_min})
+    n_earth.prior._defaults.update({'pmax':chrom.solar_wind.ace_max})
     deter_sw = chrom.solar_wind.solar_wind(n_earth=n_earth, n_earth_bins=bins)
     mean_sw = deterministic_signals.Deterministic(deter_sw, name='sw_r2')
 
