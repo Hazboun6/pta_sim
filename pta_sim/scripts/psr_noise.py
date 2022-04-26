@@ -123,5 +123,5 @@ x0 = np.hstack(p.sample() for p in pta.params)
 Sampler.sample(x0, Niter=args.niter)
 
 c0 = Core(chaindir=Outdir)
-co.set_rn_freqs(freq_path=Outdir+'/achrom_rn_freqs.txt')
+c0.set_rn_freqs(freq_path=Outdir+'/achrom_rn_freqs.txt')
 c0.save(args.corepath+f'{psr.name}.core')
