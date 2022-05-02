@@ -93,9 +93,9 @@ else:
             sign_param = 1.0
         else:
             sign_param = -1.0
-        wf = chrom_exp_decay(log10_Amp=log10_Amp_dmexp,
-                             t0=t0_dmexp, log10_tau=log10_tau_dmexp,
-                             sign_param=sign_param, idx=idx)
+        wf = chrom.chrom_exp_decay(log10_Amp=log10_Amp_dmexp,
+                                   t0=t0_dmexp, log10_tau=log10_tau_dmexp,
+                                   sign_param=sign_param, idx=idx)
         dmexp = deterministic_signals.Deterministic(wf, name=name)
 
         return dmexp
@@ -119,8 +119,6 @@ else:
     bins = np.linspace(53215, 57934, 26)
     bins *= 24*3600 #Convert to secs
     n_earth = chrom.solar_wind.ACE_SWEPAM_Parameter(size=bins.size-1)('n_earth')
-    n_earth.prior._defaults.update({'pmin':chrom.solar_wind.ace_min})
-    n_earth.prior._defaults.update({'pmax':chrom.solar_wind.ace_max})
     deter_sw = chrom.solar_wind.solar_wind(n_earth=n_earth, n_earth_bins=bins)
     mean_sw = deterministic_signals.Deterministic(deter_sw, name='sw_r2')
 
