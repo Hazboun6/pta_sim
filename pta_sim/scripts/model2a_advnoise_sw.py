@@ -67,8 +67,40 @@ else:
                           'J2043+1711',
                           'J2317+1439']
 
-    # Set Tspan for RN
 
+    def dm_exponential_dip(tmin, tmax, idx=2, sign='negative', name='dmexp'):
+        """
+        Returns chromatic exponential dip (i.e. TOA advance):
+
+        :param tmin, tmax:
+            search window for exponential dip time.
+        :param idx:
+            index of radio frequency dependence (i.e. DM is 2). If this is set
+            to 'vary' then the index will vary from 1 - 6
+        :param sign:
+            set sign of dip: 'positive', 'negative', or 'vary'
+        :param name: Name of signal
+
+        :return dmexp:
+            chromatic exponential dip waveform.
+        """
+        t0_dmexp = parameter.Uniform(tmin,tmax)
+        log10_Amp_dmexp = parameter.Uniform(-6.1, -5.6)
+        log10_tau_dmexp = parameter.Uniform(1.2, 2.0)
+        if sign == 'vary':
+            sign_param = parameter.Uniform(-1.0, 1.0)
+        elif sign == 'positive':
+            sign_param = 1.0
+        else:
+            sign_param = -1.0
+        wf = chrom_exp_decay(log10_Amp=log10_Amp_dmexp,
+                             t0=t0_dmexp, log10_tau=log10_tau_dmexp,
+                             sign_param=sign_param, idx=idx)
+        dmexp = deterministic_signals.Deterministic(wf, name=name)
+
+        return dmexp
+
+    # Set Tspan for RN
     Tspan_PTA = model_utils.get_tspan(pkl_psrs)
     # common red noise block
     cs = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
@@ -155,6 +187,27 @@ else:
                                'chrom_df':None,
                                'dm_df':None,
                                'tm_marg':True})
+            elif psr.name == 'J1713+0747':
+                index = parameter.Uniform(0.9, 1.7)
+                ppta_dip = dm_exponential_dip(57506, 57514, idx=index, sign='negative', name='exp2')
+
+                kwargs.update({'dm_dt':3,
+                               'dm_df':None,
+                               'chrom_dt':3,
+                               'dm_sw_deter':False,
+                               'white_vary': False,
+                               'dm_expdip':True,
+                               'dmexp_sign': 'negative',
+                               'num_dmdips':1,
+                               'dm_expdip_idx':[2],
+                               'dm_expdip_tmin':[54740],
+                               'dm_expdip_tmax':[54780],
+                               'dmdip_seqname':['dm_1'],
+                               'extra_sigs':mean_sw + ppta_dip,
+                               'psr_model':True,
+                               'chrom_df':None,
+                               'dm_df':None,
+                               'tm_marg':True})
             ## Treat all other Adv Noise pulsars the same
             else:
                 ### Turn SW model off. Add in stand alone SW model and common process. Return model.
@@ -196,13 +249,13 @@ groups.extend(sampler.get_psr_groups(pta_crn))
 Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
                                 empirical_distr = args.emp_distr, groups=groups)
 
-Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 70)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 30)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_prior, 10)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 120)
-# Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 60)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 200)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 60)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 10)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_dmexpcusp_prior, 10)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 20)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_dmexpcusp_prior, 20)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['n_earth',
                                                            'np_4p39',
                                                            'dm_cusp',
@@ -277,9 +330,9 @@ sampler.JumpProposal.draw_from_sw_prior = draw_from_sw_prior
 sampler.JumpProposal.draw_from_sw4p39_prior = draw_from_sw4p39_prior
 sampler.JumpProposal.draw_from_gw_gamma_prior = draw_from_gw_gamma_prior
 
-Sampler.addProposalToCycle(Sampler.jp.draw_from_sw_prior, 25)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_sw_prior, 50)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_sw4p39_prior, 25)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_gamma_prior, 25)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_gamma_prior, 50)
 
 
 try:
