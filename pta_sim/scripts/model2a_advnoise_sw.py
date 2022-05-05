@@ -344,7 +344,7 @@ if args.initsamp is None:
     noise['gw_gamma'] = 4.33333
     nearth_pars = [p for p in pta_crn.param_names if 'n_earth' in p]
     for npar in nearth_pars:
-        noise[npar]=6.0
+        noise[npar]=5.0
     noise['np_4p39']=-2.86
     x0 = np.array([noise[k] for k in pta_crn.param_names])
 else:

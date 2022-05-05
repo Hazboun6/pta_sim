@@ -124,7 +124,11 @@ if os.path.exists(args.outdir+f'os_snr_seed_{args.process}.txt'):
         # get the last line and the start
         for line in file:
             pass
-        Mstart = int(float(line.split('\t')[-1].split('\n')[0])) - args.miter*args.process + 1
+        last_entry = line.split('\t')[-1].split('\n')[0]
+        if 'Pshift Seed' in last_entry:
+            Mstart = 0
+        else:
+            Mstart = int(float(last_entry)) - args.miter*args.process + 1
 else:
     with open(args.outdir+f'os_snr_seed_{args.process}.txt','w') as file:
         file.write('\t'.join(['OS (\hat{A}^2)','SNR','Pshift Seed'])+'\n')
@@ -150,6 +154,6 @@ else:
             # if ii in check:
             #     print(f'{ii/N*100} % complete.')
 
-        out = np.array([np.median(Ahat_pshift),np.median(snr_pshift),param_dict[seed_par]])
+        out = np.array([np.mean(Ahat_pshift),np.mean(snr_pshift),param_dict[seed_par]])
         with open(args.outdir+f'os_snr_seed_{args.process}.txt','a') as file:
             file.write('\t'.join(out.astype(str))+'\n')
