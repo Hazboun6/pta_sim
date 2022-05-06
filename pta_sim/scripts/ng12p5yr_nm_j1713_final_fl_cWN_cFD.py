@@ -42,8 +42,9 @@ def filter_Mmat(psr, ltm_list=[]):
     return psr
 
 nltm = copy.deepcopy(psr.fitpars)
-for par in ['FD1','FD2','FD3','FD4','FD5']
+for par in ['FD1','FD2','FD3','FD4','FD5']:
     nltm.remove(par)
+    
 _ = filter_Mmat(psr,nltm)
 print(psr.fitpars)
 
