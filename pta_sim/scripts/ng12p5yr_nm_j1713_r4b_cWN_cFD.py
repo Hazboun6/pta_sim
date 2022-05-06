@@ -18,15 +18,14 @@ with open(args.pickle, 'rb') as fin:
     psr = pickle.load(fin)
 
 with open(args.model_kwargs_path, 'r') as fin:
-    model_kwargs = json.load(fin
+    model_kwargs = json.load(fin)
 
 with open(args.noisepath, 'r') as fin:
     noise = json.load(fin)
 
 # Add to exponential dips for J1713+0747
                 #Model, kernel, DM1, DM2, Chrom Kernel, Index, GW
-model_labels = [['A', 'periodic_rfband', True, True, True, 'periodic', 4, False],
-                ['B', 'periodic_rfband', True, True, True, 'periodic', 4, True],
+model_labels = [['A', 'periodic_rfband', True, True, True, 'periodic', 4, True],
                 ]
 
 
@@ -95,7 +94,7 @@ for ii, ent in enumerate(model_labels):
                   'noisedict':noise,
                   'extra_sigs':sig}
 
-    kwargs = copy.deepcopy(model_kwargs['5'])
+    kwargs = copy.deepcopy(model_kwargs['1'])
     kwargs.update(dip_kwargs)
     ptas[ii] = model_singlepsr_noise(psr, **kwargs)
     all_kwargs[ii] = kwargs
