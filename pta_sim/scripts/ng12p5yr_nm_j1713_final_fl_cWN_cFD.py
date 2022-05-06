@@ -5,6 +5,7 @@
 
 import json, pickle, copy
 import logging
+import numpy as np
 from enterprise_extensions.models import model_singlepsr_noise
 from enterprise_extensions.hypermodel import HyperModel
 from enterprise_extensions.chromatic import chrom_exp_decay
@@ -44,7 +45,7 @@ def filter_Mmat(psr, ltm_list=[]):
 nltm = copy.deepcopy(psr.fitpars)
 for par in ['FD1','FD2','FD3','FD4','FD5']:
     nltm.remove(par)
-    
+
 _ = filter_Mmat(psr,nltm)
 print(psr.fitpars)
 
