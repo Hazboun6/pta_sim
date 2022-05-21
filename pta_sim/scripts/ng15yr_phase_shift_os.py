@@ -98,7 +98,8 @@ else:
             cloudpickle.dump(pta_pshift,f)
 
 
-os_pshift = OS(psrs=psrs, pta=pta_pshift, orf=args.orf)
+os_pshift = OS(psrs=psrs, pta=pta_pshift, orf=args.orf,
+               gamma_common=args.gamma_gw)
 
 c0 = co.Core(corepath=args.corepath)
 chain = c0.chain[c0.burn:,:-4]
@@ -110,6 +111,10 @@ mlv_idx = np.argmax(c0.chain[c0.burn:,-4])
 if 'gw_crn_log10_A' in pars:
     pidx = pars.index('gw_crn_log10_A')
     pars[pidx] = 'gw_log10_A'
+
+if 'gw_crn_gamma' in pars:
+    pidx = pars.index('gw_crn_gamma')
+    pars[pidx] = 'gw_gamma'
 
 N = args.niter
 M = args.miter
