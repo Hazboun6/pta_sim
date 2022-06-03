@@ -107,9 +107,17 @@ if args.gwb_bf or args.gwb_ul:
     pta = signal_base.PTA(m(psr))
 
 else:
-    pta = models.model_singlepsr_noise(psr, red_var=True,
-                                       psd=args.psd,Tspan=args.tspan,
+    if args.gfl:
+        vary_rn = False
+    else:
+        vary_rn = True
+    pta = models.model_singlepsr_noise(psr, red_var=vary_rn,
+                                       psd=args.psd, Tspan=args.tspan,
                                        components=args.nfreqs,
+                                       factorized_like=args.gfl,
+                                       gw_components=args.n_gwbfreqs,
+                                       fact_like_logmin=-14.2,
+                                       fact_like_logmax=-1.2,
                                        is_wideband=args.wideband)
 
 Sampler = sampler.setup_sampler(pta=pta,
