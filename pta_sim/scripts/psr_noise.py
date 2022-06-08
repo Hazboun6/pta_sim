@@ -127,7 +127,11 @@ Sampler = sampler.setup_sampler(pta=pta,
                                 outdir=Outdir,
                                 empirical_distr = emp_dist_path,
                                 resume=True)
-freqs = bys.get_freqs(pta, signal_id='red_noise')
+if args.gfl:
+    freqs = bys.get_freqs(pta, signal_id='gw')
+else:
+    freqs = bys.get_freqs(pta, signal_id='red_noise')
+    
 np.savetxt(Outdir+'achrom_freqs.txt', freqs)
 
 x0 = np.hstack(p.sample() for p in pta.params)
