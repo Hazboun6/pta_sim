@@ -93,6 +93,8 @@ elif longer:
 else:
     pass
 
+emp_dist_path = args.emp_distr
+
 if args.gwb_bf or args.gwb_ul:
     if args.gwb_bf:
         prior = 'log-uniform'
@@ -119,17 +121,20 @@ else:
                                        fact_like_logmin=-14.2,
                                        fact_like_logmax=-1.2,
                                        is_wideband=args.wideband)
+    emp_dist_path = args.emp_distr.replace('PSR_NAME',psr.name)
 
 Sampler = sampler.setup_sampler(pta=pta,
-                                    outdir=Outdir,
-                                    resume=True)
+                                outdir=Outdir,
+                                empirical_distr = emp_dist_path,
+                                resume=True)
 freqs = bys.get_freqs(pta, signal_id='red_noise')
 np.savetxt(Outdir+'achrom_freqs.txt', freqs)
 
 x0 = np.hstack(p.sample() for p in pta.params)
 
-Sampler.sample(x0, Niter=args.niter)
+Sampler.sample(x0, Niter=args.niter, burn=100000,
+               writeHotChains=args.writeHotChains)
 
 c0 = Core(chaindir=Outdir)
-c0.set_rn_freqs(freq_path=Outdir+'/achrom_rn_freqs.txt')
+c0.set_rn_freqs(freq_path=Outdir+'/achrom_freqs.txt')
 c0.save(args.corepath+f'{psr.name}.core')
