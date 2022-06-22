@@ -71,8 +71,8 @@ else:
 
     Tspan_PTA = model_utils.get_tspan(pkl_psrs)
     # common red noise block
-    # cs = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
-    #                                    components=args.n_gwbfreqs, gamma_val=args.gamma_gw, name='gw')
+    cs = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
+                                       components=args.n_gwbfreqs, gamma_val=args.gamma_gw, name='gw')
     # gw = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
     #                                    components=5, gamma_val=4.33, name='gw', orf='hd')
 
@@ -174,7 +174,7 @@ else:
 
         print(f'\r{psr.name} Complete.',end='',flush=True)
 
-    crn_models = [m(psr) for psr,m in  zip(final_psrs,psr_models)]
+    crn_models = [(m + cs)(psr) for psr,m in  zip(final_psrs,psr_models)]
     # gw_models = [(m + gw)(psr) for psr,m in  zip(final_psrs,psr_models)]
 
     pta_crn = signal_base.PTA(crn_models)
