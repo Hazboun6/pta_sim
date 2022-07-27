@@ -46,7 +46,7 @@ else:
     with open(args.noisepath, 'r') as fin:
         noise =json.load(fin)
 
-    adv_noise_psr_list = [ 'B1855+09', #32
+    adv_noise_psr_list = ['B1855+09', #32
                           'B1937+21', #42
                           'J0030+0451',# #1.4 **
                           'J0613-0200',# -25 *
@@ -67,7 +67,7 @@ else:
                           'J2043+1711',#40
                           'J2317+1439'] #17 *
 
-    adv_noise_psr_list = list(np.array(adv_noise_psr_list)[args.process])
+    adv_noise_psr_list = [np.array(adv_noise_psr_list)[args.process]]
 
     # Set Tspan for RN
 
