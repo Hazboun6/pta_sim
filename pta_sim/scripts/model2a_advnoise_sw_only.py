@@ -88,7 +88,8 @@ else:
     ### Add a stand alone SW deter model
     bins = np.linspace(53215, 57934, 26)
     bins *= 24*3600 #Convert to secs
-    n_earth = chrom.solar_wind.ACE_SWEPAM_Parameter(size=bins.size-1)('n_earth')
+    # n_earth = chrom.solar_wind.ACE_SWEPAM_Parameter(size=bins.size-1)('n_earth')
+    n_earth = parameter.Uniform(0,30,size=bins.size-1)('n_earth')
     deter_sw = chrom.solar_wind.solar_wind(n_earth=n_earth, n_earth_bins=bins)
     mean_sw = deterministic_signals.Deterministic(deter_sw, name='sw_r2')
 
@@ -188,8 +189,8 @@ else:
 
     pta_crn.set_default_params(noise)
 
-    with open(args.pta_pkl,'wb') as fout:
-        cloudpickle.dump(pta_crn,fout)
+    # with open(args.pta_pkl,'wb') as fout:
+        # cloudpickle.dump(pta_crn,fout)
 
 groups = sampler.get_parameter_groups(pta_crn)
 groups.extend(sampler.get_psr_groups(pta_crn))
@@ -201,13 +202,13 @@ Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 70)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 120)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 60)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 10)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_dmexpcusp_prior, 10)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['n_earth',
-                                                           'np_4p39',
-                                                           'dm_cusp',
-                                                           'dmexp']),
-                                                           30)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 10)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_dmexpcusp_prior, 10)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['n_earth',
+#                                                            'np_4p39',
+#                                                            'dm_cusp',
+#                                                            'dmexp']),
+#                                                            30)
 def draw_from_sw_prior(self, x, iter, beta):
 
     q = x.copy()
