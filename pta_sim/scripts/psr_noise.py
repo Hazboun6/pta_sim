@@ -111,8 +111,15 @@ if args.gwb_bf or args.gwb_ul:
 else:
     if args.gfl:
         vary_rn = False
+        extra_sigs = None
+    elif args.gfl_lite:
+        vary_rn = False
+        rn = models.red_noise_block(components=args.nfreqs, gamma_val=None)
+        extra_sigs = rn
     else:
         vary_rn = True
+        extra_sigs = None
+
     pta = models.model_singlepsr_noise(psr, red_var=vary_rn,
                                        psd=args.psd, Tspan=args.tspan,
                                        components=args.nfreqs,
@@ -120,7 +127,9 @@ else:
                                        gw_components=args.n_gwbfreqs,
                                        fact_like_logmin=-14.2,
                                        fact_like_logmax=-1.2,
-                                       is_wideband=args.wideband)
+                                       is_wideband=args.wideband,
+                                       extra_sigs=extra_sigs)
+
     emp_dist_path = args.emp_distr.replace('PSR_NAME',psr.name)
 
 Sampler = sampler.setup_sampler(pta=pta,
@@ -131,7 +140,7 @@ if args.gfl:
     freqs = bys.get_freqs(pta, signal_id='gw')
 else:
     freqs = bys.get_freqs(pta, signal_id='red_noise')
-    
+
 np.savetxt(Outdir+'achrom_freqs.txt', freqs)
 
 x0 = np.hstack(p.sample() for p in pta.params)
