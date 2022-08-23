@@ -113,6 +113,7 @@ else:
         vary_rn = False
         extra_sigs = None
     elif args.gfl_lite:
+        args.gfl = True
         vary_rn = False
         rn = models.red_noise_block(components=args.nfreqs, gamma_val=None)
         extra_sigs = rn
