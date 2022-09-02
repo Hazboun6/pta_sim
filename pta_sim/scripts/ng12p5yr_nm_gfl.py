@@ -131,6 +131,6 @@ sampler.sample(x0, N, SCAMweight=30, AMweight=15, DEweight=50, burn=500000,
                writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain)
 
-c0 = Core(chaindir=Outdir)
-c0.set_rn_freqs(freq_path=Outdir+'/achrom_freqs.txt')
+c0 = Core(chaindir=args.outdir)
+c0.set_rn_freqs(freq_path=args.outdir+'/achrom_freqs.txt')
 c0.save(args.corepath+f'{psr.name}.core')
