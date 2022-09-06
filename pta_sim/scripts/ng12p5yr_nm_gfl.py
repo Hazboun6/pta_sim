@@ -52,7 +52,7 @@ n_earth = parameter.Constant()('n_earth')
 deter_sw = chrom.solar_wind.solar_wind(n_earth=n_earth, n_earth_bins=bins)
 mean_sw = deterministic_signals.Deterministic(deter_sw, name='sw_r2')
 
-np_earth = parameter.Uniform(-4, -2)('np_4p39')
+np_earth = parameter.Constant()('np_4p39')
 sw_power = parameter.Constant(4.39)('sw_power_4p39')
 deter_sw_p = chrom.solar_wind.solar_wind_r_to_p(n_earth=np_earth,
                                                 power=sw_power,
