@@ -46,7 +46,7 @@ else:
     with open(args.noisepath, 'r') as fin:
         noise =json.load(fin)
 
-    adv_noise_psr_list = ['B1855+09',
+    adv_noise_psr_list = [`'B1855+09',
                           'B1937+21',
                           'J0030+0451',
                           'J0613-0200',

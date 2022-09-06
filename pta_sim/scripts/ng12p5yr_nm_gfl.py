@@ -26,6 +26,9 @@ logging.basicConfig(level=logging.WARNING)
 with open(args.pickle, 'rb') as fin:
     psr = pickle.load(fin)
 
+with open(args.noisepath, 'r') as fin:
+    noise =json.load(fin)
+
 longer = bys.chain_length_bool(args.outdir, int(args.niter/10)-100)
 
 if longer and os.path.exists(args.corepath+f'{psr.name}.core'):
@@ -44,7 +47,7 @@ with open(args.model_kwargs_path, 'r') as fin:
 # Binned Solar Wind Model
 bins = np.linspace(53215, 57934, 26)
 bins *= 24*3600 #Convert to secs
-n_earth = parameter.Constant(size=size=bins.size-1)('n_earth')
+n_earth = parameter.Constant()('n_earth')
 # n_earth = chrom.solar_wind.ACE_SWEPAM_Parameter(size=bins.size-1)('n_earth')
 deter_sw = chrom.solar_wind.solar_wind(n_earth=n_earth, n_earth_bins=bins)
 mean_sw = deterministic_signals.Deterministic(deter_sw, name='sw_r2')
@@ -110,6 +113,8 @@ if psr.name == 'B1937+21':
 
 # Setup PTA
 pta = model_singlepsr_noise(psr, **kwargs)
+pta.set_default_params(noise)
+
 sampler = samp.setup_sampler(pta=pta,
                              resume=True,
                              outdir=args.outdir,
