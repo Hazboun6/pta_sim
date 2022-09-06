@@ -109,7 +109,10 @@ if psr.name == 'B1937+21':
     chm_prior = gpk.se_dm_kernel(log10_sigma=ch_log10_sigma, log10_ell=ch_log10_ell)
     chromgp = gp_signals.BasisGP(chm_prior, chm_basis, name='chrom_gp')
     b1937_chrom_model = dmgp + dmgp2 + chromgp + mean_sw
-    kwargs.update({extra_sigs:b1937_chrom_model})
+    kwargs.update({'extra_sigs':b1937_chrom_model})
+    kwargs['extra_sigs'] = str('binned sw + dm_gp + dm_gp2 + chrom_gp')
+else:
+    kwargs['extra_sigs'] = str('binned sw')
 
 # Setup PTA
 pta = model_singlepsr_noise(psr, **kwargs)
