@@ -40,8 +40,8 @@ if os.path.exists(args.pta_pkl):
     with open(args.pta_pkl, "rb") as f:
         pta_crn = cloudpickle.load(f)
 else:
-    with open('{0}'.format(args.pickle), "rb") as f:
-        pkl_psrs = pickle.load(f)
+    # with open('{0}'.format(args.pickle), "rb") as f:
+    #     pkl_psrs = pickle.load(f)
 
     with open(args.noisepath, 'r') as fin:
         noise =json.load(fin)
@@ -71,7 +71,7 @@ else:
 
     # Set Tspan for RN
 
-    Tspan_PTA = model_utils.get_tspan(pkl_psrs)
+    Tspan_PTA = None#model_utils.get_tspan(pkl_psrs)
     # common red noise block
     if args.gwb_on:
         cs = blocks.common_red_noise_block(psd='powerlaw',
@@ -121,9 +121,6 @@ else:
             with open(kwarg_path, 'r') as fin:
                 kwargs = json.load(fin)
 
-    #         if 'wideband' in kwargs.keys():
-    #             kwargs['is_wideband'] = kwargs['wideband']
-    #             kwargs.__delitem__('wideband')
             ## Build special DM GP models for B1937
             if psr.name == 'B1937+21':
                 # Periodic GP kernel for DM
@@ -155,9 +152,32 @@ else:
                 chromgp = gp_signals.BasisGP(chm_prior, chm_basis, name='chrom_gp')
                 rn = blocks.red_noise_block(prior='log-uniform', Tspan=Tspan_PTA, components=30)
                 kwargs.update({'dm_sw_deter':False,
-                               'white_vary': False,
+                               'white_vary': True,
+                               'red_var': False,
                                'extra_sigs':dmgp + dmgp2 + chromgp + mean_sw + rn,
                                'psr_model':True,
+                               'chrom_df':None,
+                               'dm_df':None,
+                               'tm_marg':True})
+            elif psr.name == 'J1713+0747':
+                index = parameter.Uniform(0.9, 1.7)
+                ppta_dip = dm_exponential_dip(57506, 57514, idx=index, sign='negative', name='exp2')
+
+                kwargs.update({'dm_dt':3,
+                               'dm_df':None,
+                               'chrom_dt':3,
+                               'dm_sw_deter':False,
+                               'white_vary': True,
+                               'dm_expdip':True,
+                               'dmexp_sign': 'negative',
+                               'num_dmdips':1,
+                               'dm_expdip_idx':[2],
+                               'dm_expdip_tmin':[54740],
+                               'dm_expdip_tmax':[54780],
+                               'dmdip_seqname':['dm_1'],
+                               'extra_sigs':mean_sw + ppta_dip,
+                               'psr_model':True,
+                               'red_var': True,
                                'chrom_df':None,
                                'dm_df':None,
                                'tm_marg':True})
@@ -165,11 +185,12 @@ else:
             else:
                 ### Turn SW model off. Add in stand alone SW model and common process. Return model.
                 kwargs.update({'dm_sw_deter':False,
-                               'white_vary': False,
+                               'white_vary': True,
                                'extra_sigs':mean_sw,
                                'psr_model':True,
                                'chrom_df':None,
                                'dm_df':None,
+                               'red_var': True,
                                'tm_marg':True})
             ### Load the appropriate single_pulsar_model
             psr_models.append(model_singlepsr_noise(new_psr, **kwargs))#(new_psr))
