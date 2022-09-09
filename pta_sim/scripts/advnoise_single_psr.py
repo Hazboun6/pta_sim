@@ -68,14 +68,45 @@ else:
                           'J2317+1439'] #17 *
 
     adv_noise_psr_list = [np.array(adv_noise_psr_list)[args.process]]
-    psrname = adv_noise_psr_list[0]
+    psrname = np.array(adv_noise_psr_list)[args.process]
     # Set Tspan for RN
 
     Tspan_PTA = None#model_utils.get_tspan(pkl_psrs)
 
     # gw = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
     #                                    components=5, gamma_val=4.33, name='gw', orf='hd')
+    def dm_exponential_dip(tmin, tmax, idx=2, sign='negative', name='dmexp'):
+        """
+        Returns chromatic exponential dip (i.e. TOA advance):
 
+        :param tmin, tmax:
+            search window for exponential dip time.
+        :param idx:
+            index of radio frequency dependence (i.e. DM is 2). If this is set
+            to 'vary' then the index will vary from 1 - 6
+        :param sign:
+            set sign of dip: 'positive', 'negative', or 'vary'
+        :param name: Name of signal
+
+        :return dmexp:
+            chromatic exponential dip waveform.
+        """
+        t0_dmexp = parameter.Uniform(tmin,tmax)
+        log10_Amp_dmexp = parameter.Uniform(-6.1, -5.6)
+        log10_tau_dmexp = parameter.Uniform(1.2, 2.0)
+        if sign == 'vary':
+            sign_param = parameter.Uniform(-1.0, 1.0)
+        elif sign == 'positive':
+            sign_param = 1.0
+        else:
+            sign_param = -1.0
+        wf = chrom.chrom_exp_decay(log10_Amp=log10_Amp_dmexp,
+                                   t0=t0_dmexp, log10_tau=log10_tau_dmexp,
+                                   sign_param=sign_param, idx=idx)
+        dmexp = deterministic_signals.Deterministic(wf, name=name)
+
+        return dmexp
+        
     # timing model
     s = gp_signals.MarginalizingTimingModel()
     # intrinsic red noise
