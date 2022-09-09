@@ -68,7 +68,7 @@ else:
                           'J2317+1439'] #17 *
 
     adv_noise_psr_list = [np.array(adv_noise_psr_list)[args.process]]
-    psrname = np.array(adv_noise_psr_list)[args.process]
+    psrname = adv_noise_psr_list[0]
     # Set Tspan for RN
 
     Tspan_PTA = None#model_utils.get_tspan(pkl_psrs)
@@ -106,7 +106,7 @@ else:
         dmexp = deterministic_signals.Deterministic(wf, name=name)
 
         return dmexp
-        
+
     # timing model
     s = gp_signals.MarginalizingTimingModel()
     # intrinsic red noise
