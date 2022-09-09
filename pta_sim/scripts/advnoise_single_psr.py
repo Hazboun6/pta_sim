@@ -340,13 +340,14 @@ except:
     pass
 
 if args.initsamp is None:
-    noise['gw_log10_A'] = np.log10(2e-15)
-    noise['gw_gamma'] = 4.33333
-    nearth_pars = [p for p in pta_crn.param_names if 'n_earth' in p]
-    for npar in nearth_pars:
-        noise[npar]=6.0
-    noise['np_4p39']=-2.86
-    x0 = np.array([noise[k] for k in pta_crn.param_names])
+    # noise['gw_log10_A'] = np.log10(2e-15)
+    # noise['gw_gamma'] = 4.33333
+    # nearth_pars = [p for p in pta_crn.param_names if 'n_earth' in p]
+    # for npar in nearth_pars:
+    #     noise[npar]=6.0
+    # noise['np_4p39']=-2.86
+    # x0 = np.array([noise[k] for k in pta_crn.param_names])
+    x0 = np.hstack(p.sample() for p in pta_crn.params)
 else:
     with open(args.initsamp, 'r') as fin:
         init = json.load(fin)
