@@ -68,7 +68,7 @@ else:
                           'J2317+1439'] #17 *
 
     adv_noise_psr_list = [np.array(adv_noise_psr_list)[args.process]]
-
+    psrname = adv_noise_psr_list[0]
     # Set Tspan for RN
 
     Tspan_PTA = None#model_utils.get_tspan(pkl_psrs)
@@ -105,103 +105,95 @@ else:
                                                     log10_ne=True)
     mean_sw += deterministic_signals.Deterministic(deter_sw_p,
                                                    name='sw_4p39')
-    for psr in pkl_psrs:
-        # Filter out other Adv Noise Pulsars
-        if psr.name in adv_noise_psr_list:
-            ### Get the new pulsar object
-            ## Remember that J1713's pickle is something you made yourself ##
-            filepath = '/gscratch/gwastro/hazboun/nanograv/noise/noise_model_selection/no_dmx_pickles/'
-            filepath += '{0}_ng12p5yr_v3_nodmx_ePSR.pkl'.format(psr.name)
-            with open(filepath,'rb') as fin:
-                new_psr=pickle.load(fin)
 
-            ### Get kwargs dictionary
-            kwarg_path = args.model_kwargs_path
-            kwarg_path += f'{psr.name}_model_kwargs.json'
-            with open(kwarg_path, 'r') as fin:
-                kwargs = json.load(fin)
+    ### Get the new pulsar object
+    ## Remember that J1713's pickle is something you made yourself ##
+    filepath = '/gscratch/gwastro/hazboun/nanograv/noise/noise_model_selection/no_dmx_pickles/'
+    filepath += '{0}_ng12p5yr_v3_nodmx_ePSR.pkl'.format(psrname)
+    with open(filepath,'rb') as fin:
+        new_psr=pickle.load(fin)
 
-            ## Build special DM GP models for B1937
-            if psr.name == 'B1937+21':
-                # Periodic GP kernel for DM
-                log10_sigma = parameter.Uniform(-10, -4.8)
-                log10_ell = parameter.Uniform(1, 2.4)
-                log10_p = parameter.Uniform(-2, -1)
-                log10_gam_p = parameter.Uniform(-2, 2)
-                dm_basis = gpk.linear_interp_basis_dm(dt=3*86400)
-                dm_prior = gpk.periodic_kernel(log10_sigma=log10_sigma,
-                                               log10_ell=log10_ell,
-                                               log10_gam_p=log10_gam_p,
-                                               log10_p=log10_p)
-                dmgp = gp_signals.BasisGP(dm_prior, dm_basis, name='dm_gp1')
-                # Periodic GP kernel for DM
-                log10_sigma2 = parameter.Uniform(-4.8, -3)
-                log10_ell2 = parameter.Uniform(2.4, 5)
-                log10_p2 = parameter.Uniform(-2, 2)
-                log10_gam_p2 = parameter.Uniform(-2, 2)
-                dm_basis2 = gpk.linear_interp_basis_dm(dt=3*86400)
-                dm_prior2 = gpk.periodic_kernel(log10_sigma=log10_sigma2,
-                                               log10_ell=log10_ell2,
-                                               log10_gam_p=log10_gam_p2,
-                                               log10_p=log10_p2)
-                dmgp2 = gp_signals.BasisGP(dm_prior2, dm_basis2, name='dm_gp2')
-                ch_log10_sigma = parameter.Uniform(-10, -3.5)
-                ch_log10_ell = parameter.Uniform(1, 6)
-                chm_basis = gpk.linear_interp_basis_chromatic(dt=3*86400, idx=4)
-                chm_prior = gpk.se_dm_kernel(log10_sigma=ch_log10_sigma, log10_ell=ch_log10_ell)
-                chromgp = gp_signals.BasisGP(chm_prior, chm_basis, name='chrom_gp')
-                rn = blocks.red_noise_block(prior='log-uniform', Tspan=Tspan_PTA, components=30)
-                kwargs.update({'dm_sw_deter':False,
-                               'white_vary': True,
-                               'red_var': False,
-                               'extra_sigs':dmgp + dmgp2 + chromgp + mean_sw + rn,
-                               'psr_model':True,
-                               'chrom_df':None,
-                               'dm_df':None,
-                               'tm_marg':True})
-            elif psr.name == 'J1713+0747':
-                index = parameter.Uniform(0.9, 1.7)
-                ppta_dip = dm_exponential_dip(57506, 57514, idx=index, sign='negative', name='exp2')
+    ### Get kwargs dictionary
+    kwarg_path = args.model_kwargs_path
+    kwarg_path += f'{psrname}_model_kwargs.json'
+    with open(kwarg_path, 'r') as fin:
+        kwargs = json.load(fin)
 
-                kwargs.update({'dm_dt':3,
-                               'dm_df':None,
-                               'chrom_dt':3,
-                               'dm_sw_deter':False,
-                               'white_vary': True,
-                               'dm_expdip':True,
-                               'dmexp_sign': 'negative',
-                               'num_dmdips':1,
-                               'dm_expdip_idx':[2],
-                               'dm_expdip_tmin':[54740],
-                               'dm_expdip_tmax':[54780],
-                               'dmdip_seqname':['dm_1'],
-                               'extra_sigs':mean_sw + ppta_dip,
-                               'psr_model':True,
-                               'red_var': True,
-                               'chrom_df':None,
-                               'dm_df':None,
-                               'tm_marg':True})
-            ## Treat all other Adv Noise pulsars the same
-            else:
-                ### Turn SW model off. Add in stand alone SW model and common process. Return model.
-                kwargs.update({'dm_sw_deter':False,
-                               'white_vary': True,
-                               'extra_sigs':mean_sw,
-                               'psr_model':True,
-                               'chrom_df':None,
-                               'dm_df':None,
-                               'red_var': True,
-                               'tm_marg':True})
-            ### Load the appropriate single_pulsar_model
-            psr_models.append(model_singlepsr_noise(new_psr, **kwargs))#(new_psr))
-            final_psrs.append(new_psr)
-        # Treat all other DMX pulsars in the standard way
-        elif not args.adv_noise_psrs_only:
-            s2 = s + blocks.white_noise_block(vary=False, inc_ecorr=True, select='backend')
-            psr_models.append(s2)#(psr))
-            final_psrs.append(psr)
+    ## Build special DM GP models for B1937
+    if psrname == 'B1937+21':
+        # Periodic GP kernel for DM
+        log10_sigma = parameter.Uniform(-10, -4.8)
+        log10_ell = parameter.Uniform(1, 2.4)
+        log10_p = parameter.Uniform(-2, -1)
+        log10_gam_p = parameter.Uniform(-2, 2)
+        dm_basis = gpk.linear_interp_basis_dm(dt=3*86400)
+        dm_prior = gpk.periodic_kernel(log10_sigma=log10_sigma,
+                                       log10_ell=log10_ell,
+                                       log10_gam_p=log10_gam_p,
+                                       log10_p=log10_p)
+        dmgp = gp_signals.BasisGP(dm_prior, dm_basis, name='dm_gp1')
+        # Periodic GP kernel for DM
+        log10_sigma2 = parameter.Uniform(-4.8, -3)
+        log10_ell2 = parameter.Uniform(2.4, 5)
+        log10_p2 = parameter.Uniform(-2, 2)
+        log10_gam_p2 = parameter.Uniform(-2, 2)
+        dm_basis2 = gpk.linear_interp_basis_dm(dt=3*86400)
+        dm_prior2 = gpk.periodic_kernel(log10_sigma=log10_sigma2,
+                                       log10_ell=log10_ell2,
+                                       log10_gam_p=log10_gam_p2,
+                                       log10_p=log10_p2)
+        dmgp2 = gp_signals.BasisGP(dm_prior2, dm_basis2, name='dm_gp2')
+        ch_log10_sigma = parameter.Uniform(-10, -3.5)
+        ch_log10_ell = parameter.Uniform(1, 6)
+        chm_basis = gpk.linear_interp_basis_chromatic(dt=3*86400, idx=4)
+        chm_prior = gpk.se_dm_kernel(log10_sigma=ch_log10_sigma, log10_ell=ch_log10_ell)
+        chromgp = gp_signals.BasisGP(chm_prior, chm_basis, name='chrom_gp')
+        rn = blocks.red_noise_block(prior='log-uniform', Tspan=Tspan_PTA, components=30)
+        kwargs.update({'dm_sw_deter':False,
+                       'white_vary': True,
+                       'red_var': False,
+                       'extra_sigs':dmgp + dmgp2 + chromgp + mean_sw + rn,
+                       'psr_model':True,
+                       'chrom_df':None,
+                       'dm_df':None,
+                       'tm_marg':True})
+    elif psrname == 'J1713+0747':
+        index = parameter.Uniform(0.9, 1.7)
+        ppta_dip = dm_exponential_dip(57506, 57514, idx=index, sign='negative', name='exp2')
 
-        print(f'\r{psr.name} Complete.',end='',flush=True)
+        kwargs.update({'dm_dt':3,
+                       'dm_df':None,
+                       'chrom_dt':3,
+                       'dm_sw_deter':False,
+                       'white_vary': True,
+                       'dm_expdip':True,
+                       'dmexp_sign': 'negative',
+                       'num_dmdips':1,
+                       'dm_expdip_idx':[2],
+                       'dm_expdip_tmin':[54740],
+                       'dm_expdip_tmax':[54780],
+                       'dmdip_seqname':['dm_1'],
+                       'extra_sigs':mean_sw + ppta_dip,
+                       'psr_model':True,
+                       'red_var': True,
+                       'chrom_df':None,
+                       'dm_df':None,
+                       'tm_marg':True})
+    ## Treat all other Adv Noise pulsars the same
+    else:
+        ### Turn SW model off. Add in stand alone SW model and common process. Return model.
+        kwargs.update({'dm_sw_deter':False,
+                       'white_vary': True,
+                       'extra_sigs':mean_sw,
+                       'psr_model':True,
+                       'chrom_df':None,
+                       'dm_df':None,
+                       'red_var': True,
+                       'tm_marg':True})
+    ### Load the appropriate single_pulsar_model
+    psr_models.append(model_singlepsr_noise(new_psr, **kwargs))#(new_psr))
+    final_psrs.append(new_psr)
+    
 
     crn_models = [(m + cs)(psr) for psr,m in  zip(final_psrs,psr_models)]
     # gw_models = [(m + gw)(psr) for psr,m in  zip(final_psrs,psr_models)]
