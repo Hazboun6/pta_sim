@@ -89,24 +89,32 @@ else:
     log10_p = parameter.Uniform(-2, 2)
     log10_gam_p = parameter.Uniform(-2, 2)
 
-    dm_basis = utils.linear_interp_basis(dt=7*const.day)
+    @signal_base.function
+    def linear_interp_basis_time(toas, dt=7*const.day):
+        """Linear interpolation basis in time with nu^-4 scaling"""
+        # get linear interpolation basis in time
+        U, avetoas = utils.linear_interp_basis(toas, dt=dt)
+
+        return U, avetoas
+
+    dm_basis = utils.linear_interp_basis_time()
     qp = periodic_kernel(log10_sigma=log10_sigma,
                          log10_ell=log10_ell,
                          log10_gam_p=log10_gam_p,
                          log10_p=log10_p)
 
     def by_ao(backend_flags):
-    """Selection function to split by backend flags."""
+        """Selection function to split by backend flags."""
         flagvals = ["ASP", "PUPPI"]
         return {val: backend_flags == val for val in flagvals}
 
     def by_ao(backend_flags):
-    """Selection function to split by backend flags."""
+        """Selection function to split by backend flags."""
         flagvals = ["GASP", "GUPPI"]
         return {val: backend_flags == val for val in flagvals}
 
     def by_vla(backend_flags):
-    """Selection function to split by backend flags."""
+        """Selection function to split by backend flags."""
         flagvals = ["YUPPI"]
         return {val: backend_flags == val for val in flagvals}
 
