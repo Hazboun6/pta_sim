@@ -21,6 +21,7 @@ from enterprise.signals import deterministic_signals
 from enterprise import constants as const
 
 from enterprise_extensions.gp_kernels import periodic_kernel
+from enterprise_extensions import sampler
 
 import pta_sim
 import pta_sim.parse_sim as parse_sim
@@ -84,10 +85,20 @@ else:
                                    modes=freqs[:args.n_gwbfreqs],
                                    name='gw_crn')
 
-    log10_sigma = parameter.Uniform(-10, -3)
-    log10_ell = parameter.Uniform(1, 5)
-    log10_p = parameter.Uniform(-2, 2)
-    log10_gam_p = parameter.Uniform(-2, 2)
+    ao_log10_sigma = parameter.Uniform(-10, -3)('ao_log10_sigma')
+    ao_log10_ell = parameter.Uniform(1, 5)('ao_log10_ell')
+    ao_log10_p = parameter.Uniform(-2, 2)('ao_log10_p')
+    ao_log10_gam_p = parameter.Uniform(-2, 2)('ao_log10_gam_p')
+
+    gbt_log10_sigma = parameter.Uniform(-10, -3)('gbt_log10_sigma')
+    gbt_log10_ell = parameter.Uniform(1, 5)('gbt_log10_ell')
+    gbt_log10_p = parameter.Uniform(-2, 2)('gbt_log10_p')
+    gbt_log10_gam_p = parameter.Uniform(-2, 2)('gbt_log10_gam_p')
+
+    vla_log10_sigma = parameter.Uniform(-10, -3)('vla_log10_sigma')
+    vla_log10_ell = parameter.Uniform(1, 5)('vla_log10_ell')
+    vla_log10_p = parameter.Uniform(-2, 2)('vla_log10_p')
+    vla_log10_gam_p = parameter.Uniform(-2, 2)('vla_log10_gam_p')
 
     @signal_base.function
     def linear_interp_basis_time(toas, dt=7*const.day):
@@ -97,18 +108,28 @@ else:
 
         return U, avetoas
 
-    dm_basis = utils.linear_interp_basis_time()
-    qp = periodic_kernel(log10_sigma=log10_sigma,
-                         log10_ell=log10_ell,
-                         log10_gam_p=log10_gam_p,
-                         log10_p=log10_p)
+    dm_basis = linear_interp_basis_time()
+    ao_qp = periodic_kernel(log10_sigma=ao_log10_sigma,
+                         log10_ell=ao_log10_ell,
+                         log10_gam_p=ao_log10_gam_p,
+                         log10_p=ao_log10_p)
+
+    gbt_qp = periodic_kernel(log10_sigma=gbt_log10_sigma,
+                         log10_ell=gbt_log10_ell,
+                         log10_gam_p=gbt_log10_gam_p,
+                         log10_p=gbt_log10_p)
+
+    vla_qp = periodic_kernel(log10_sigma=vla_log10_sigma,
+                         log10_ell=vla_log10_ell,
+                         log10_gam_p=vla_log10_gam_p,
+                         log10_p=vla_log10_p)
 
     def by_ao(backend_flags):
         """Selection function to split by backend flags."""
         flagvals = ["ASP", "PUPPI"]
         return {val: backend_flags == val for val in flagvals}
 
-    def by_ao(backend_flags):
+    def by_gbt(backend_flags):
         """Selection function to split by backend flags."""
         flagvals = ["GASP", "GUPPI"]
         return {val: backend_flags == val for val in flagvals}
@@ -122,13 +143,13 @@ else:
     selection_gbt = selections.Selection(by_gbt)
     selection_vla = selections.Selection(by_vla)
 
-    tdgp_ao = gp_signals.BasisGP(qp, dm_basis, name='ao_periodic',
+    tdgp_ao = gp_signals.BasisGP(ao_qp, dm_basis, name='ao_periodic',
                                   coefficients=False,
                                   selection=selection_ao)
-    tdgp_gbt = gp_signals.BasisGP(qp, dm_basis, name='gbt_periodic',
+    tdgp_gbt = gp_signals.BasisGP(gbt_qp, dm_basis, name='gbt_periodic',
                                   coefficients=False,
                                   selection=selection_gbt)
-    tdgp_vla = gp_signals.BasisGP(qp, dm_basis, name='vla_periodic_',
+    tdgp_vla = gp_signals.BasisGP(vla_qp, dm_basis, name='vla_periodic',
                                   coefficients=False,
                                   selection=selection_vla)
 
@@ -149,20 +170,20 @@ else:
 Sampler = sampler.setup_sampler(pta, outdir=args.outdir, resume=True,
                                 empirical_distr = args.emp_distr)
 
-Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['ao_periodic_log10_ell',
-                                                           'ao_periodic_log10_sigma',
-                                                           'ao_periodic_log10_gam_p',
-                                                           'ao_periodic_log10_p',
-                                                           'gbt_periodic_log10_ell',
-                                                           'gbt_periodic_log10_sigma',
-                                                           'gbt_periodic_log10_gam_p',
-                                                           'gbt_periodic_log10_p',
-                                                           'vla_periodic_log10_ell',
-                                                           'vla_periodic_log10_sigma',
-                                                           'vla_periodic_log10_gam_p',
-                                                           'vla_periodic_log10_p',
-                                                           ])
-                           , 30)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['ao_periodic_log10_ell',
+#                                                            'ao_periodic_log10_sigma',
+#                                                            'ao_periodic_log10_gam_p',
+#                                                            'ao_periodic_log10_p',
+#                                                            'gbt_periodic_log10_ell',
+#                                                            'gbt_periodic_log10_sigma',
+#                                                            'gbt_periodic_log10_gam_p',
+#                                                            'gbt_periodic_log10_p',
+#                                                            'vla_periodic_log10_ell',
+#                                                            'vla_periodic_log10_sigma',
+#                                                            'vla_periodic_log10_gam_p',
+#                                                            'vla_periodic_log10_p',
+#                                                            ])
+#                            , 30)
 
 try:
     achrom_freqs = get_freqs(pta, signal_id='gw_crn')
