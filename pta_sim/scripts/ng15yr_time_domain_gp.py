@@ -159,10 +159,10 @@ else:
     models = []
     for psr in psrs:
         psr_model = model
-        if any([be in psr.flags['be'] for be in ["ASP", "PUPPI"]):
+        if any([be in psr.flags['be'] for be in ["ASP", "PUPPI"]]):
             psr_model += tdgp_ao
 
-        if any([be in psr.flags['be'] for be in ["GASP", "GUPPI"]):
+        if any([be in psr.flags['be'] for be in ["GASP", "GUPPI"]]):
             psr_model += tdgp_gbt
 
         if "YUPPI" in psr.flags['be']:
@@ -184,20 +184,20 @@ else:
 Sampler = sampler.setup_sampler(pta, outdir=args.outdir, resume=True,
                                 empirical_distr = args.emp_distr)
 
-# Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['ao_periodic_log10_ell',
-#                                                            'ao_periodic_log10_sigma',
-#                                                            'ao_periodic_log10_gam_p',
-#                                                            'ao_periodic_log10_p',
-#                                                            'gbt_periodic_log10_ell',
-#                                                            'gbt_periodic_log10_sigma',
-#                                                            'gbt_periodic_log10_gam_p',
-#                                                            'gbt_periodic_log10_p',
-#                                                            'vla_periodic_log10_ell',
-#                                                            'vla_periodic_log10_sigma',
-#                                                            'vla_periodic_log10_gam_p',
-#                                                            'vla_periodic_log10_p',
-#                                                            ])
-#                            , 30)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['ao_log10_ell',
+                                                           'ao_log10_sigma',
+                                                           'ao_log10_gam_p',
+                                                           'ao_log10_p',
+                                                           'gbt_log10_ell',
+                                                           'gbt_log10_sigma',
+                                                           'gbt_log10_gam_p',
+                                                           'gbt_log10_p',
+                                                           'vla_log10_ell',
+                                                           'vla_log10_sigma',
+                                                           'vla_log10_gam_p',
+                                                           'vla_log10_p',
+                                                           ])
+                           , 30)
 
 try:
     achrom_freqs = get_freqs(pta, signal_id='gw_crn')
