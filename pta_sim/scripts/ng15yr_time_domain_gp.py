@@ -124,20 +124,20 @@ else:
                          log10_gam_p=vla_log10_gam_p,
                          log10_p=vla_log10_p)
 
-    def by_ao(backend_flags):
+    def by_ao(flags):
         """Selection function to split by backend flags."""
         flagvals = ["ASP", "PUPPI"]
-        return {val: backend_flags == val for val in flagvals}
+        return {val: flags['be'] == val for val in flagvals}
 
-    def by_gbt(backend_flags):
+    def by_gbt(flags):
         """Selection function to split by backend flags."""
         flagvals = ["GASP", "GUPPI"]
-        return {val: backend_flags == val for val in flagvals}
+        return {val: flags['be'] == val for val in flagvals}
 
-    def by_vla(backend_flags):
+    def by_vla(flags):
         """Selection function to split by backend flags."""
         flagvals = ["YUPPI"]
-        return {val: backend_flags == val for val in flagvals}
+        return {val: flags['be'] == val for val in flagvals}
 
     selection_ao = selections.Selection(by_ao)
     selection_gbt = selections.Selection(by_gbt)
@@ -154,9 +154,23 @@ else:
                                   selection=selection_vla)
 
 
-    model = tm + ef + ec + rn + gw + tdgp_ao + tdgp_gbt + tdgp_vla
+    model = tm + ef + ec + rn + gw
 
-    pta = signal_base.PTA([model(p) for p in psrs])
+    models = []
+    for psr in psrs:
+        psr_model = model
+        if any([be in psr.flags['be'] for be in ["ASP", "PUPPI"]):
+            psr_model += tdgp_ao
+
+        if any([be in psr.flags['be'] for be in ["GASP", "GUPPI"]):
+            psr_model += tdgp_gbt
+
+        if "YUPPI" in psr.flags['be']:
+            psr_model += tdgp_vla
+
+        models.append(psr_model(psr))
+
+    pta = signal_base.PTA(models)
 
     with open(args.noisepath,'r') as fin:
         noise = json.load(fin)
