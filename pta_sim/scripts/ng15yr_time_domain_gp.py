@@ -102,13 +102,12 @@ else:
 
     @signal_base.function
     def linear_interp_basis_time(toas, dt=7*const.day):
-        """Linear interpolation basis in time with nu^-4 scaling"""
         # get linear interpolation basis in time
         U, avetoas = utils.linear_interp_basis(toas, dt=dt)
 
         return U, avetoas
 
-    dm_basis = linear_interp_basis_time()
+    dm_basis = linear_interp_basis_time(dt=7*const.day)
     ao_qp = periodic_kernel(log10_sigma=ao_log10_sigma,
                          log10_ell=ao_log10_ell,
                          log10_gam_p=ao_log10_gam_p,
