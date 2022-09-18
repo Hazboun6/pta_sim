@@ -126,17 +126,17 @@ else:
     def by_ao(flags):
         """Selection function to split by backend flags."""
         flagvals = ["ASP", "PUPPI"]
-        return return {'ao': [be in flagvals for be in flags['be']]}
+        return {'ao': [be in flagvals for be in flags['be']]}
 
     def by_gbt(flags):
         """Selection function to split by backend flags."""
         flagvals = ["GASP", "GUPPI"]
-        return return {'gbt': [be in flagvals for be in flags['be']]}
+        return {'gbt': [be in flagvals for be in flags['be']]}
 
     def by_vla(flags):
         """Selection function to split by backend flags."""
         flagvals = ["YUPPI"]
-        return return {'vla': [be in flagvals for be in flags['be']]}
+        return {'vla': [be in flagvals for be in flags['be']]}
 
     selection_ao = selections.Selection(by_ao)
     selection_gbt = selections.Selection(by_gbt)
