@@ -100,8 +100,8 @@ else:
     vla_log10_p = parameter.Uniform(-2, 2)('vla_log10_p')
     vla_log10_gam_p = parameter.Uniform(-2, 2)('vla_log10_gam_p')
 
-    @signal_base.function
-    def linear_interp_basis_time(toas, dt=7*const.day):
+    @signal_base. function
+    def linear_interp_basis_time(name, toas, dt=7*const.day):
         # get linear interpolation basis in time
         U, avetoas = utils.linear_interp_basis(toas, dt=dt)
 
@@ -126,17 +126,17 @@ else:
     def by_ao(flags):
         """Selection function to split by backend flags."""
         flagvals = ["ASP", "PUPPI"]
-        return {val: flags['be'] == val for val in flagvals}
+        return return {'ao': [be in flagvals for be in flags['be']]}
 
     def by_gbt(flags):
         """Selection function to split by backend flags."""
         flagvals = ["GASP", "GUPPI"]
-        return {val: flags['be'] == val for val in flagvals}
+        return return {'gbt': [be in flagvals for be in flags['be']]}
 
     def by_vla(flags):
         """Selection function to split by backend flags."""
         flagvals = ["YUPPI"]
-        return {val: flags['be'] == val for val in flagvals}
+        return return {'vla': [be in flagvals for be in flags['be']]}
 
     selection_ao = selections.Selection(by_ao)
     selection_gbt = selections.Selection(by_gbt)
