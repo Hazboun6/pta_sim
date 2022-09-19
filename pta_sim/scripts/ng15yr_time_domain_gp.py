@@ -107,7 +107,7 @@ else:
          print(toas.size)
          mask = [be in flagvals for be in flags['be']]
          msk_toas = toas[mask]
-         print(toas.size)
+         print(msk_toas.size)
          U, avetoas = utils.linear_interp_basis(msk_toas, dt=dt)
 
          return U, avetoas
@@ -122,7 +122,7 @@ else:
                              log10_ell=gbt_log10_ell,
                              log10_gam_p=gbt_log10_gam_p,
                              log10_p=gbt_log10_p)
-    vla_basis = linear_interp_basis_msk(flagvals=["GASP", "GUPPI"],dt=7*const.day)
+    vla_basis = linear_interp_basis_msk(flagvals=["YUPPI"],dt=7*const.day)
     vla_qp = periodic_kernel(log10_sigma=vla_log10_sigma,
                              log10_ell=vla_log10_ell,
                              log10_gam_p=vla_log10_gam_p,
