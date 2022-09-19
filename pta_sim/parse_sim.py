@@ -71,6 +71,8 @@ parser.add_argument('--gfl', dest='gfl', action='store_true',
                     default=False, help='Flag to turn on a generalized factorized likelihood analysis')
 parser.add_argument('--gfl_lite', dest='gfl_lite', action='store_true',
                     default=False, help='Flag to turn on a lite generalized factorized likelihood analysis')
+parser.add_argument('--gp_coeff', dest='gp_coeff', action='store_true',
+                    default=False, help='Store all the gp_coeff for a Gaussian Process analysis.')
 parser.add_argument('--gwb_bf', dest='gwb_bf', action='store_true',
                     default=False, help='Do a GWB detection run.')
 parser.add_argument('--gwb_off', dest='gwb_off', action='store_true',
