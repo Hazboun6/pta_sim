@@ -101,10 +101,13 @@ else:
     vla_log10_gam_p = parameter.Uniform(-2, 2)('vla_log10_gam_p')
 
     @signal_base. function
-    def linear_interp_basis_msk(toas, flags, flagvals=[], dt=7*const.day):
+    def linear_interp_basis_msk(name,toas, flags, flagvals=[], dt=7*const.day):
          # get linear interpolation basis in time
+         print(name)
+         print(toas.size)
          mask = [be in flagvals for be in flags['be']]
          msk_toas = toas[mask]
+         print(toas.size)
          U, avetoas = utils.linear_interp_basis(msk_toas, dt=dt)
 
          return U, avetoas
@@ -145,8 +148,8 @@ else:
     selection_vla = selections.Selection(by_vla)
 
     tdgp_ao = gp_signals.BasisGP(ao_qp, ao_basis, name='ao_periodic',
-                                  coefficients=False,
-                                  selection=selection_ao)
+                                 coefficients=False,
+                                 selection=selection_ao)
     tdgp_gbt = gp_signals.BasisGP(gbt_qp, gbt_basis, name='gbt_periodic',
                                   coefficients=False,
                                   selection=selection_gbt)
