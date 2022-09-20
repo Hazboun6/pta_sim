@@ -317,27 +317,28 @@ def draw_from_sw4p39_prior(self, x, iter, beta):
 
 def draw_from_gw_gamma_prior(self, x, iter, beta):
 
-        q = x.copy()
-        lqxy = 0
+    q = x.copy()
+    lqxy = 0
 
-        # draw parameter from signal model
-        signal_name = [par for par in self.pnames
-                       if ('gw' in par and 'gamma' in par)][0]
-        idx = list(self.pnames).index(signal_name)
-        param = self.params[idx]
+    # draw parameter from signal model
+    signal_name = [par for par in self.pnames
+                   if ('gw' in par and 'gamma' in par)][0]
+    idx = list(self.pnames).index(signal_name)
+    param = self.params[idx]
 
-        q[self.pmap[str(param)]] = np.random.uniform(param.prior._defaults['pmin'], param.prior._defaults['pmax'])
+    q[self.pmap[str(param)]] = np.random.uniform(param.prior._defaults['pmin'], param.prior._defaults['pmax'])
 
-        # forward-backward jump probability
-        lqxy = (param.get_logpdf(x[self.pmap[str(param)]]) -
-                param.get_logpdf(q[self.pmap[str(param)]]))
+    # forward-backward jump probability
+    lqxy = (param.get_logpdf(x[self.pmap[str(param)]]) -
+            param.get_logpdf(q[self.pmap[str(param)]]))
 
-        return q, float(lqxy)
+    return q, float(lqxy)
 
-sampler.JumpProposal.draw_from_sw_prior = draw_from_sw_prior
-sampler.JumpProposal.draw_from_sw4p39_prior = draw_from_sw4p39_prior
+if args.sw_fit_path is None:
+    sampler.JumpProposal.draw_from_sw_prior = draw_from_sw_prior
+    sampler.JumpProposal.draw_from_sw4p39_prior = draw_from_sw4p39_prior
 # sampler.JumpProposal.draw_from_gw_gamma_prior = draw_from_gw_gamma_prior
-if args.sw_fit_path is not None:
+
     Sampler.addProposalToCycle(Sampler.jp.draw_from_sw_prior, 25)
     Sampler.addProposalToCycle(Sampler.jp.draw_from_sw4p39_prior, 25)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_gamma_prior, 25)

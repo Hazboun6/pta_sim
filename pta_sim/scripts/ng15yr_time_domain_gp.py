@@ -187,6 +187,24 @@ else:
 
 Sampler = sampler.setup_sampler(pta, outdir=args.outdir, resume=True,
                                 empirical_distr = args.emp_distr)
+def draw_from_gw_gamma_prior(self, x, iter, beta):
+
+    q = x.copy()
+    lqxy = 0
+
+    # draw parameter from signal model
+    signal_name = [par for par in self.pnames
+                   if ('gw' in par and 'gamma' in par)][0]
+    idx = list(self.pnames).index(signal_name)
+    param = self.params[idx]
+
+    q[self.pmap[str(param)]] = np.random.uniform(param.prior._defaults['pmin'], param.prior._defaults['pmax'])
+
+    # forward-backward jump probability
+    lqxy = (param.get_logpdf(x[self.pmap[str(param)]]) -
+            param.get_logpdf(q[self.pmap[str(param)]]))
+
+    return q, float(lqxy)
 
 Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['ao_log10_ell',
                                                            'ao_log10_sigma',
@@ -202,6 +220,10 @@ Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['ao_log10_ell',
                                                            'vla_log10_p',
                                                            ])
                            , 30)
+
+if args.gamma_gw is None:
+    sampler.JumpProposal.draw_from_gw_gamma_prior = draw_from_gw_gamma_prior
+    Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_gamma_prior, 25)
 
 try:
     achrom_freqs = get_freqs(pta, signal_id='gw_crn')
