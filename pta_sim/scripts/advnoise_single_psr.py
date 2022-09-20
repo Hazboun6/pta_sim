@@ -245,7 +245,7 @@ else:
     # # delta_common=0.,
     # ptas = {0:pta_crn,
     #         1:pta_gw}
-    
+
     pta_crn.set_default_params(noise)
 
 
@@ -337,9 +337,9 @@ def draw_from_gw_gamma_prior(self, x, iter, beta):
 sampler.JumpProposal.draw_from_sw_prior = draw_from_sw_prior
 sampler.JumpProposal.draw_from_sw4p39_prior = draw_from_sw4p39_prior
 # sampler.JumpProposal.draw_from_gw_gamma_prior = draw_from_gw_gamma_prior
-
-Sampler.addProposalToCycle(Sampler.jp.draw_from_sw_prior, 25)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_sw4p39_prior, 25)
+if args.sw_fit_path is not None:
+    Sampler.addProposalToCycle(Sampler.jp.draw_from_sw_prior, 25)
+    Sampler.addProposalToCycle(Sampler.jp.draw_from_sw4p39_prior, 25)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_gamma_prior, 25)
 
 
