@@ -33,8 +33,8 @@ logging.basicConfig(format="%(levelname)s: %(name)s: %(message)s", level=logging
 # else:
 #     pass
 
-# with open(args.noisepath, 'r') as fin:
-#     noise =json.load(fin)
+with open(args.noisepath, 'r') as fin:
+    noise =json.load(fin)
 
 if os.path.exists(args.pta_pkl):
     with open(args.pta_pkl, "rb") as f:
@@ -43,8 +43,8 @@ else:
     # with open('{0}'.format(args.pickle), "rb") as f:
     #     pkl_psrs = pickle.load(f)
 
-    # with open(args.noisepath, 'r') as fin:
-    #     noise =json.load(fin)
+    with open(args.noisepath, 'r') as fin:
+        noise =json.load(fin)
 
     adv_noise_psr_list = ['B1855+09', #32
                           'B1937+21', #42
@@ -126,6 +126,7 @@ else:
         np_earth = parameter.Constant()('np_4p39')
         with open(args.sw_fit_path,'r') as fin:
             sw_vals = json.load(fin)
+        noise.update(sw_vals)
 
     deter_sw = chrom.solar_wind.solar_wind(n_earth=n_earth, n_earth_bins=bins)
     mean_sw = deterministic_signals.Deterministic(deter_sw, name='sw_r2')
@@ -244,8 +245,8 @@ else:
     # # delta_common=0.,
     # ptas = {0:pta_crn,
     #         1:pta_gw}
-    if args.sw_fit_path is not None:
-        pta_crn.set_default_params(sw_vals)
+    
+    pta_crn.set_default_params(noise)
 
 
     # with open(args.pta_pkl,'wb') as fout:
