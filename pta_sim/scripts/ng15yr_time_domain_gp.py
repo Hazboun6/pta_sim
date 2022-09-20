@@ -106,8 +106,8 @@ else:
          # print(name)
          # print(toas.size)
          mask = [be in flagvals for be in flags['be']]
-         # msk_toas = toas[mask]
-         print(msk_toas.size)
+         msk_toas = toas[mask]
+         # print(msk_toas.size)
          U, avetoas = utils.linear_interp_basis(msk_toas, dt=dt)
 
          return U, avetoas

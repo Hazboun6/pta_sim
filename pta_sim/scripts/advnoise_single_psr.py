@@ -33,8 +33,8 @@ logging.basicConfig(format="%(levelname)s: %(name)s: %(message)s", level=logging
 # else:
 #     pass
 
-with open(args.noisepath, 'r') as fin:
-    noise =json.load(fin)
+# with open(args.noisepath, 'r') as fin:
+#     noise =json.load(fin)
 
 if os.path.exists(args.pta_pkl):
     with open(args.pta_pkl, "rb") as f:
@@ -43,8 +43,8 @@ else:
     # with open('{0}'.format(args.pickle), "rb") as f:
     #     pkl_psrs = pickle.load(f)
 
-    with open(args.noisepath, 'r') as fin:
-        noise =json.load(fin)
+    # with open(args.noisepath, 'r') as fin:
+    #     noise =json.load(fin)
 
     adv_noise_psr_list = ['B1855+09', #32
                           'B1937+21', #42
@@ -118,11 +118,19 @@ else:
     bins = np.linspace(53215, 57934, 26)
     bins *= 24*3600 #Convert to secs
     # n_earth = chrom.solar_wind.ACE_SWEPAM_Parameter(size=bins.size-1)('n_earth')
-    n_earth = parameter.Uniform(0,30,size=bins.size-1)('n_earth')
+    if args.sw_fit_path is None:
+        n_earth = parameter.Uniform(0,30,size=bins.size-1)('n_earth')
+        np_earth = parameter.Uniform(-4, -2)('np_4p39')
+    else:
+        n_earth = parameter.Constant()('n_earth')
+        np_earth = parameter.Constant()('np_4p39')
+        with open(args.sw_fit_path,'r') as fin:
+            sw_vals = json.load(fin)
+
     deter_sw = chrom.solar_wind.solar_wind(n_earth=n_earth, n_earth_bins=bins)
     mean_sw = deterministic_signals.Deterministic(deter_sw, name='sw_r2')
 
-    np_earth = parameter.Uniform(-4, -2)('np_4p39')
+
     sw_power = parameter.Constant(4.39)('sw_power_4p39')
     deter_sw_p = chrom.solar_wind.solar_wind_r_to_p(n_earth=np_earth,
                                                     power=sw_power,
@@ -236,8 +244,9 @@ else:
     # # delta_common=0.,
     # ptas = {0:pta_crn,
     #         1:pta_gw}
+    if args.sw_fit_path is not None:
+        pta_crn.set_default_params(sw_vals)
 
-    pta_crn.set_default_params(noise)
 
     # with open(args.pta_pkl,'wb') as fout:
         # cloudpickle.dump(pta_crn,fout)
