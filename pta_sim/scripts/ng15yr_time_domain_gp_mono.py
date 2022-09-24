@@ -162,10 +162,10 @@ def draw_from_gw_gamma_prior(self, x, iter, beta):
 
     return q, float(lqxy)
 
-gp_pars = [par for par in pta.param_names if [s in par for s in ['log10_ell',
+gp_pars = [par for par in pta.param_names if any([s in par for s in ['log10_ell',
                                                                  'log10_sigma',
                                                                  'log10_gam_p',
-                                                                 'log10_p']]]
+                                                                 'log10_p']])]
 
 Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(gp_pars), 30)
 
