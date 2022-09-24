@@ -184,7 +184,7 @@ else:
     # tdgp = gp_signals.BasisCommonGP2(qp, qp_basis, monoorf, name='mono',
     #                                  coefficients=args.gp_coeff,
     #                                  selection=selection_qp)
-    tdgp = gp_signals.BasisCommonGP(qp, qp_basis, monoorf, name='mono',
+    tdgp = gp_signals.BasisCommonGP2(qp, qp_basis, monoorf, name='mono',
                                      coefficients=args.gp_coeff)
     # gw (powerlaw with 5 frequencies)
 
