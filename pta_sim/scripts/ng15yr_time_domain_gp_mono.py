@@ -21,7 +21,7 @@ from enterprise.signals import deterministic_signals
 from enterprise import constants as const
 
 from enterprise_extensions.gp_kernels import periodic_kernel
-from enterprise_extensions import sampler
+from enterprise_extensions import sampler, model_orfs
 
 import pta_sim
 import pta_sim.parse_sim as parse_sim
@@ -101,8 +101,8 @@ else:
 
     selection_qp = selections.Selection(selections.by_telescope)
 
-    hdorf = utils.hd_orf
-    monoorf = utils.monopole_orf
+    hdorf = model_orfs.hd_orf()
+    monoorf = model_orfs.monopole_orf()
     tdgp = gp_signals.BasisCommonGP2(qp, qp_basis, monoorf, name='mono',
                                      coefficients=args.gp_coeff,
                                      selection=selection_qp)
