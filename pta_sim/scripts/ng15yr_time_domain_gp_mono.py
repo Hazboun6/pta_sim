@@ -78,13 +78,13 @@ else:
     # timing model
     tm = gp_signals.MarginalizingTimingModel()
 
-    log10_sigma = parameter.Uniform(-10, -3)#('log10_sigma')
-    log10_ell = parameter.Uniform(1, 5)#('log10_ell')
-    log10_p = parameter.Uniform(-2, 2)#('log10_p')
-    log10_gam_p = parameter.Uniform(-2, 2)#('log10_gam_p')
+    log10_sigma = parameter.Uniform(-10, -3)('log10_sigma')
+    log10_ell = parameter.Uniform(1, 5)('log10_ell')
+    log10_p = parameter.Uniform(-2, 2)('log10_p')
+    log10_gam_p = parameter.Uniform(-2, 2)('log10_gam_p')
 
 
-    @signal_base. function
+    @signal_base.function
     def linear_interp_basis_time(toas, dt=7*const.day):
          # get linear interpolation basis in time
          U, avetoas = utils.linear_interp_basis(toas, dt=dt)
@@ -185,7 +185,7 @@ else:
     #                                  coefficients=args.gp_coeff,
     #                                  selection=selection_qp)
     tdgp = gp_signals.BasisCommonGP(qp, qp_basis, monoorf, name='mono',
-                                     coefficients=args.gp_coeff))
+                                     coefficients=args.gp_coeff)
     # gw (powerlaw with 5 frequencies)
 
     gw_pl = utils.powerlaw(log10_A=gw_log10_A, gamma=gw_gamma)
@@ -193,7 +193,7 @@ else:
                                          modes=freqs[:args.n_gwbfreqs],
                                          name='gw')
 
-    model = tm + ef + ec + rn + gw
+    model = tm + ef + ec + rn + gw + tdgp
 
     # models = []
     # for psr in psrs:
@@ -249,8 +249,8 @@ gp_pars = [par for par in pta.param_names if any([s in par for s in ['log10_ell'
                                                                  'log10_gam_p',
                                                                  'log10_p']])]
 
-Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(gp_pars[:6]), 30)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(gp_pars[6:]), 30)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(gp_pars[:4]), 30)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(gp_pars[6:]), 30)
 
 if args.gamma_gw is None:
     sampler.JumpProposal.draw_from_gw_gamma_prior = draw_from_gw_gamma_prior
