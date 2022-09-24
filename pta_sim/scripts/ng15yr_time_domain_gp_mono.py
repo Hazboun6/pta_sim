@@ -78,24 +78,24 @@ else:
     # timing model
     tm = gp_signals.MarginalizingTimingModel()
 
-    # log10_sigma = parameter.Uniform(-10, -3)#('log10_sigma')
-    # log10_ell = parameter.Uniform(1, 5)#('log10_ell')
-    # log10_p = parameter.Uniform(-2, 2)#('log10_p')
-    # log10_gam_p = parameter.Uniform(-2, 2)#('log10_gam_p')
-    #
-    #
-    # @signal_base. function
-    # def linear_interp_basis_time(toas, dt=7*const.day):
-    #      # get linear interpolation basis in time
-    #      U, avetoas = utils.linear_interp_basis(toas, dt=dt)
-    #
-    #      return U, avetoas
-    #
-    # qp_basis = linear_interp_basis_time(dt=7*const.day)
-    # qp = periodic_kernel(log10_sigma=log10_sigma,
-    #                         log10_ell=log10_ell,
-    #                         log10_gam_p=log10_gam_p,
-    #                         log10_p=log10_p)
+    log10_sigma = parameter.Uniform(-10, -3)#('log10_sigma')
+    log10_ell = parameter.Uniform(1, 5)#('log10_ell')
+    log10_p = parameter.Uniform(-2, 2)#('log10_p')
+    log10_gam_p = parameter.Uniform(-2, 2)#('log10_gam_p')
+
+
+    @signal_base. function
+    def linear_interp_basis_time(toas, dt=7*const.day):
+         # get linear interpolation basis in time
+         U, avetoas = utils.linear_interp_basis(toas, dt=dt)
+
+         return U, avetoas
+
+    qp_basis = linear_interp_basis_time(dt=7*const.day)
+    qp = periodic_kernel(log10_sigma=log10_sigma,
+                            log10_ell=log10_ell,
+                            log10_gam_p=log10_gam_p,
+                            log10_p=log10_p)
     #
     #
     #
@@ -184,6 +184,8 @@ else:
     # tdgp = gp_signals.BasisCommonGP2(qp, qp_basis, monoorf, name='mono',
     #                                  coefficients=args.gp_coeff,
     #                                  selection=selection_qp)
+    tdgp = gp_signals.BasisCommonGP(qp, qp_basis, monoorf, name='mono',
+                                     coefficients=args.gp_coeff))
     # gw (powerlaw with 5 frequencies)
 
     gw_pl = utils.powerlaw(log10_A=gw_log10_A, gamma=gw_gamma)
@@ -193,22 +195,24 @@ else:
 
     model = tm + ef + ec + rn + gw
 
-    models = []
-    for psr in psrs:
-        psr_model = model
-        if any([be in psr.flags['be'] for be in ["ASP", "PUPPI"]]):
-            psr_model += tdgp_ao
+    # models = []
+    # for psr in psrs:
+    #     psr_model = model
+    #     if any([be in psr.flags['be'] for be in ["ASP", "PUPPI"]]):
+    #         psr_model += tdgp_ao
+    #
+    #     if any([be in psr.flags['be'] for be in ["GASP", "GUPPI"]]):
+    #         psr_model += tdgp_gbt
+    #
+    #     if "YUPPI" in psr.flags['be']:
+    #         psr_model += tdgp_vla
+    #
+    #     models.append(psr_model(psr))
 
-        if any([be in psr.flags['be'] for be in ["GASP", "GUPPI"]]):
-            psr_model += tdgp_gbt
 
-        if "YUPPI" in psr.flags['be']:
-            psr_model += tdgp_vla
+    # pta = signal_base.PTA(models)
 
-        models.append(psr_model(psr))
-
-
-    pta = signal_base.PTA(models)
+    pta = signal_base.PTA([model(p) for p in psrs])
 
     with open(args.noisepath,'r') as fin:
         noise = json.load(fin)
