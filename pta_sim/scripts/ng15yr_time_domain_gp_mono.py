@@ -103,7 +103,7 @@ else:
 
     hdorf = utils.hd_orf
     monoorf = utils.monopole_orf
-    tdgp = gp_signals.BasisCommonGP2(qp, qp_basis, orf=monoorf, name='mono',
+    tdgp = gp_signals.BasisCommonGP2(qp, qp_basis, monoorf, name='mono',
                                      coefficients=args.gp_coeff,
                                      selection=selection_qp)
 
