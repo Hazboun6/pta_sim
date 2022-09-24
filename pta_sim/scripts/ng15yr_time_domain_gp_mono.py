@@ -208,7 +208,7 @@ else:
         models.append(psr_model(psr))
 
 
-    pta = signal_base.PTA([model(p) for p in psrs])
+    pta = signal_base.PTA(models)
 
     with open(args.noisepath,'r') as fin:
         noise = json.load(fin)
