@@ -78,10 +78,10 @@ else:
     # timing model
     tm = gp_signals.MarginalizingTimingModel()
 
-    log10_sigma = parameter.Uniform(-10, -3)('log10_sigma')
-    log10_ell = parameter.Uniform(1, 5)('log10_ell')
-    log10_p = parameter.Uniform(-2, 2)('log10_p')
-    log10_gam_p = parameter.Uniform(-2, 2)('log10_gam_p')
+    log10_sigma = parameter.Uniform(-10, -3)#('log10_sigma')
+    log10_ell = parameter.Uniform(1, 5)#('log10_ell')
+    log10_p = parameter.Uniform(-2, 2)#('log10_p')
+    log10_gam_p = parameter.Uniform(-2, 2)#('log10_gam_p')
 
 
     @signal_base. function
