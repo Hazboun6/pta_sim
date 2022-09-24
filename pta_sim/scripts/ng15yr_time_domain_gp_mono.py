@@ -121,7 +121,7 @@ else:
     vla_log10_p = parameter.Uniform(-2, 2)('vla_log10_p')
     vla_log10_gam_p = parameter.Uniform(-2, 2)('vla_log10_gam_p')
 
-    @signal_base. function
+    @signal_base.function
     def linear_interp_basis_msk(toas, flags, flagvals=[], dt=7*const.day):
          # get linear interpolation basis in time
          # print(name)
