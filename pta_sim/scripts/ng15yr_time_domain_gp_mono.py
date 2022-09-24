@@ -167,7 +167,8 @@ gp_pars = [par for par in pta.param_names if any([s in par for s in ['log10_ell'
                                                                  'log10_gam_p',
                                                                  'log10_p']])]
 
-Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(gp_pars), 30)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(gp_pars[:6]), 30)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(gp_pars[6:]), 30)
 
 if args.gamma_gw is None:
     sampler.JumpProposal.draw_from_gw_gamma_prior = draw_from_gw_gamma_prior
