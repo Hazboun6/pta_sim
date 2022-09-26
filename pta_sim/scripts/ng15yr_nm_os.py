@@ -36,8 +36,12 @@ if os.path.exists(args.pta_pkl):
 else:
     raise ValueError(f'{args.pta_pkl} does not exist.')
 
+if args.orf == "multiple":
+    orf = 'hd'
+else:
+    pass
 
-pta_os = OS(psrs=psrs, pta=pta, orf=args.orf,
+pta_os = OS(psrs=psrs, pta=pta, orf=orf,
                gamma_common=args.gamma_gw)
 
 c0 = co.Core(corepath=args.corepath)
