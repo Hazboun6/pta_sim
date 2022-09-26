@@ -45,8 +45,8 @@ pta_os = OS(psrs=psrs, pta=pta, orf=orf,
                gamma_common=args.gamma_gw)
 
 c0 = co.Core(corepath=args.corepath)
-chain = c0.chain[c0.burn:,:-4]
-pars = c0.params[:-4]
+chain = c0.chain[c0.burn:,:]
+pars = c0.params
 
 mlv_idx = np.argmax(c0.chain[c0.burn:,-4])
 
