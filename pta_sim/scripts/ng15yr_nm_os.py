@@ -39,7 +39,7 @@ else:
 if args.orf == "multiple":
     orf = 'hd'
 else:
-    pass
+    orf = args.orf
 
 pta_os = OS(psrs=psrs, pta=pta, orf=orf,
                gamma_common=args.gamma_gw)
