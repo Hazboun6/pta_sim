@@ -114,7 +114,7 @@ else:
         return M, x
 
 
-    qp_basis = linear_interp_basis_tspan(dt=14*const.day)
+    qp_basis = linear_interp_basis_tspan(tmin=tmin,tmax=tmax,dt=14*const.day)
     qp = periodic_kernel(log10_sigma=log10_sigma,
                             log10_ell=log10_ell,
                             log10_gam_p=log10_gam_p,
