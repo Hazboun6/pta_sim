@@ -83,15 +83,37 @@ else:
     log10_p = parameter.Uniform(-2, 2)('log10_p')
     log10_gam_p = parameter.Uniform(-2, 2)('log10_gam_p')
 
-
     @signal_base.function
-    def linear_interp_basis_time(toas, dt=7*const.day):
-         # get linear interpolation basis in time
-         U, avetoas = utils.linear_interp_basis(toas, dt=dt)
+    def linear_interp_basis_tspan(toas, tmin=None, tmax=None, dt=30 * 86400):
+        """Provides a basis for linear interpolation.
 
-         return U, avetoas
+        :param toas: Pulsar TOAs in seconds
+        :param dt: Linear interpolation step size in seconds.
 
-    qp_basis = linear_interp_basis_time(dt=7*const.day)
+        :returns: Linear interpolation basis and nodes
+        """
+
+        # evenly spaced points
+        if tmin is None:
+            x = np.arange(toas.min(), toas.max() + dt, dt)
+        else:
+            x = np.arange(tmin, tmax + dt, dt)
+
+        M = np.zeros((len(toas), len(x)))
+
+        # make linear interpolation basis
+        for ii in range(len(x) - 1):
+            idx = np.logical_and(toas >= x[ii], toas <= x[ii + 1])
+            M[idx, ii] = (toas[idx] - x[ii + 1]) / (x[ii] - x[ii + 1])
+            M[idx, ii + 1] = (toas[idx] - x[ii]) / (x[ii + 1] - x[ii])
+
+        # only return non-zero columns
+        idx = M.sum(axis=0) != 0
+
+        return M[:, idx], x[idx]
+
+
+    qp_basis = linear_interp_basis_tspan(dt=7*const.day)
     qp = periodic_kernel(log10_sigma=log10_sigma,
                             log10_ell=log10_ell,
                             log10_gam_p=log10_gam_p,
@@ -184,7 +206,7 @@ else:
     # tdgp = gp_signals.BasisCommonGP2(qp, qp_basis, monoorf, name='mono',
     #                                  coefficients=args.gp_coeff,
     #                                  selection=selection_qp)
-    tdgp = gp_signals.BasisCommonGP2(qp, qp_basis, monoorf, name='mono',
+    tdgp = gp_signals.BasisCommonGP(qp, qp_basis, monoorf, name='mono',
                                      coefficients=args.gp_coeff)
     # gw (powerlaw with 5 frequencies)
 
