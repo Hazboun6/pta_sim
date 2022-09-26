@@ -108,12 +108,13 @@ else:
             M[idx, ii + 1] = (toas[idx] - x[ii]) / (x[ii + 1] - x[ii])
 
         # only return non-zero columns
-        idx = M.sum(axis=0) != 0
+        # idx = M.sum(axis=0) != 0
+        #
+        # return M[:, idx], x[idx]
+        return M, x
 
-        return M[:, idx], x[idx]
 
-
-    qp_basis = linear_interp_basis_tspan(dt=7*const.day)
+    qp_basis = linear_interp_basis_tspan(dt=14*const.day)
     qp = periodic_kernel(log10_sigma=log10_sigma,
                             log10_ell=log10_ell,
                             log10_gam_p=log10_gam_p,
