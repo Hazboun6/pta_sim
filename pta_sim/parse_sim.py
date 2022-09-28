@@ -250,6 +250,9 @@ parser.add_argument('--vary_gamma', dest='vary_gamma', action='store_true',
                     default=False,
                     help='Option to vary gamma, the spectral index '
                          'on the common red noise process.')
+parser.add_argument('--vary_wn', dest='vary_wn', action='store_true',
+                    default=False,
+                    help='Option to vary the white noise parameters.')
 parser.add_argument('--wideband', dest='wideband', action='store_true',
                     default=False, help='Option to use wideband data.')
 parser.add_argument('--writeHotChains', dest='writeHotChains',

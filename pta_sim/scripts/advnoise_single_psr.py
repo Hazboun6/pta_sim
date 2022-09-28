@@ -43,9 +43,6 @@ else:
     # with open('{0}'.format(args.pickle), "rb") as f:
     #     pkl_psrs = pickle.load(f)
 
-    with open(args.noisepath, 'r') as fin:
-        noise =json.load(fin)
-
     adv_noise_psr_list = ['B1855+09', #32
                           'B1937+21', #42
                           'J0030+0451',# #1.4 **
@@ -69,12 +66,7 @@ else:
 
     adv_noise_psr_list = [np.array(adv_noise_psr_list)[args.process]]
     psrname = adv_noise_psr_list[0]
-    # Set Tspan for RN
 
-    Tspan_PTA = None#model_utils.get_tspan(pkl_psrs)
-
-    # gw = blocks.common_red_noise_block(psd='powerlaw', prior='log-uniform', Tspan=Tspan_PTA,
-    #                                    components=5, gamma_val=4.33, name='gw', orf='hd')
     def dm_exponential_dip(tmin, tmax, idx=2, sign='negative', name='dmexp'):
         """
         Returns chromatic exponential dip (i.e. TOA advance):
@@ -109,8 +101,9 @@ else:
 
     # timing model
     s = gp_signals.MarginalizingTimingModel()
+
     # intrinsic red noise
-    s += blocks.red_noise_block(prior='log-uniform', Tspan=Tspan_PTA, components=30)
+    s += blocks.red_noise_block(prior='log-uniform', Tspan=args.tspan, components=30)
     # adding white-noise, separating out Adv Noise Psrs, and acting on psr objects
     final_psrs = []
     psr_models = []
@@ -181,11 +174,11 @@ else:
         chm_basis = gpk.linear_interp_basis_chromatic(dt=3*86400, idx=4)
         chm_prior = gpk.se_dm_kernel(log10_sigma=ch_log10_sigma, log10_ell=ch_log10_ell)
         chromgp = gp_signals.BasisGP(chm_prior, chm_basis, name='chrom_gp')
-        rn = blocks.red_noise_block(prior='log-uniform', Tspan=Tspan_PTA, components=30)
+
         kwargs.update({'dm_sw_deter':False,
-                       'white_vary': True,
-                       'red_var': False,
-                       'extra_sigs':dmgp + dmgp2 + chromgp + mean_sw + rn,
+                       'white_vary':args.vary_wn,
+                       'red_var': True,
+                       'extra_sigs':dmgp + dmgp2 + chromgp + mean_sw,
                        'psr_model':True,
                        'chrom_df':None,
                        'dm_df':None,
@@ -198,7 +191,7 @@ else:
                        'dm_df':None,
                        'chrom_dt':3,
                        'dm_sw_deter':False,
-                       'white_vary': True,
+                       'white_vary':args.vary_wn,
                        'dm_expdip':True,
                        'dmexp_sign': 'negative',
                        'num_dmdips':1,
@@ -216,38 +209,35 @@ else:
     else:
         ### Turn SW model off. Add in stand alone SW model and common process. Return model.
         kwargs.update({'dm_sw_deter':False,
-                       'white_vary': True,
+                       'white_vary':args.vary_wn,
                        'extra_sigs':mean_sw,
                        'psr_model':True,
                        'chrom_df':None,
                        'dm_df':None,
                        'red_var': True,
                        'tm_marg':True})
-    ### Load the appropriate single_pulsar_model
-    psr_models.append(model_singlepsr_noise(new_psr, **kwargs))#(new_psr))
+
+    if args.gfl:
+        kwargs.update({'red_var':False,
+                       'factorized_like':True,
+                       'psd':'spectrum',
+                       'Tspan':args.tspan,
+                       'gw_components':30,
+                       'fact_like_logmin':-14.2,
+                       'fact_like_logmax':-1.2,
+                       'extra_sigs':xsigs})
+    if args.gwb_on:
+        kwargs.update({'factorized_like':True,
+                      'Tspan':args.tspan,
+                      'gw_components':args.n_gwbfreqs,
+                      'fact_like_gamma':args.gamma_gw,})
+
+    psr_models.append(model_singlepsr_noise(new_psr, **kwargs))
     final_psrs.append(new_psr)
 
-    if args.gwb_on:
-        cs = blocks.common_red_noise_block(psd='powerlaw',
-                                           prior='log-uniform',
-                                           Tspan=Tspan_PTA,
-                                           components=args.n_gwbfreqs,
-                                           gamma_val=args.gamma_gw,
-                                           name='gw')
-        models = [(m + cs)(psr) for psr,m in  zip(final_psrs,psr_models)]
-    else:
-        models = [m(psr) for psr,m in  zip(final_psrs,psr_models)]
-    # gw_models = [(m + gw)(psr) for psr,m in  zip(final_psrs,psr_models)]
-
+    models = [m(psr) for psr,m in  zip(final_psrs,psr_models)]
     pta_crn = signal_base.PTA(models)
-    # pta_gw = signal_base.PTA(gw_models)
-
-    # # delta_common=0.,
-    # ptas = {0:pta_crn,
-    #         1:pta_gw}
-
     pta_crn.set_default_params(noise)
-
 
     # with open(args.pta_pkl,'wb') as fout:
         # cloudpickle.dump(pta_crn,fout)
