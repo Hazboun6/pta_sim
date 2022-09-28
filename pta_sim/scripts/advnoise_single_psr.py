@@ -224,8 +224,7 @@ else:
                        'Tspan':args.tspan,
                        'gw_components':30,
                        'fact_like_logmin':-14.2,
-                       'fact_like_logmax':-1.2,
-                       'extra_sigs':xsigs})
+                       'fact_like_logmax':-1.2,})
     if args.gwb_on:
         kwargs.update({'factorized_like':True,
                       'Tspan':args.tspan,
