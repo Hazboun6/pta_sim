@@ -46,7 +46,7 @@ else:
     with open(args.noisepath, 'r') as fin:
         noise =json.load(fin)
 
-    adv_noise_psr_list = [`'B1855+09',
+    adv_noise_psr_list = ['B1855+09',
                           'B1937+21',
                           'J0030+0451',
                           'J0613-0200',
@@ -350,7 +350,7 @@ if args.initsamp is None:
 else:
     with open(args.initsamp, 'r') as fin:
         init = json.load(fin)
-    x0 = np.array([init[k] for k in pta_crn.param_names])
+    x0 = np.array([init[k] if k in init.keys() else for k in pta_crn.param_names])
 
 if args.ladderpath is not None:
     ladder = np.loadtxt(args.ladderpath)
