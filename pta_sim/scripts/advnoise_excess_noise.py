@@ -248,13 +248,13 @@ else:
         # cloudpickle.dump(pta_crn,fout)
 
 groups = sampler.get_parameter_groups(pta_crn)
-groups.extend(sampler.get_psr_groups(pta_crn))
+# groups.extend(sampler.get_psr_groups(pta_crn))
 Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
                                 empirical_distr = args.emp_distr, groups=groups)
 
-Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 70)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 70)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_prior, 10)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 120)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 120)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 60)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 10)
@@ -329,13 +329,13 @@ def draw_from_gw_gamma_prior(self, x, iter, beta):
 
     return q, float(lqxy)
 
-if args.sw_fit_path is None:
-    sampler.JumpProposal.draw_from_sw_prior = draw_from_sw_prior
-    sampler.JumpProposal.draw_from_sw4p39_prior = draw_from_sw4p39_prior
+# if args.sw_fit_path is None:
+    # sampler.JumpProposal.draw_from_sw_prior = draw_from_sw_prior
+    # sampler.JumpProposal.draw_from_sw4p39_prior = draw_from_sw4p39_prior
 # sampler.JumpProposal.draw_from_gw_gamma_prior = draw_from_gw_gamma_prior
 
-    Sampler.addProposalToCycle(Sampler.jp.draw_from_sw_prior, 25)
-    Sampler.addProposalToCycle(Sampler.jp.draw_from_sw4p39_prior, 25)
+    # Sampler.addProposalToCycle(Sampler.jp.draw_from_sw_prior, 25)
+    # Sampler.addProposalToCycle(Sampler.jp.draw_from_sw4p39_prior, 25)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_gamma_prior, 25)
 
 
