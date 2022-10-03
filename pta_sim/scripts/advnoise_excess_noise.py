@@ -106,7 +106,7 @@ else:
     # s += blocks.red_noise_block(prior='log-uniform', Tspan=args.tspan, components=30)
     log10_A = parameter.Constant()
     gamma = parameter.Constant()
-    plaw_pr = gp_priors.powerlaw(log10_A=log10_A,gamma=gamma)
+    plaw_pr = gpp.powerlaw(log10_A=log10_A,gamma=gamma)
     plaw = gp_signals.FourierBasisGP(plaw_pr,components=30,Tspan=args.tspan)
     rn  = gp_signals.FourierBasisGP(fs,components=30,Tspan=args.tspan, name='excess_noise')
 
@@ -115,7 +115,7 @@ else:
     if args.gwb_on:
         gw_log10_A = parameter.Constant('gw_log10_A')
         gw_gamma = parameter.Constant(4.3333)('gw_gamma')
-        gw_pr = gp_priors.powerlaw(log10_A=gw_log10_A,gamma=gw_gamma)
+        gw_pr = gpp.powerlaw(log10_A=gw_log10_A,gamma=gw_gamma)
         gwb = gp_signals.FourierBasisGP(gw_pr,components=args.n_gwbfreqs,Tspan=args.tspan)
         m += gwb
 
