@@ -67,7 +67,7 @@ else:
     adv_noise_psr_list = [np.array(adv_noise_psr_list)[args.process]]
     psrname = adv_noise_psr_list[0]
 
-    def dm_exponential_dip(tmin, tmax, idx=2, sign='negative', name='dmexp'):
+    def dm_exponential_dip(tmin, tmax, idx=2, sign='negative', name='dmexp', vary=True):
         """
         Returns chromatic exponential dip (i.e. TOA advance):
 
@@ -79,22 +79,31 @@ else:
         :param sign:
             set sign of dip: 'positive', 'negative', or 'vary'
         :param name: Name of signal
+        :param vary: Whether to vary the parameters or use constant values.
 
         :return dmexp:
             chromatic exponential dip waveform.
         """
-        t0_dmexp = parameter.Uniform(tmin,tmax)
-        log10_Amp_dmexp = parameter.Uniform(-6.1, -5.6)
-        log10_tau_dmexp = parameter.Uniform(1.2, 2.0)
-        if sign == 'vary':
+        if vary:
+            t0_dmexp = parameter.Uniform(tmin, tmax)
+            log10_Amp_dmexp = parameter.Uniform(-10, -2)
+            log10_tau_dmexp = parameter.Uniform(0, 2.5)
+        else:
+            t0_dmexp = parameter.Constant()
+            log10_Amp_dmexp = parameter.Constant()
+            log10_tau_dmexp = parameter.Constant()
+
+        if sign == 'vary' and vary:
             sign_param = parameter.Uniform(-1.0, 1.0)
+        elif sign == 'vary' and not vary:
+            sign_param = parameter.Constant()
         elif sign == 'positive':
             sign_param = 1.0
         else:
             sign_param = -1.0
-        wf = chrom.chrom_exp_decay(log10_Amp=log10_Amp_dmexp,
-                                   t0=t0_dmexp, log10_tau=log10_tau_dmexp,
-                                   sign_param=sign_param, idx=idx)
+        wf = chrom_exp_decay(log10_Amp=log10_Amp_dmexp,
+                             t0=t0_dmexp, log10_tau=log10_tau_dmexp,
+                             sign_param=sign_param, idx=idx)
         dmexp = deterministic_signals.Deterministic(wf, name=name)
 
         return dmexp
@@ -200,8 +209,8 @@ else:
                        'vary_dm':False,
                        'vary_chrom':False})
     elif psrname == 'J1713+0747':
-        index = parameter.Constant(0.9, 1.7)
-        ppta_dip = dm_exponential_dip(57506, 57514, idx=index, sign='negative', name='exp2')
+        index = parameter.Constant()
+        ppta_dip = dm_exponential_dip(57506, 57514, idx=index, sign='negative', name='exp2', vary=False)
 
         kwargs.update({'dm_dt':3,
                        'dm_df':None,
