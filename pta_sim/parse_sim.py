@@ -42,6 +42,8 @@ parser.add_argument('--dm_sin_psrs',dest='dm_sin_psrs', action='append',
                          'Append with a flag for each pulsar.')
 parser.add_argument('--efac', dest='efac', action='store_true',
                     default=False, help='Search EFAC in an analysis.')
+parser.add_argument('--excessNoise', dest='excessNoise', action='store_true',
+                    default=False, help='Wether to do an excess noise analysis.')
 parser.add_argument('--dropout', dest='dropout', action='store_true',
                     default=False, help='Use a dropout analysis.')
 parser.add_argument('--dp_thresh', dest='dp_thresh', action='store',
