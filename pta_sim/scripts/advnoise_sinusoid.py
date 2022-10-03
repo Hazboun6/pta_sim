@@ -142,7 +142,7 @@ else:
         return 10 ** A * np.sin(2 * np.pi * (10 ** f) * (toas - dataset_tmin) + phase)
 
     def sine_signal(A, f, phase, name = ""):
-        return Deterministic(sine_wave(A = A, f = f, phase = phase), name = name)
+        return deterministic_signals.Deterministic(sine_wave(A = A, f = f, phase = phase), name = name)
 
     day_seconds = 86400
     sin = sine_signal(A = parameter.Uniform(-9, -4)('common_sin_A'), f = parameter.Uniform(-9, -7)('common_sin_f'), phase = parameter.Uniform(0, 2 * np.pi)('common_sin_phase'))
