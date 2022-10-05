@@ -76,12 +76,12 @@ if args.gwb_on:
                   'gw_components':args.n_gwbfreqs,
                   'fact_like_gamma':args.gamma_gw,})
 
-pta = model_singlepsr_noise(new_psr, **kwargs)
+pta = model_singlepsr_noise(psr, **kwargs)
 pta.set_default_params(noise)
 
 groups = sampler.get_parameter_groups(pta)
 groups.extend(sampler.get_psr_groups(pta))
-Sampler = sampler.setup_sampler(pta, outdir=args.outdir, resume=True,
+Sampler = sampler.setup_sampler(pta, outdir=args.outdir+f'{psr.name}/', resume=True,
                                 empirical_distr = args.emp_distr, groups=groups)
 
 Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 120)
