@@ -59,7 +59,8 @@ sin = sine_signal(A = parameter.Uniform(-9, -4)('common_sin_A'), f = parameter.U
 kwargs={'white_vary':args.vary_wn,
         'extra_sigs':sin,
         'red_var': True,
-        'tm_marg':True}
+        'tm_marg':True,
+        'tnequad':True}
 
 if args.gfl:
     kwargs.update({'red_var':False,
