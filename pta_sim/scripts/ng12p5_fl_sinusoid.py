@@ -88,7 +88,7 @@ Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 120)
 
 try:
     achrom_freqs = get_freqs(pta, signal_id='gw')
-    np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
+    np.savetxt(args.outdir + f'{psr.name}/achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
 except:
     pass
 
