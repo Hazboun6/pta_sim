@@ -108,7 +108,8 @@ else:
     final_psrs = []
     psr_models = []
     ### Add a stand alone SW deter model
-    bins = np.linspace(53215, 57934, 26)
+    # bins = np.linspace(53215, 57934, 26)
+    bins = np.arange(53215, 59200, 180)
     bins *= 24*3600 #Convert to secs
     # n_earth = chrom.solar_wind.ACE_SWEPAM_Parameter(size=bins.size-1)('n_earth')
     if args.sw_fit_path is None:
