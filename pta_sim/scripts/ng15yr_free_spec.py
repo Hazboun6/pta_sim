@@ -93,18 +93,23 @@ else:
     model_plaw = tm + ef + ec + plaw_rn + gw
     model_fs = tm + ef + ec + fs_rn + gw
 
+    with open(args.noisepath,'r') as fin:
+        noise = json.load(fin)
+
+    with open(args.model_kwargs_path, 'r') as fin:
+        fs_noise = json.load(fin)
+
     models = []
     for psr in psrs:
         if psr.name in args.free_spec_psrs:
             models.append(model_fs(psr))
+            keys = [ky for ky in fs_noise.keys() if (psr.name in ky and 'rho' not in ky)]
+            for ky in keys:
+                noise.update({ky:fs_noise[ky]})
         else:
             models.append(model_plaw(psr))
 
     pta = signal_base.PTA(models)
-
-    with open(args.noisepath,'r') as fin:
-        noise = json.load(fin)
-
     pta.set_default_params(noise)
 
     if args.mk_ptapkl:
@@ -172,7 +177,7 @@ try:
 except:
     pass
 
-x0 = np.hstack(p.sample() for p in pta.params)
+x0 = np.hstack([p.sample() for p in pta.params])
 Sampler.sample(x0, args.niter, SCAMweight=200, AMweight=100,
                DEweight=200, burn=50000, writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain)
