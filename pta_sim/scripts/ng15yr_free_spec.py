@@ -128,9 +128,10 @@ def draw_from_gw_gamma_prior(self, x, iter, beta):
     # draw parameter from signal model
     signal_name = [par for par in self.pnames
                    if ('gw' in par and 'gamma' in par)][0]
-    idx = list(self.pnames).index(signal_name)
+    param_names = [par.name for par in self.params]
+    idx = list(param_names).index(signal_name)
     param = self.params[idx]
-
+    
     q[self.pmap[str(param)]] = np.random.uniform(param.prior._defaults['pmin'], param.prior._defaults['pmax'])
 
     # forward-backward jump probability
