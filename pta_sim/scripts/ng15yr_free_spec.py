@@ -106,6 +106,8 @@ else:
             keys = [ky for ky in fs_noise.keys() if (psr.name in ky and 'rho' not in ky)]
             for ky in keys:
                 noise.update({ky:fs_noise[ky]})
+            print(f'Using free spec red noise for {psr.name}.')
+            print('Updating:',keys)
         else:
             models.append(model_plaw(psr))
 
