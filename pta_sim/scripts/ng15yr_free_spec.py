@@ -150,7 +150,7 @@ def draw_from_rho_prior(self, x, iter, beta):
 
         # draw parameter from signal model
         parnames = [par.name for par in self.params]
-        pname = [pnm for pnm in parnames if rho in pnm][0]
+        pname = [pnm for pnm in parnames if 'rho' in pnm][0]
 
         idx = parnames.index(pname)
         param = self.params[idx]
@@ -179,7 +179,7 @@ try:
 except:
     pass
 
-x0 = np.hstack(p.sample() for p in pta.params)
+x0 = np.hstack([p.sample() for p in pta.params])
 print(x0)
 Sampler.sample(x0, args.niter, SCAMweight=200, AMweight=100,
                DEweight=200, burn=50000, writeHotChains=args.writeHotChains,
