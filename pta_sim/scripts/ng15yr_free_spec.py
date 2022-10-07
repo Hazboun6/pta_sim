@@ -97,7 +97,7 @@ else:
     for psr in psrs:
         if psr.name in args.free_spec_psrs:
             models.append(model_fs(psr))
-        if psr.name in args.free_spec_psrs:
+        else:
             models.append(model_plaw(psr))
 
     pta = signal_base.PTA(models)
