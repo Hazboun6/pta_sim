@@ -60,9 +60,9 @@ if 'gw_crn_gamma' in pars:
     pars[pidx] = 'gw_gamma'
 
 if args.orf == "multiple":
-    xi, rho, sig, A, A_err = pta_os.compute_noise_marginalized_multiple_corr_os(chain)
+    xi, rho, sig, A, A_err = pta_os.compute_noise_marginalized_multiple_corr_os(chain,param_names=pars)
 else:
-    xi, rho, sig, A, A_err = pta_os.compute_noise_marginalized_os(chain)
+    xi, rho, sig, A, A_err = pta_os.compute_noise_marginalized_os(chain,param_names=pars)
 
 np.save(args.outdir+f'os_xi_{args.orf}',xi)
 np.save(args.outdir+f'os_rho{args.orf}',rho)
