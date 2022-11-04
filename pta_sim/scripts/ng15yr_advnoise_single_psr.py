@@ -125,16 +125,16 @@ else:
     deter_sw = chrom.solar_wind.solar_wind(n_earth=n_earth, n_earth_bins=bins)
     mean_sw = deterministic_signals.Deterministic(deter_sw, name='sw_r2')
 
-
-    sw_power = parameter.Constant(4.39)('sw_power_4p39')
-    deter_sw_p = chrom.solar_wind.solar_wind_r_to_p(n_earth=np_earth,
-                                                    power=sw_power,
-                                                    log10_ne=True)
-    mean_sw += deterministic_signals.Deterministic(deter_sw_p,
-                                                   name='sw_4p39')
+    if args.sw_r4p4:
+        sw_power = parameter.Constant(4.39)('sw_power_4p39')
+        deter_sw_p = chrom.solar_wind.solar_wind_r_to_p(n_earth=np_earth,
+                                                        power=sw_power,
+                                                        log10_ne=True)
+        mean_sw += deterministic_signals.Deterministic(deter_sw_p,
+                                                       name='sw_4p39')
 
     pnames = [p.name for p in pkl_psrs]
-    pidx = pnames(args.psr)
+    pidx = pnames.index(args.psr)
     new_psr = pkl_psrs[pidx]
     ### Get kwargs dictionary
     kwarg_path = args.model_kwargs_path
