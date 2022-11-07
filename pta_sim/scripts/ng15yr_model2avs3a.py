@@ -110,7 +110,7 @@ else:
                       gamma_common=args.gamma_gw, delta_common=0.,
                       upper_limit=False,
                       bayesephem=args.bayes_ephem, be_type='setIII_1980',
-                      dm_var=False,names=['gw_crn'])
+                      dm_var=False,orf_names='gw_crn')
 
     pta_gw = models.model_general(psrs, tm_var=False,
                       Tspan=None, common_psd=args.psd, red_psd='powerlaw', orf='hd',
@@ -119,7 +119,7 @@ else:
                       gamma_common=args.gamma_gw, delta_common=0.,
                       upper_limit=False,
                       bayesephem=args.bayes_ephem, be_type='setIII_1980',
-                      dm_var=False,names=['gw_hd'])
+                      dm_var=False,orf_names='gw_hd')
 
     # delta_common=0.,
     ptas = {0:pta_crn,
