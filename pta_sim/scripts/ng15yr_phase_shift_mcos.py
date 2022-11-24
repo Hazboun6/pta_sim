@@ -21,8 +21,11 @@ from enterprise import constants as const
 
 from enterprise_extensions.frequentist.optimal_statistic import OptimalStatistic as OS
 
-import pta_parse
-args = pta_parse.arguments()
+import pta_sim
+import pta_sim.parse_sim as parse_sim
+from pta_sim.bayes import chain_length_bool, save_core, get_freqs, filter_psr_path
+args = parse_sim.arguments()
+
 
 with open(args.pickle,'rb')as fin:
     psrs = pickle.load(fin)
