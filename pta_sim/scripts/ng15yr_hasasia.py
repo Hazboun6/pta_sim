@@ -125,7 +125,11 @@ else:
     thin = args.thin
 corr = make_corr(ePsr,noise=noise)[::thin,::thin]
 if args.A_gwb != 0.0:
-    gwb = hsen.red_noise_powerlaw(A=args.A_gwb, gamma=13/3., freqs=freqs)
+    if args.gamma_gw is None:
+        gamma_gw = 13/3.
+    else:
+        gamma_gw = args.gamma_gw
+    gwb = hsen.red_noise_powerlaw(A=args.A_gwb, gamma=gamma_gw, freqs=freqs)
     corr += hsen.corr_from_psd(freqs=freqs, psd=gwb,
                                toas=ePsr.toas[::thin])
 if args.rednoise:
