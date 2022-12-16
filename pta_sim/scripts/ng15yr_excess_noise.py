@@ -55,8 +55,11 @@ rn  = gp_signals.FourierBasisGP(fs,components=30,Tspan=Tspan, name='excess_noise
 
 m = tm + wn + plaw + rn
 if args.gwb_on:
-    gw_log10_A = parameter.Constant('gw_log10_A')
-    gw_gamma = parameter.Constant(4.3333)('gw_gamma')
+    if args.A_gwb == 0.0:
+        gw_log10_A = parameter.Constant('gw_log10_A')
+    else:
+        gw_log10_A = parameter.Constant(args.A_gwb)('gw_log10_A')
+    gw_gamma = parameter.Constant(args.gamma_gw)('gw_gamma')
     gw_pr = gp_priors.powerlaw(log10_A=gw_log10_A,gamma=gw_gamma)
     gwb = gp_signals.FourierBasisGP(gw_pr,components=args.n_gwbfreqs,Tspan=Tspan)
     m += gwb
