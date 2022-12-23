@@ -58,7 +58,8 @@ if args.gwb_on:
     if args.A_gwb == 0.0:
         gw_log10_A = parameter.Constant('gw_log10_A')
     else:
-        gw_log10_A = parameter.Constant(args.A_gwb)('gw_log10_A')
+        log10_Agwb = np.log10(args.A_gwb)
+        gw_log10_A = parameter.Constant(log10_Agwb)('gw_log10_A')
     gw_gamma = parameter.Constant(args.gamma_gw)('gw_gamma')
     gw_pr = gp_priors.powerlaw(log10_A=gw_log10_A,gamma=gw_gamma)
     gwb = gp_signals.FourierBasisGP(gw_pr,components=args.n_gwbfreqs,Tspan=Tspan)
