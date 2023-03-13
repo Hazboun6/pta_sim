@@ -147,12 +147,6 @@ else:
     mean_sw += deterministic_signals.Deterministic(deter_sw_p,
                                                    name='sw_4p39')
     
-    ## Remember that J1713's pickle is something you made yourself ##
-    filepath = '/gscratch/gwastro/hazboun/nanograv/noise/noise_model_selection/no_dmx_pickles/'
-    filepath += '{0}_ng12p5yr_v3_nodmx_ePSR.pkl'.format(psrname)
-    with open(filepath,'rb') as fin:
-        new_psr=pickle.load(fin)
-
     #####
     for psr in pkl_psrs:
         # Filter out other Adv Noise Pulsars
