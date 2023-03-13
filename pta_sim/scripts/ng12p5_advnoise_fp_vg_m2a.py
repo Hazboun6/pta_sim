@@ -136,6 +136,13 @@ else:
         sw_vals = json.load(fin)
     noise.update(sw_vals)
 
+    cs = blocks.common_red_noise_block(psd='powerlaw',
+                                        prior='log-uniform',
+                                        Tspan=Tspan_PTA,
+                                        components=args.n_gwbfreqs,
+                                        gamma_val=args.gamma_gw,
+                                        name='gw')
+
     deter_sw = chrom.solar_wind.solar_wind(n_earth=n_earth, n_earth_bins=bins)
     mean_sw = deterministic_signals.Deterministic(deter_sw, name='sw_r2')
 
