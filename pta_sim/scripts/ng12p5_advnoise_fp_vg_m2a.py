@@ -153,12 +153,6 @@ else:
     with open(filepath,'rb') as fin:
         new_psr=pickle.load(fin)
 
-    ### Get kwargs dictionary
-    kwarg_path = args.model_kwargs_path
-    kwarg_path += f'{psrname}_model_kwargs.json'
-    with open(kwarg_path, 'r') as fin:
-        kwargs = json.load(fin)
-
     #####
     for psr in pkl_psrs:
         # Filter out other Adv Noise Pulsars
