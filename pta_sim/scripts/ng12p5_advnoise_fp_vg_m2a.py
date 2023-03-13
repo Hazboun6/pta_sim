@@ -259,7 +259,7 @@ else:
             final_psrs.append(new_psr)
         # Treat all other DMX pulsars in the standard way
         elif not args.adv_noise_psrs_only:
-            s2 = s + blocks.white_noise_block(vary=False, inc_ecorr=True, select='backend')
+            s2 = s + blocks.white_noise_block(vary=False,tnequad=True, inc_ecorr=True, select='backend')
             psr_models.append(s2)#(psr))
             final_psrs.append(psr)
 
