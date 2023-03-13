@@ -400,6 +400,8 @@ if args.ladderpath is not None:
 else:
     ladder = None
 
+print('Signal Names', Sampler.jp.snames)
+
 Sampler.sample(x0, args.niter, ladder=ladder, SCAMweight=200, AMweight=100,
                DEweight=200, burn=3000, writeHotChains=args.writeHotChains,
                hotChain=args.hot_chain, Tskip=100, Tmax=args.tempmax)
