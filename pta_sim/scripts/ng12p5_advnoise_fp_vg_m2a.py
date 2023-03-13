@@ -168,7 +168,7 @@ else:
     #             kwargs['is_wideband'] = kwargs['wideband']
     #             kwargs.__delitem__('wideband')
             ## Build special DM GP models for B1937
-            if psrname == 'B1937+21':
+            if psr.name == 'B1937+21':
                 # Periodic GP kernel for DM
                 log10_sigma = parameter.Constant()
                 log10_ell = parameter.Constant()
@@ -207,7 +207,7 @@ else:
                             'tm_marg':True,
                             'vary_dm':False,
                             'vary_chrom':False})
-            elif psrname == 'J1713+0747':
+            elif psr.name == 'J1713+0747':
                 index = parameter.Constant()
                 ppta_dip = dm_exponential_dip(57506, 57514, idx=index, sign='negative', name='exp2', vary=False)
 
