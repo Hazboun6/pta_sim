@@ -93,7 +93,7 @@ else:
             sign_param = 1.0
         else:
             sign_param = -1.0
-        wf = chrom_exp_decay(log10_Amp=log10_Amp_dmexp,
+        wf = chrom.chrom_exp_decay(log10_Amp=log10_Amp_dmexp,
                              t0=t0_dmexp, log10_tau=log10_tau_dmexp,
                              sign_param=sign_param, idx=idx)
         dmexp = deterministic_signals.Deterministic(wf, name=name)
