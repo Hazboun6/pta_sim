@@ -105,6 +105,8 @@ else:
     #
     # # intrinsic red noise
     # s += blocks.red_noise_block(prior='log-uniform', Tspan=args.tspan, components=30)
+
+    Tspan_PTA = args.tspan
     log10_rho = parameter.Uniform(-10,-4,size=30)
     fs = gpp.free_spectrum(log10_rho=log10_rho)
     log10_A = parameter.Constant()
@@ -138,7 +140,7 @@ else:
 
     cs = blocks.common_red_noise_block(psd='powerlaw',
                                         prior='log-uniform',
-                                        Tspan=Tspan_PTA,
+                                        Tspan=args.tspan,
                                         components=args.n_gwbfreqs,
                                         gamma_val=args.gamma_gw,
                                         name='gw')
