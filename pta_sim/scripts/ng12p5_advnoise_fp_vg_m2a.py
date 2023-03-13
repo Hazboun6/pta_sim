@@ -101,7 +101,8 @@ else:
         return dmexp
 
     # timing model
-    s = gp_signals.MarginalizingTimingModel()
+    s = gp_signals.TimingModel()
+    # s = gp_signals.MarginalizingTimingModel()
     
     # intrinsic red noise
     s += blocks.red_noise_block(prior='log-uniform', Tspan=args.tspan, components=30)
@@ -213,7 +214,7 @@ else:
                             'psr_model':True,
                             'chrom_df':None,
                             'dm_df':None,
-                            'tm_marg':True,
+                            'tm_marg':False,
                             'vary_dm':False,
                             'vary_chrom':False})
             elif psr.name == 'J1713+0747':
@@ -237,7 +238,7 @@ else:
                             'red_var': False,
                             'chrom_df':None,
                             'dm_df':None,
-                            'tm_marg':True,
+                            'tm_marg':False,
                             'vary_dm':False,
                             'vary_chrom':False})
             ## Treat all other Adv Noise pulsars the same
@@ -250,7 +251,7 @@ else:
                             'chrom_df':None,
                             'dm_df':None,
                             'red_var': False,
-                            'tm_marg':True,
+                            'tm_marg':False,
                             'vary_dm':False,
                             'vary_chrom':False})
             
