@@ -159,7 +159,7 @@ else:
     with open(kwarg_path, 'r') as fin:
         kwargs = json.load(fin)
 
-    %%%%%%%%%%%%%%%%%%%%%%%%
+    #####
     for psr in pkl_psrs:
         # Filter out other Adv Noise Pulsars
         if psr.name in adv_noise_psr_list:
