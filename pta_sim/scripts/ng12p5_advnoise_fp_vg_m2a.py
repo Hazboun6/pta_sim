@@ -100,11 +100,11 @@ else:
 
         return dmexp
 
-    # # timing model
-    # s = gp_signals.MarginalizingTimingModel()
-    #
-    # # intrinsic red noise
-    # s += blocks.red_noise_block(prior='log-uniform', Tspan=args.tspan, components=30)
+    # timing model
+    s = gp_signals.MarginalizingTimingModel()
+    
+    # intrinsic red noise
+    s += blocks.red_noise_block(prior='log-uniform', Tspan=args.tspan, components=30)
 
     Tspan_PTA = args.tspan
     log10_rho = parameter.Uniform(-10,-4,size=30)
@@ -115,7 +115,7 @@ else:
     plaw = gp_signals.FourierBasisGP(plaw_pr,components=30,Tspan=args.tspan)
     rn  = gp_signals.FourierBasisGP(fs,components=30,Tspan=args.tspan, name='excess_noise')
 
-    m = plaw + rn
+    m = s #plaw + rn
 
     if args.gwb_on:
         gw_log10_A = parameter.Constant('gw_log10_A')
