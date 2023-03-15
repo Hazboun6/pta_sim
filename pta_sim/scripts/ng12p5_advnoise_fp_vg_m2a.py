@@ -278,8 +278,9 @@ else:
 
     pta_crn.set_default_params(noise)
 
-    # with open(args.pta_pkl,'wb') as fout:
-        # cloudpickle.dump(pta_crn,fout)
+    if args.mk_ptapkl:
+        with open(args.pta_pkl,'wb') as fout:
+            cloudpickle.dump(pta_crn,fout)
 
 groups = sampler.get_parameter_groups(pta_crn)
 groups.extend(sampler.get_psr_groups(pta_crn))
