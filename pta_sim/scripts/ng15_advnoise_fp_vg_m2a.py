@@ -373,11 +373,44 @@ def draw_from_gw_gamma_prior(self, x, iter, beta):
 # if args.sw_fit_path is None:
     # sampler.JumpProposal.draw_from_sw_prior = draw_from_sw_prior
     # sampler.JumpProposal.draw_from_sw4p39_prior = draw_from_sw4p39_prior
-# sampler.JumpProposal.draw_from_gw_gamma_prior = draw_from_gw_gamma_prior
 
     # Sampler.addProposalToCycle(Sampler.jp.draw_from_sw_prior, 25)
     # Sampler.addProposalToCycle(Sampler.jp.draw_from_sw4p39_prior, 25)
-# Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_gamma_prior, 25)
+
+if args.psd == 'spectrum':
+    def draw_from_rho_prior(self, x, iter, beta):
+
+        q = x.copy()
+        lqxy = 0
+
+        # draw parameter from signal model
+        parnames = [par.name for par in self.params]
+        pname = [pnm for pnm in parnames if 'rho' in pnm][0]
+
+        idx = parnames.index(pname)
+        param = self.params[idx]
+
+        if param.size:
+            idx2 = np.random.randint(0, param.size)
+            q[self.pmap[str(param)]][idx2] = param.sample()[idx2]
+
+        # scalar parameter
+        else:
+            q[self.pmap[str(param)]] = param.sample()
+
+
+        # forward-backward jump probability
+        lqxy = (param.get_logpdf(x[self.pmap[str(param)]]) -
+                param.get_logpdf(q[self.pmap[str(param)]]))
+
+        return q, float(lqxy)
+
+    sampler.JumpProposal.draw_from_rho_prior = draw_from_rho_prior
+    Sampler.addProposalToCycle(Sampler.jp.draw_from_rho_prior, 25)
+
+if args.psd =='powerlaw' and args.gamma_gw is None:
+    sampler.JumpProposal.draw_from_gw_gamma_prior = draw_from_gw_gamma_prior
+    Sampler.addProposalToCycle(Sampler.jp.draw_from_gw_gamma_prior, 25)
 
 
 try:
