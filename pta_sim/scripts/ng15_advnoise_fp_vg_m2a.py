@@ -153,7 +153,7 @@ else:
         mean_sw += deterministic_signals.Deterministic(deter_sw_p,
                                                        name='sw_4p39')
 
-    cs = blocks.common_red_noise_block(psd='powerlaw',
+    cs = blocks.common_red_noise_block(psd=args.psd,
                                         prior='log-uniform',
                                         Tspan=args.tspan,
                                         components=args.n_gwbfreqs,

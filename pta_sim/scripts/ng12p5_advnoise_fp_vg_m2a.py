@@ -139,7 +139,7 @@ else:
         sw_vals = json.load(fin)
     noise.update(sw_vals)
 
-    cs = blocks.common_red_noise_block(psd='powerlaw',
+    cs = blocks.common_red_noise_block(psd=args.psd,
                                         prior='log-uniform',
                                         Tspan=args.tspan,
                                         components=args.n_gwbfreqs,
