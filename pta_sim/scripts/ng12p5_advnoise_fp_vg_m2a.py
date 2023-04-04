@@ -118,13 +118,6 @@ else:
 
     m = s #plaw + rn
 
-    if args.gwb_on:
-        gw_log10_A = parameter.Constant('gw_log10_A')
-        gw_gamma = parameter.Constant(4.3333)('gw_gamma')
-        gw_pr = gpp.powerlaw(log10_A=gw_log10_A,gamma=gw_gamma)
-        gwb = gp_signals.FourierBasisGP(gw_pr,components=args.n_gwbfreqs,Tspan=args.tspan)
-        m += gwb
-
     # adding white-noise, separating out Adv Noise Psrs, and acting on psr objects
     final_psrs = []
     psr_models = []
@@ -141,6 +134,14 @@ else:
 
     cs = blocks.common_red_noise_block(psd=args.psd,
                                         prior='log-uniform',
+                                        Tspan=args.tspan,
+                                        components=args.n_gwbfreqs,
+                                        gamma_val=args.gamma_gw,
+                                        name='gw')
+    
+    gw = blocks.common_red_noise_block(psd=args.psd,
+                                        prior='log-uniform',
+                                        orf='hd',
                                         Tspan=args.tspan,
                                         components=args.n_gwbfreqs,
                                         gamma_val=args.gamma_gw,
@@ -269,22 +270,25 @@ else:
     crn_models = [(m + cs)(psr) for psr,m in  zip(final_psrs,psr_models)]
     # gw_models = [(m + gw)(psr) for psr,m in  zip(final_psrs,psr_models)]
 
-    pta_crn = signal_base.PTA(crn_models)
-    # pta_gw = signal_base.PTA(gw_models)
+    if args.gwb_on:
+        pta = signal_base.PTA(gw_models)
+    else:
+        pta = signal_base.PTA(crn_models)
+    # 
 
     # # delta_common=0.,
     # ptas = {0:pta_crn,
     #         1:pta_gw}
 
-    pta_crn.set_default_params(noise)
+    pta.set_default_params(noise)
 
     if args.mk_ptapkl:
         with open(args.pta_pkl,'wb') as fout:
-            cloudpickle.dump(pta_crn,fout)
+            cloudpickle.dump(pta,fout)
 
-groups = sampler.get_parameter_groups(pta_crn)
-groups.extend(sampler.get_psr_groups(pta_crn))
-Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
+groups = sampler.get_parameter_groups(pta)
+groups.extend(sampler.get_psr_groups(pta))
+Sampler = sampler.setup_sampler(pta, outdir=args.outdir, resume=True,
                             empirical_distr = args.emp_distr, groups=groups)
     
 
