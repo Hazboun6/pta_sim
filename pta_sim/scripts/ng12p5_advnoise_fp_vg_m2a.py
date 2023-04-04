@@ -267,12 +267,11 @@ else:
 
         print(f'\r{psr.name} Complete.',end='',flush=True)
 
-    crn_models = [(m + cs)(psr) for psr,m in  zip(final_psrs,psr_models)]
-    # gw_models = [(m + gw)(psr) for psr,m in  zip(final_psrs,psr_models)]
-
     if args.gwb_on:
         pta = signal_base.PTA(gw_models)
+        gw_models = [(m + gw)(psr) for psr,m in  zip(final_psrs,psr_models)]
     else:
+        crn_models = [(m + cs)(psr) for psr,m in  zip(final_psrs,psr_models)]
         pta = signal_base.PTA(crn_models)
     # 
 
