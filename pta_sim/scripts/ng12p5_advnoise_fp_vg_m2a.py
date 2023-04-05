@@ -32,7 +32,7 @@ with open(args.noisepath, 'r') as fin:
 
 if os.path.exists(args.pta_pkl):
     with open(args.pta_pkl, "rb") as f:
-        pta_crn = cloudpickle.load(f)
+        pta = cloudpickle.load(f)
 else:
     with open('{0}'.format(args.pickle), "rb") as f:
         pkl_psrs = pickle.load(f)
