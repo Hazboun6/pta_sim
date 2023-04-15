@@ -118,13 +118,6 @@ else:
 
     m = s #plaw + rn
 
-    if args.gwb_on:
-        gw_log10_A = parameter.Constant('gw_log10_A')
-        gw_gamma = parameter.Constant(4.3333)('gw_gamma')
-        gw_pr = gpp.powerlaw(log10_A=gw_log10_A,gamma=gw_gamma)
-        gwb = gp_signals.FourierBasisGP(gw_pr,components=args.n_gwbfreqs,Tspan=args.tspan)
-        m += gwb
-
     # adding white-noise, separating out Adv Noise Psrs, and acting on psr objects
     final_psrs = []
     psr_models = []
@@ -153,9 +146,14 @@ else:
         mean_sw += deterministic_signals.Deterministic(deter_sw_p,
                                                        name='sw_4p39')
 
+    if args.gwb_on:
+        orf = 'hd'
+    else:
+        orf = None
     cs = blocks.common_red_noise_block(psd=args.psd,
                                         prior='log-uniform',
                                         Tspan=args.tspan,
+                                        orf=orf,
                                         components=args.n_gwbfreqs,
                                         gamma_val=args.gamma_gw,
                                         name='gw')
