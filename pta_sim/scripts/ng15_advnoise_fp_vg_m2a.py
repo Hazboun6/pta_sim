@@ -211,6 +211,7 @@ else:
                 kwargs.update({'dm_sw_deter':False,
                             'white_vary':args.vary_wn,
                             'red_var': False,
+                            'tm_svd'=True,
                             'extra_sigs':m + dmgp + dmgp2 + chromgp + mean_sw,
                             'psr_model':True,
                             'chrom_df':None,
@@ -240,6 +241,7 @@ else:
                             'chrom_df':None,
                             'dm_df':None,
                             'tm_marg':False,
+                            'tm_svd'=True,
                             'vary_dm':False,
                             'vary_chrom':False})
             ## Treat all other Adv Noise pulsars the same
@@ -254,6 +256,7 @@ else:
                             'red_var': False,
                             'tm_marg':False,
                             'vary_dm':False,
+                            'tm_svd'=True,
                             'vary_chrom':False})
             
             ### Load the appropriate single_pulsar_model
