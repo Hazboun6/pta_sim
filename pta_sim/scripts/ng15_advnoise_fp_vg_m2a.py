@@ -211,12 +211,12 @@ else:
                 kwargs.update({'dm_sw_deter':False,
                             'white_vary':args.vary_wn,
                             'red_var': False,
-                            'tm_svd'=True,
                             'extra_sigs':m + dmgp + dmgp2 + chromgp + mean_sw,
                             'psr_model':True,
                             'chrom_df':None,
                             'dm_df':None,
                             'tm_marg':False,
+                            'tm_svd':True,
                             'vary_dm':False,
                             'vary_chrom':False})
             elif psr.name == 'J1713+0747':
@@ -241,14 +241,14 @@ else:
                             'chrom_df':None,
                             'dm_df':None,
                             'tm_marg':False,
-                            'tm_svd'=True,
+                            'tm_svd':True,
                             'vary_dm':False,
                             'vary_chrom':False})
             ## Treat all other Adv Noise pulsars the same
             else:
                 ### Turn SW model off. Add in stand alone SW model and common process. Return model.
                 kwargs.update({'dm_sw_deter':False,
-                            'white_vary':args.vary_wn,
+                               'white_vary':args.vary_wn,
                             'extra_sigs':m + mean_sw,
                             'psr_model':True,
                             'chrom_df':None,
@@ -256,7 +256,7 @@ else:
                             'red_var': False,
                             'tm_marg':False,
                             'vary_dm':False,
-                            'tm_svd'=True,
+                            'tm_svd':True,
                             'vary_chrom':False})
             
             ### Load the appropriate single_pulsar_model

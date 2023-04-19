@@ -216,6 +216,7 @@ else:
                             'chrom_df':None,
                             'dm_df':None,
                             'tm_marg':False,
+                            'tm_svd':True,
                             'vary_dm':False,
                             'vary_chrom':False})
             elif psr.name == 'J1713+0747':
@@ -240,6 +241,7 @@ else:
                             'chrom_df':None,
                             'dm_df':None,
                             'tm_marg':False,
+                            'tm_svd':True,
                             'vary_dm':False,
                             'vary_chrom':False})
             ## Treat all other Adv Noise pulsars the same
@@ -253,6 +255,7 @@ else:
                             'dm_df':None,
                             'red_var': False,
                             'tm_marg':False,
+                            'tm_svd':True,
                             'vary_dm':False,
                             'vary_chrom':False})
             
