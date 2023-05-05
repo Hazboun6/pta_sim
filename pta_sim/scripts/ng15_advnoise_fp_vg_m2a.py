@@ -172,8 +172,7 @@ else:
             kwarg_path += f'{psr.name}_model_kwargs.json'
             with open(kwarg_path, 'r') as fin:
                 kwargs = json.load(fin)
-        else:
-            psr = psr_dmx
+
 
     #         if 'wideband' in kwargs.keys():
     #             kwargs['is_wideband'] = kwargs['wideband']
