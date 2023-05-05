@@ -154,6 +154,9 @@ parser.add_argument('--pardir_no_dmx', dest='pardir_no_dmx', action='store',
 parser.add_argument('--pickle', dest='pickle', action='store',
                     type=str, default='no_pickle',
                     help='Option to give a pickled enterprise list of pulsars')
+parser.add_argument('--pickle_nodmx', dest='pickle_nodmx', action='store',
+                    type=str, default=None,
+                    help='Option to give a pickled enterprise list of pulsars')
 parser.add_argument('--process', dest='process', action='store',
                     type=int, help='Condor process number')
 parser.add_argument('--psd', dest='psd', action='store',

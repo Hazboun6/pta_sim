@@ -37,6 +37,9 @@ else:
     with open('{0}'.format(args.pickle), "rb") as f:
         pkl_psrs = pickle.load(f)
 
+    with open('{0}'.format(args.pickle_nodmx), "rb") as f:
+        nodmx_psrs = pickle.load(f)
+
     adv_noise_psr_list = ['B1855+09', #32
                           'B1937+21', #42
                           'J0030+0451',# #1.4 **
@@ -159,21 +162,18 @@ else:
                                         name='gw')
     
     #####
-    for psr in pkl_psrs:
+    for psr,psr_nodmx in zip(pkl_psrs,nodmx_psrs):
         # Filter out other Adv Noise Pulsars
         if psr.name in adv_noise_psr_list:
-            ### Get the new pulsar object
-            ## Remember that J1713's pickle is something you made yourself ##
-            filepath = '/gscratch/gwastro/hazboun/nanograv/noise/noise_model_selection/no_dmx_pickles/'
-            filepath += '{0}_ng12p5yr_v3_nodmx_ePSR.pkl'.format(psr.name)
-            with open(filepath,'rb') as fin:
-                new_psr=pickle.load(fin)
+            new_psr = psr_nodmx
 
             ### Get kwargs dictionary
             kwarg_path = args.model_kwargs_path
             kwarg_path += f'{psr.name}_model_kwargs.json'
             with open(kwarg_path, 'r') as fin:
                 kwargs = json.load(fin)
+        else:
+            psr = psr_dmx
 
     #         if 'wideband' in kwargs.keys():
     #             kwargs['is_wideband'] = kwargs['wideband']
