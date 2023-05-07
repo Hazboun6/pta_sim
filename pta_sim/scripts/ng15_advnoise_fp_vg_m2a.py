@@ -104,7 +104,7 @@ else:
         return dmexp
 
     # timing model
-    s = gp_signals.TimingModel()
+    # s = gp_signals.TimingModel()
     # s = gp_signals.MarginalizingTimingModel()
     
     # intrinsic red noise
