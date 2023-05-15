@@ -104,11 +104,11 @@ else:
         return dmexp
 
     # timing model
-    # s = gp_signals.TimingModel()
+    tm = gp_signals.TimingModel()
     # s = gp_signals.MarginalizingTimingModel()
     
     # intrinsic red noise
-    s += blocks.red_noise_block(prior='log-uniform', Tspan=args.tspan, components=30)
+    s = blocks.red_noise_block(prior='log-uniform', Tspan=args.tspan, components=30)
 
     Tspan_PTA = args.tspan
     log10_rho = parameter.Uniform(-10,-4,size=30)
@@ -248,8 +248,8 @@ else:
                 ### Turn SW model off. Add in stand alone SW model and common process. Return model.
                 kwargs.update({'dm_sw_deter':False,
                                'white_vary':args.vary_wn,
-                            'extra_sigs':m + mean_sw,
-                            'psr_model':True,
+                               'extra_sigs':m + mean_sw,
+                               'psr_model':True,
                             'chrom_df':None,
                             'dm_df':None,
                             'red_var': False,
@@ -263,7 +263,10 @@ else:
             final_psrs.append(new_psr)
         # Treat all other DMX pulsars in the standard way
         elif not args.adv_noise_psrs_only:
-            s2 = s + blocks.white_noise_block(vary=False,tnequad=False, inc_ecorr=True, select='backend')
+            s2 = s + tm + blocks.white_noise_block(vary=False,
+                                                   tnequad=False,
+                                                   inc_ecorr=True,
+                                                   select='backend')
             psr_models.append(s2)#(psr))
             final_psrs.append(psr)
 
