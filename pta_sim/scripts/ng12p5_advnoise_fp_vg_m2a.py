@@ -101,22 +101,22 @@ else:
         return dmexp
 
     # timing model
-    s = gp_signals.TimingModel()
+    tm = gp_signals.TimingModel()
     # s = gp_signals.MarginalizingTimingModel()
     
     # intrinsic red noise
-    s += blocks.red_noise_block(prior='log-uniform', Tspan=args.tspan, components=30)
+    rn = blocks.red_noise_block(prior='log-uniform', Tspan=args.tspan, components=30)
 
     Tspan_PTA = args.tspan
-    log10_rho = parameter.Uniform(-10,-4,size=30)
-    fs = gpp.free_spectrum(log10_rho=log10_rho)
-    log10_A = parameter.Constant()
-    gamma = parameter.Constant()
-    plaw_pr = gpp.powerlaw(log10_A=log10_A,gamma=gamma)
-    plaw = gp_signals.FourierBasisGP(plaw_pr,components=30,Tspan=args.tspan)
-    rn  = gp_signals.FourierBasisGP(fs,components=30,Tspan=args.tspan, name='excess_noise')
+    # log10_rho = parameter.Uniform(-10,-4,size=30)
+    # fs = gpp.free_spectrum(log10_rho=log10_rho)
+    # log10_A = parameter.Constant()
+    # gamma = parameter.Constant()
+    # plaw_pr = gpp.powerlaw(log10_A=log10_A,gamma=gamma)
+    # plaw = gp_signals.FourierBasisGP(plaw_pr,components=30,Tspan=args.tspan)
+    # rn  = gp_signals.FourierBasisGP(fs,components=30,Tspan=args.tspan, name='excess_noise')
 
-    m = s #plaw + rn
+    # m = s #plaw + rn
 
     # adding white-noise, separating out Adv Noise Psrs, and acting on psr objects
     final_psrs = []
@@ -211,7 +211,7 @@ else:
                 kwargs.update({'dm_sw_deter':False,
                             'white_vary':args.vary_wn,
                             'red_var': False,
-                            'extra_sigs':m + dmgp + dmgp2 + chromgp + mean_sw,
+                            'extra_sigs':rn + dmgp + dmgp2 + chromgp + mean_sw,
                             'psr_model':True,
                             'chrom_df':None,
                             'dm_df':None,
@@ -235,7 +235,7 @@ else:
                             'dm_expdip_tmin':[54740],
                             'dm_expdip_tmax':[54780],
                             'dmdip_seqname':['dm_1'],
-                            'extra_sigs':m + mean_sw + ppta_dip,
+                            'extra_sigs':rn + mean_sw + ppta_dip,
                             'psr_model':True,
                             'red_var': False,
                             'chrom_df':None,
@@ -249,7 +249,7 @@ else:
                 ### Turn SW model off. Add in stand alone SW model and common process. Return model.
                 kwargs.update({'dm_sw_deter':False,
                             'white_vary':args.vary_wn,
-                            'extra_sigs':m + mean_sw,
+                            'extra_sigs':rn + mean_sw,
                             'psr_model':True,
                             'chrom_df':None,
                             'dm_df':None,
@@ -264,7 +264,7 @@ else:
             final_psrs.append(new_psr)
         # Treat all other DMX pulsars in the standard way
         elif not args.adv_noise_psrs_only:
-            s2 = s + blocks.white_noise_block(vary=False,tnequad=True, inc_ecorr=True, select='backend')
+            s2 = tm + rn + blocks.white_noise_block(vary=False,tnequad=True, inc_ecorr=True, select='backend')
             psr_models.append(s2)#(psr))
             final_psrs.append(psr)
 
