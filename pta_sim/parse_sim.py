@@ -9,6 +9,8 @@ timdir = '/home/jeffrey.hazboun/nanograv/dsa2000_simulations/data_jsh/partim/'
 pardir = '/home/jeffrey.hazboun/nanograv/dsa2000_simulations/data_jsh/partim/'
 pardir_no_dmx = '/home/jeffrey.hazboun/nanograv/dsa2000_simulations/dsa_partim_181214'
 
+parser.add_argument('--ACEprior', dest='ACEprior', action='store_true',
+                    default=False, help='Flag to turn on use of ACE SWEPAM prior.')
 parser.add_argument('--A_dm', dest='A_dm', action='store',
                     type=float, default=0.0,
                     help='Chromatic f^-2 Red Noise Amplitude to Simulate')
@@ -202,6 +204,8 @@ parser.add_argument('--spat_corr_info', dest='spat_corr_info',
                     help='Whether to write out the spatial correlation information')
 parser.add_argument('--start_time', dest='start_time', action='store',
                     type=float, default=None, help='Start MJD for slicing. In days.')
+parser.add_argument('--sw_bins', dest='sw_bins', action='store',
+                    type=str, default=None, help='SW bins size in MJD')
 parser.add_argument('--sw_fit_path', dest='sw_fit_path',
                     action='store', default=None, type=str,
                     help='Path to pickled list with best fit values and cov matrix.')

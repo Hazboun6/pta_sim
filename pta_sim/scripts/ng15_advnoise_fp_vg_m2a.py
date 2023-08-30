@@ -174,9 +174,6 @@ else:
                 kwargs = json.load(fin)
 
 
-    #         if 'wideband' in kwargs.keys():
-    #             kwargs['is_wideband'] = kwargs['wideband']
-    #             kwargs.__delitem__('wideband')
             ## Build special DM GP models for B1937
             if psr.name == 'B1937+21':
                 # Periodic GP kernel for DM

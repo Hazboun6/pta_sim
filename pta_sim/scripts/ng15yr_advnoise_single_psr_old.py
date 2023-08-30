@@ -33,16 +33,6 @@ logging.basicConfig(format="%(levelname)s: %(name)s: %(message)s", level=logging
 # else:
 #     pass
 
-"""
-List of things that we need to change in this code:
-* [x] Decide what to do about the 2 separate DM GPs in B1937
-* [x] Use the same input kwarg for every pulsar
-* [x] Change the code to edit the output kwarg using Jeremy's script
-* [x] Be careful to change what we need to in the various kwarg dictionaries in the script
-* [x] See if we can output the size of the basis to file when we output the other runtime stuff.
-* [ ] Deal with the SW model. Input the 12.5 year values. Use the appropriate number of 6 month values.
-"""
-
 with open(args.noisepath, 'r') as fin:
     noise =json.load(fin)
 
@@ -110,7 +100,7 @@ else:
         return dmexp
 
     # timing model
-    s = gp_signals.TimingModel()
+    s = gp_signals.MarginalizingTimingModel()
 
     # intrinsic red noise
     s += blocks.red_noise_block(prior='log-uniform', Tspan=args.tspan, components=30)
@@ -119,15 +109,11 @@ else:
     psr_models = []
     ### Add a stand alone SW deter model
     # bins = np.linspace(53215, 57934, 26)
-    bins = np.loadtxt(args.sw_bins)
+    bins = np.arange(53215, 59200, 180)
     bins *= 24*3600 #Convert to secs
-
+    # n_earth = chrom.solar_wind.ACE_SWEPAM_Parameter(size=bins.size-1)('n_earth')
     if args.sw_fit_path is None:
-        if args.ACEprior:
-            n_earth = chrom.solar_wind.ACE_SWEPAM_Parameter(size=bins.size-1)('n_earth')
-        else:
-            n_earth = parameter.Uniform(0,30,size=bins.size-1)('n_earth')
-
+        n_earth = parameter.Uniform(0,30,size=bins.size-1)('n_earth')
         np_earth = parameter.Uniform(-4, -2)('np_4p39')
     else:
         n_earth = parameter.Constant()('n_earth')
@@ -186,43 +172,61 @@ else:
         chm_prior = gpk.se_dm_kernel(log10_sigma=ch_log10_sigma, log10_ell=ch_log10_ell)
         chromgp = gp_signals.BasisGP(chm_prior, chm_basis, name='chrom_gp')
 
-        kwargs.update({'white_vary':args.vary_wn,
+        kwargs.update({'dm_sw_deter':False,
+                       'white_vary':args.vary_wn,
                        'red_var': True,
                        'extra_sigs':dmgp + dmgp2 + chromgp + mean_sw,
                        'psr_model':True,
-                       'tm_marg':False})
+                       'chrom_df':None,
+                       'dm_df':None,
+                       'tm_marg':True})
     elif psrname == 'J1713+0747':
-        index1 = parameter.Uniform(0, 5)
-        index2 = parameter.Uniform(0.9, 1.7)
-        
-        dip1 = dm_exponential_dip(54740, 54780, idx=index2, sign='negative', name='exp1')
-        dip2 = dm_exponential_dip(57506, 57514, idx=index1, sign='negative', name='exp2')
-       
-        kwargs.update({'white_vary':args.vary_wn,
-                       'extra_sigs':mean_sw + dip1 + dip2,
+        index = parameter.Uniform(0.9, 1.7)
+        ppta_dip = dm_exponential_dip(57506, 57514, idx=index, sign='negative', name='exp2')
+
+        kwargs.update({'dm_dt':3,
+                       'dm_df':None,
+                       'chrom_dt':3,
+                       'dm_sw_deter':False,
+                       'white_vary':args.vary_wn,
+                       'dm_expdip':True,
+                       'dmexp_sign': 'negative',
+                       'num_dmdips':1,
+                       'dm_expdip_idx':[2],
+                       'dm_expdip_tmin':[54740],
+                       'dm_expdip_tmax':[54780],
+                       'dmdip_seqname':['dm_1'],
+                       'extra_sigs':mean_sw + ppta_dip,
                        'psr_model':True,
                        'red_var': True,
-                       'tm_marg':False})
+                       'chrom_df':None,
+                       'dm_df':None,
+                       'tm_marg':True})
     ## Treat all other Adv Noise pulsars the same
     else:
         ### Turn SW model off. Add in stand alone SW model and common process. Return model.
-        kwargs.update({'white_vary':args.vary_wn,
+        kwargs.update({'dm_sw_deter':False,
+                       'white_vary':args.vary_wn,
                        'extra_sigs':mean_sw,
                        'psr_model':True,
+                       'chrom_df':None,
+                       'dm_df':None,
                        'red_var': True,
-                       'tm_marg':False})
+                       'tm_marg':True})
 
     if args.gfl:
         kwargs.update({'red_var':False,
                        'factorized_like':True,
                        'psd':'spectrum',
+                       'Tspan':args.tspan,
                        'gw_components':30,
                        'fact_like_logmin':-14.2,
                        'fact_like_logmax':-1.2,})
     if args.gwb_on:
         kwargs.update({'factorized_like':True,
-                       'gw_components':args.n_gwbfreqs,
-                       'fact_like_gamma':args.gamma_gw,})
+                      'Tspan':args.tspan,
+                      'gw_components':args.n_gwbfreqs,
+                      'fact_like_gamma':args.gamma_gw,})
 
     psr_models.append(model_singlepsr_noise(new_psr, **kwargs))
     final_psrs.append(new_psr)
@@ -231,6 +235,8 @@ else:
     pta_crn = signal_base.PTA(models)
     pta_crn.set_default_params(noise)
 
+    # with open(args.pta_pkl,'wb') as fout:
+        # cloudpickle.dump(pta_crn,fout)
 
 groups = sampler.get_parameter_groups(pta_crn)
 groups.extend(sampler.get_psr_groups(pta_crn))
@@ -325,14 +331,8 @@ if args.sw_fit_path is None:
 
 
 try:
-    achrom_freqs = get_freqs(pta_crn, signal_id='red_noise')
+    achrom_freqs = get_freqs(pta_crn, signal_id='gw')
     np.savetxt(args.outdir + 'achrom_rn_freqs.txt', achrom_freqs, fmt='%.18e')
-except:
-    pass
-
-try:
-    chrom_basis = get_freqs(pta_crn, signal_id='dm_gp')
-    np.savetxt(args.outdir + 'chrom_basis.txt', chrom_basis, fmt='%.18e')
 except:
     pass
 
