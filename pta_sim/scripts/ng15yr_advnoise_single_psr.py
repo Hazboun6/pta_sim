@@ -40,7 +40,12 @@ List of things that we need to change in this code:
 * [x] Change the code to edit the output kwarg using Jeremy's script
 * [x] Be careful to change what we need to in the various kwarg dictionaries in the script
 * [x] See if we can output the size of the basis to file when we output the other runtime stuff.
-* [ ] Deal with the SW model. Input the 12.5 year values. Use the appropriate number of 6 month values.
+* [x] Deal with the SW model. Fit across yearly bins at first.
+* [ ] Figure out B1937+21 chromatic model and Fourier option. Need a switch? 
+* [x] Make new WN empirical distributions? 
+* [ ] Check red noise is correctly being modeled.
+* [ ] Check that timing models are being modeled correctly.
+* [x] Code up a varying chromatic index.
 """
 
 with open(args.noisepath, 'r') as fin:
@@ -52,28 +57,6 @@ if os.path.exists(args.pta_pkl):
 else:
     with open('{0}'.format(args.pickle), "rb") as f:
         pkl_psrs = pickle.load(f)
-
-    adv_noise_psr_list = ['B1855+09', #32
-                          'B1937+21', #42
-                          'J0030+0451',# #1.4 **
-                          'J0613-0200',# -25 *
-                          'J0645+5158',# 28 *
-                          'J1012+5307',#38
-                          'J1024-0719', #-16 **
-                          'J1455-3330', #-16 **
-                          'J1600-3053', #-10 **
-                          'J1614-2230', #-1 **
-                          'J1640+2224', #44
-                          'J1713+0747', #30 *
-                          'J1738+0333', #-26 *
-                          'J1741+1351', #37
-                          'J1744-1134', #12 **
-                          'J1909-3744', #15 **
-                          'J1910+1256', #35
-                          'J2010-1323', #6 **
-                          'J2043+1711',#40
-                          'J2317+1439'] #17 *
-
 
     psrname = args.psr
 
@@ -163,34 +146,60 @@ else:
         log10_ell = parameter.Uniform(1, 2.4)
         log10_p = parameter.Uniform(-2, -1)
         log10_gam_p = parameter.Uniform(-2, 2)
-        dm_basis = gpk.linear_interp_basis_dm(dt=3*86400)
-        dm_prior = gpk.periodic_kernel(log10_sigma=log10_sigma,
-                                       log10_ell=log10_ell,
-                                       log10_gam_p=log10_gam_p,
-                                       log10_p=log10_p)
+        log10_ell_rf = parameter.Uniform(0, 7)
+        log10_alpha_wgt = parameter.Uniform(-4, 3)
+        if kwargs["dm_nondiag_kernel"] == "periodic_rfband":
+            dm_basis = gpk.get_tf_quantization_matrix(df=kwargs['dm_df'], 
+                                                      dt=kwargs['dm_dt']*86400,
+                                                      dm=True)
+            dm_prior = gpk.tf_kernel(log10_sigma=log10_sigma,
+                                     log10_ell=log10_ell,
+                                     log10_gam_p=log10_gam_p,
+                                     log10_p=log10_p,
+                                     log10_alpha_wgt=log10_alpha_wgt,
+                                     log10_ell2=log10_ell_rf)
+        elif kwargs["dm_nondiag_kernel"] == "periodic":
+            dm_basis = gpk.linear_interp_basis_dm(dt=kwargs['dm_dt']*86400)
+            dm_prior = gpk.periodic_kernel(log10_sigma=log10_sigma,
+                                           log10_ell=log10_ell,
+                                           log10_gam_p=log10_gam_p,
+                                           log10_p=log10_p)
+        
         dmgp = gp_signals.BasisGP(dm_prior, dm_basis, name='dm_gp1')
         # Periodic GP kernel for DM
         log10_sigma2 = parameter.Uniform(-4.8, -3)
         log10_ell2 = parameter.Uniform(2.4, 5)
         log10_p2 = parameter.Uniform(-2, 2)
         log10_gam_p2 = parameter.Uniform(-2, 2)
-        dm_basis2 = gpk.linear_interp_basis_dm(dt=3*86400)
-        dm_prior2 = gpk.periodic_kernel(log10_sigma=log10_sigma2,
+        log10_ell_rf2 = parameter.Uniform(0, 7)
+        log10_alpha_wgt2 = parameter.Uniform(-4, 3)
+        if kwargs["dm_nondiag_kernel"] == "periodic_rfband":
+            dm_basis2 = gpk.get_tf_quantization_matrix(df=kwargs['dm_df'], 
+                                                      dt=kwargs['dm_dt']*86400,
+                                                      dm=True)
+            dm_prior2 = gpk.tf_kernel(log10_sigma=log10_sigma2,
+                                     log10_ell=log10_ell2,
+                                     log10_gam_p=log10_gam_p2,
+                                     log10_p=log10_p2,
+                                     log10_alpha_wgt=log10_alpha_wgt2,
+                                     log10_ell2=log10_ell_rf2)
+        elif kwargs["dm_nondiag_kernel"] == "periodic":
+            dm_basis2 = gpk.linear_interp_basis_dm(dt=kwargs['dm_dt']*86400)
+            dm_prior2 = gpk.periodic_kernel(log10_sigma=log10_sigma2,
                                        log10_ell=log10_ell2,
                                        log10_gam_p=log10_gam_p2,
                                        log10_p=log10_p2)
+        
+        
         dmgp2 = gp_signals.BasisGP(dm_prior2, dm_basis2, name='dm_gp2')
-        ch_log10_sigma = parameter.Uniform(-10, -3.5)
-        ch_log10_ell = parameter.Uniform(1, 6)
-        chm_basis = gpk.linear_interp_basis_chromatic(dt=3*86400, idx=4)
-        chm_prior = gpk.se_dm_kernel(log10_sigma=ch_log10_sigma, log10_ell=ch_log10_ell)
-        chromgp = gp_signals.BasisGP(chm_prior, chm_basis, name='chrom_gp')
+
 
         kwargs.update({'white_vary':args.vary_wn,
+                       'dm_var': False,
                        'red_var': True,
-                       'extra_sigs':dmgp + dmgp2 + chromgp + mean_sw,
+                       'extra_sigs':dmgp + dmgp2 + mean_sw,
                        'psr_model':True,
-                       'tm_marg':False})
+                       })
     elif psrname == 'J1713+0747':
         index1 = parameter.Uniform(0, 5)
         index2 = parameter.Uniform(0.9, 1.7)
@@ -202,7 +211,7 @@ else:
                        'extra_sigs':mean_sw + dip1 + dip2,
                        'psr_model':True,
                        'red_var': True,
-                       'tm_marg':False})
+                       })
     ## Treat all other Adv Noise pulsars the same
     else:
         ### Turn SW model off. Add in stand alone SW model and common process. Return model.
@@ -210,11 +219,10 @@ else:
                        'extra_sigs':mean_sw,
                        'psr_model':True,
                        'red_var': True,
-                       'tm_marg':False})
+                       })
 
     if args.gfl:
-        kwargs.update({'red_var':False,
-                       'factorized_like':True,
+        kwargs.update({'factorized_like':True,
                        'psd':'spectrum',
                        'gw_components':30,
                        'fact_like_logmin':-14.2,
