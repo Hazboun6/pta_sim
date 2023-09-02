@@ -41,7 +41,7 @@ List of things that we need to change in this code:
 * [x] Be careful to change what we need to in the various kwarg dictionaries in the script
 * [x] See if we can output the size of the basis to file when we output the other runtime stuff.
 * [x] Deal with the SW model. Fit across yearly bins at first.
-* [ ] Figure out B1937+21 chromatic model and Fourier option. Need a switch? 
+* [x] Figure out B1937+21 chromatic model and Fourier option. Need a switch? 
 * [x] Make new WN empirical distributions? 
 * [ ] Check red noise is correctly being modeled.
 * [ ] Check that timing models are being modeled correctly.
@@ -92,16 +92,10 @@ else:
 
         return dmexp
 
-    # timing model
-    s = gp_signals.TimingModel()
-
-    # intrinsic red noise
-    s += blocks.red_noise_block(prior='log-uniform', Tspan=args.tspan, components=30)
     # adding white-noise, separating out Adv Noise Psrs, and acting on psr objects
     final_psrs = []
     psr_models = []
     ### Add a stand alone SW deter model
-    # bins = np.linspace(53215, 57934, 26)
     bins = np.loadtxt(args.sw_bins)
     bins *= 24*3600 #Convert to secs
 
@@ -140,7 +134,7 @@ else:
         kwargs = json.load(fin)
 
     ## Build special DM GP models for B1937
-    if psrname == 'B1937+21':
+    if psrname == 'B1937+21' and kwargs["dmgp_kernel"]=="nondiag":
         # Periodic GP kernel for DM
         log10_sigma = parameter.Uniform(-10, -4.8)
         log10_ell = parameter.Uniform(1, 2.4)
