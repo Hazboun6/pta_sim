@@ -135,6 +135,7 @@ else:
 
     ## Build special DM GP models for B1937
     if psrname == 'B1937+21' and kwargs["dmgp_kernel"]=="nondiag":
+        print(kwargs["dm_nondiag_kernel"])
         # Periodic GP kernel for DM
         log10_sigma = parameter.Uniform(-10, -4.8)
         log10_ell = parameter.Uniform(1, 2.4)
@@ -172,17 +173,17 @@ else:
                                                       dt=kwargs['dm_dt']*86400,
                                                       dm=True)
             dm_prior2 = gpk.tf_kernel(log10_sigma=log10_sigma2,
-                                     log10_ell=log10_ell2,
-                                     log10_gam_p=log10_gam_p2,
-                                     log10_p=log10_p2,
-                                     log10_alpha_wgt=log10_alpha_wgt2,
-                                     log10_ell2=log10_ell_rf2)
+                                      log10_ell=log10_ell2,
+                                      log10_gam_p=log10_gam_p2,
+                                      log10_p=log10_p2,
+                                      log10_alpha_wgt=log10_alpha_wgt2,
+                                      log10_ell2=log10_ell_rf2)
         elif kwargs["dm_nondiag_kernel"] == "periodic":
             dm_basis2 = gpk.linear_interp_basis_dm(dt=kwargs['dm_dt']*86400)
             dm_prior2 = gpk.periodic_kernel(log10_sigma=log10_sigma2,
-                                       log10_ell=log10_ell2,
-                                       log10_gam_p=log10_gam_p2,
-                                       log10_p=log10_p2)
+                                            log10_ell=log10_ell2,
+                                            log10_gam_p=log10_gam_p2,
+                                            log10_p=log10_p2)
         
         
         dmgp2 = gp_signals.BasisGP(dm_prior2, dm_basis2, name='dm_gp2')
@@ -339,13 +340,6 @@ except:
     pass
 
 if args.initsamp is None:
-    # noise['gw_log10_A'] = np.log10(2e-15)
-    # noise['gw_gamma'] = 4.33333
-    # nearth_pars = [p for p in pta_crn.param_names if 'n_earth' in p]
-    # for npar in nearth_pars:
-    #     noise[npar]=6.0
-    # noise['np_4p39']=-2.86
-    # x0 = np.array([noise[k] for k in pta_crn.param_names])
     x0 = np.hstack(p.sample() for p in pta_crn.params)
 else:
     with open(args.initsamp, 'r') as fin:
