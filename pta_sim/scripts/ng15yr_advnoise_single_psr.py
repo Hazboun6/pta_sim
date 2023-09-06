@@ -246,6 +246,11 @@ groups.extend(dmgp_sw)
 groups.extend(dmgp_chromgp)
 groups.extend(dmgp_chromgp_sw)
 
+wn_groups = {}
+for flag in list(np.unique(new_psr.flags['f'])):
+    wn_groups[flag] = [idx for idx, nm in enumerate(pta_crn.param_names) if flag in nm]
+    groups.extend(wn_groups[flag])
+
 
 Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
                                 empirical_distr = args.emp_distr, groups=groups)
