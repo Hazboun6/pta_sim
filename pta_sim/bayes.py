@@ -10,7 +10,6 @@ import sys, os, glob, json, pickle, copy
 from collections import OrderedDict
 
 from enterprise_extensions import models, model_utils
-# from enterprise_extensions.electromagnetic import solar_wind
 from la_forge.core import Core, HyperModelCore
 
 def chain_length_bool(path, N):

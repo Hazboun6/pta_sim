@@ -43,8 +43,8 @@ List of things that we need to change in this code:
 * [x] Deal with the SW model. Fit across yearly bins at first.
 * [x] Figure out B1937+21 chromatic model and Fourier option. Need a switch? 
 * [x] Make new WN empirical distributions? 
-* [ ] Check red noise is correctly being modeled.
-* [ ] Check that timing models are being modeled correctly.
+* [x] Check red noise is correctly being modeled.
+* [x] Check that timing models are being modeled correctly.
 * [x] Code up a varying chromatic index.
 """
 
@@ -134,8 +134,7 @@ else:
         kwargs = json.load(fin)
 
     ## Build special DM GP models for B1937
-    if psrname == 'B1937+21' and kwargs["dmgp_kernel"]=="nondiag":
-        print(kwargs["dm_nondiag_kernel"])
+    if psrname == 'B1937+21' and kwargs["dmgp_kernel"]=="nondiag" and kwargs['dm_nondiag_kernel']!='dmx_like':
         # Periodic GP kernel for DM
         log10_sigma = parameter.Uniform(-10, -4.8)
         log10_ell = parameter.Uniform(1, 2.4)
@@ -240,14 +239,15 @@ groups.extend(sampler.get_psr_groups(pta_crn))
 Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
                                 empirical_distr = args.emp_distr, groups=groups)
 
-Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 70)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 40)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_prior, 10)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 120)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 60)
-# Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
-# Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 10)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
+Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 40)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_dmexpcusp_prior, 10)
-# Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['n_earth',
+if psrname == 'J1713+0747':
+    Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['exp1','exp2']),30)
 #                                                            'np_4p39',
 #                                                            'dm_cusp',
 #                                                            'dmexp']),
