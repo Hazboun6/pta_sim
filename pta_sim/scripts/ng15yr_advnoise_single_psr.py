@@ -236,6 +236,17 @@ else:
 
 groups = sampler.get_parameter_groups(pta_crn)
 groups.extend(sampler.get_psr_groups(pta_crn))
+#Setup chromatic cross groups
+chromgp_sw = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in nm for flag in ['chrom_gp','n_earth']])]
+dmgp_sw = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in nm for flag in ['dm_gp','n_earth']])]
+dmgp_chromgp = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in nm for flag in ['dm_gp','chrom']])]
+dmgp_chromgp_sw = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in nm for flag in ['dm_gp','chrom','n_earth']])]
+groups.extend(chromgp_sw)
+groups.extend(dmgp_sw)
+groups.extend(dmgp_chromgp)
+groups.extend(dmgp_chromgp_sw)
+
+
 Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
                                 empirical_distr = args.emp_distr, groups=groups)
 
