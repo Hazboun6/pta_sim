@@ -241,15 +241,15 @@ chromgp_sw = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in 
 dmgp_sw = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in nm for flag in ['dm_gp','n_earth']])]
 dmgp_chromgp = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in nm for flag in ['dm_gp','chrom']])]
 dmgp_chromgp_sw = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in nm for flag in ['dm_gp','chrom','n_earth']])]
-groups.extend(chromgp_sw)
-groups.extend(dmgp_sw)
-groups.extend(dmgp_chromgp)
-groups.extend(dmgp_chromgp_sw)
+groups.append(chromgp_sw)
+groups.append(dmgp_sw)
+groups.append(dmgp_chromgp)
+groups.append(dmgp_chromgp_sw)
 
 wn_groups = {}
 for flag in list(np.unique(new_psr.flags['f'])):
     wn_groups[flag] = [idx for idx, nm in enumerate(pta_crn.param_names) if flag in nm]
-    groups.extend(wn_groups[flag])
+    groups.append(wn_groups[flag])
 
 
 Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
