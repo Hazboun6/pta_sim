@@ -259,7 +259,7 @@ Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 40)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_prior, 10)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 120)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 60)
-Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
+
 Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 40)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_dmexpcusp_prior, 10)
 if psrname == 'J1713+0747':
@@ -268,6 +268,12 @@ if psrname == 'J1713+0747':
 #                                                            'dm_cusp',
 #                                                            'dmexp']),
 #                                                            30)
+
+if psrname == 'B1937+21' and kwargs["dmgp_kernel"]=="nondiag" and kwargs['dm_nondiag_kernel']!='dmx_like':
+    Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['dm_gp1','dm_gp2']),50)
+else:
+    Sampler.addProposalToCycle(Sampler.jp.draw_from_dm_gp_prior, 40)
+
 def draw_from_sw_prior(self, x, iter, beta):
 
     q = x.copy()
