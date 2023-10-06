@@ -77,7 +77,7 @@ else:
             chromatic exponential dip waveform.
         """
         t0_dmexp = parameter.Uniform(tmin,tmax)
-        log10_Amp_dmexp = parameter.Uniform(-6.1, -5.6)
+        log10_Amp_dmexp = parameter.Uniform(-6.8, -5.3)
         log10_tau_dmexp = parameter.Uniform(1.2, 2.0)
         if sign == 'vary':
             sign_param = parameter.Uniform(-1.0, 1.0)
