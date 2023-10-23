@@ -26,12 +26,12 @@ args = parse_sim.arguments()
 
 logging.basicConfig(format="%(levelname)s: %(name)s: %(message)s", level=logging.INFO)
 #Is chain longer than niter?
-# longer = chain_length_bool(args.outdir, int(args.niter//10))
+longer = chain_length_bool(args.outdir, int(args.niter//10 - 100))
 
-# if longer:
-#     sys.exit() #Hmmmm what to do here?
-# else:
-#     pass
+if longer:
+    sys.exit() 
+else:
+    pass
 
 """
 List of things that we need to change in this code:

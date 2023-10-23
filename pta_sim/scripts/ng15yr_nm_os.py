@@ -65,7 +65,7 @@ else:
     xi, rho, sig, A, A_err = pta_os.compute_noise_marginalized_os(chain)#,param_names=pars)
 
 np.save(args.outdir+f'os_xi_{args.orf}',xi)
-np.save(args.outdir+f'os_rho{args.orf}',rho)
+np.save(args.outdir+f'os_rho_{args.orf}',rho)
 np.save(args.outdir+f'os_sig_{args.orf}',sig)
 np.save(args.outdir+f'os_A_{args.orf}',A)
 np.save(args.outdir+f'os_A_err_{args.orf}',A_err)
