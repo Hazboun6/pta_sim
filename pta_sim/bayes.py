@@ -13,9 +13,11 @@ from enterprise_extensions import models, model_utils
 from la_forge.core import Core, HyperModelCore
 
 def chain_length_bool(path, N):
-    chain_path = path + '/chain_1.txt'
-    if os.path.exists(chain_path):
-        with open(chain_path) as f:
+    if os.path.exists(path + '/chain_1.txt'):
+        with open(path + '/chain_1.txt') as f:
+            Chain_rows = sum(1 for _ in f)
+    elif os.path.exists(path + '/chain_1.0.txt'):
+        with open(path + '/chain_1.0.txt') as f:
             Chain_rows = sum(1 for _ in f)
     else:
         Chain_rows = 0
