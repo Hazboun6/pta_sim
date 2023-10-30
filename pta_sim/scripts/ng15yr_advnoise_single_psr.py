@@ -198,8 +198,8 @@ else:
         index1 = parameter.Uniform(0, 5)
         index2 = parameter.Uniform(0.9, 1.7)
         
-        dip1 = dm_exponential_dip(54740, 54780, idx=index2, sign='negative', name='exp1')
-        dip2 = dm_exponential_dip(57506, 57514, idx=index1, sign='negative', name='exp2')
+        dip1 = dm_exponential_dip(54740, 54780, idx=index1, sign='negative', name='exp1')
+        dip2 = dm_exponential_dip(57506, 57514, idx=index2, sign='negative', name='exp2')
        
         kwargs.update({'white_vary':args.vary_wn,
                        'extra_sigs':mean_sw + dip1 + dip2,
