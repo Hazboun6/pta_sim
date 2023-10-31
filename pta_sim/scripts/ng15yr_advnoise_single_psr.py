@@ -255,7 +255,7 @@ for flag in list(np.unique(new_psr.flags['f'])):
 Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
                                 empirical_distr = args.emp_distr, groups=groups)
 
-Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 40)
+# Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_empirical_distr, 40)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_psr_prior, 10)
 Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 120)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 60)
