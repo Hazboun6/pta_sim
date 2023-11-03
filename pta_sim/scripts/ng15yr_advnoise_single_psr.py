@@ -260,7 +260,9 @@ Sampler = sampler.setup_sampler(pta_crn, outdir=args.outdir, resume=True,
 Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 120)
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_red_prior, 60)
 
-Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 40)
+if any(['chrom' in p for p in pta_crn.param_names]):
+    Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 40)
+    
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_dmexpcusp_prior, 10)
 if psrname == 'J1713+0747':
     Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['exp1','exp2']),30)
