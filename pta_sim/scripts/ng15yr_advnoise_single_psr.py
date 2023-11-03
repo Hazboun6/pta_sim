@@ -237,14 +237,15 @@ else:
 groups = sampler.get_parameter_groups(pta_crn)
 groups.extend(sampler.get_psr_groups(pta_crn))
 #Setup chromatic cross groups
-chromgp_sw = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in nm for flag in ['chrom_gp','n_earth']])]
 dmgp_sw = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in nm for flag in ['dm_gp','n_earth']])]
-dmgp_chromgp = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in nm for flag in ['dm_gp','chrom']])]
-dmgp_chromgp_sw = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in nm for flag in ['dm_gp','chrom','n_earth']])]
-groups.append(chromgp_sw)
 groups.append(dmgp_sw)
-groups.append(dmgp_chromgp)
-groups.append(dmgp_chromgp_sw)
+if any(['chrom' in p for p in pta_crn.param_names]):
+    chromgp_sw = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in nm for flag in ['chrom_gp','n_earth']])]
+    dmgp_chromgp = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in nm for flag in ['dm_gp','chrom']])]
+    dmgp_chromgp_sw = [idx for idx, nm in enumerate(pta_crn.param_names) if any([flag in nm for flag in ['dm_gp','chrom','n_earth']])]
+    groups.append(chromgp_sw)
+    groups.append(dmgp_chromgp)
+    groups.append(dmgp_chromgp_sw)
 
 wn_groups = {}
 for flag in list(np.unique(new_psr.flags['f'])):
@@ -262,7 +263,7 @@ Sampler.addProposalToCycle(Sampler.jp.draw_from_empirical_distr, 120)
 
 if any(['chrom' in p for p in pta_crn.param_names]):
     Sampler.addProposalToCycle(Sampler.jp.draw_from_chrom_gp_prior, 40)
-    
+
 # Sampler.addProposalToCycle(Sampler.jp.draw_from_dmexpcusp_prior, 10)
 if psrname == 'J1713+0747':
     Sampler.addProposalToCycle(Sampler.jp.draw_from_par_prior(['exp1','exp2']),30)
